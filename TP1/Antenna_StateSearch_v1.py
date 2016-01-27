@@ -5,6 +5,9 @@ from node import *
 from state import *
 from astar_search import *
 import math
+import matplotlib.pyplot as plt
+import cProfile
+
 
 
 import numpy as np
@@ -157,6 +160,8 @@ def search(Positions, k, c):
     init(Positions, k, c)
     initialState = AntennaSearch(range(0, len(Positions)))
     solution = astar_search(initialState)
+
+    drawPlot(Positions, solution)
     print(solution)
 
 
@@ -222,6 +227,8 @@ def middlePoint(pointsId):
         sumX += housesMap[id][0]
         sumY += housesMap[id][1]
     currentMiddlePoint = (sumX/size, sumY/size)
+
+    ### Fine tuning here ###
     #return currentMiddlePoint
     return improveMiddlePoint(pointsId, currentMiddlePoint, getSquaredRayon(pointsId, currentMiddlePoint))
 
@@ -234,8 +241,11 @@ def improveMiddlePoint(pointsId, currentMiddle, radiusToImprove):
         newPossibleMiddle = (newX, newY)
         radius = getSquaredRayon(pointsId, newPossibleMiddle)
         if(radius < radiusToImprove):
-            currentBest = improveMiddlePoint(pointsId, newPossibleMiddle,  radius)
-            radiusToImprove = getSquaredRayon(pointsId, currentBest)
+            ## Option 1 : more search (much slower but not better)
+            #currentBest = improveMiddlePoint(pointsId, newPossibleMiddle,  radius)
+            #radiusToImprove = getSquaredRayon(pointsId, currentBest)
+            ## Option 2 : quick search
+            return improveMiddlePoint(pointsId, newPossibleMiddle,  radius)
     return currentBest
 
 
@@ -252,6 +262,87 @@ def getSquaredRayon(housesId, antenna):
     #return intRadius
 
 
+def drawPlot(Positions, Antennas):
 
-#search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0), (1, 2), (20, 11), (30, 21), (21, 40), (0, 0), (32, 12), (21, 45)],200,1)
-search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
+    x = []
+    y = []
+    colors = []
+    area = []
+    for position in Positions:
+        x.append(position[0])
+        y.append(position[1])
+        colors.append(1)
+        area.append(10)
+
+    fig = plt.gcf()
+    for antenna in Antennas.state.antennas:
+        x.append(position[0])
+        y.append(position[1])
+        colors.append(1)
+        area.append(10)
+
+        circle1=plt.Circle((antenna[0],antenna[1]),math.sqrt(antenna[2]),color='r', alpha=0.2)
+        fig.gca().add_artist(circle1)
+
+    plt.scatter(x, y, s=area, c=colors, alpha=1)
+    ax = plt.gca()
+    ax.set_aspect(1)
+    ax.grid()
+
+    plt.show()
+    return
+
+
+def startSearch():
+
+
+    # 14 points, Cost:1641, Step:7242, Time: 741,143 sec
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70),(30,60)],200,1)
+
+    # 13 points, Cost:1615, Step:8142, Time: 536,099 sec
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70)],200,1)
+
+    # 12 points, Cost:1591, Step:3540, Time: 105,837 sec
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
+
+    # 11 points, Cost:1365, Step:696, Time: 4,782 sec
+    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
+
+    # 5 points, Cost:700, Step:7, Time: 2 ms
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
+
+
+cProfile.run('startSearch()').sortStat('tottime')
+
+# Profiling
+#cProfile.run('search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)').sortStat('tottime')
+# Total Time : 132,950 sec
+
+# Antenna
+# 132,590 : Search
+# 3,185   : Awesome heuristic
+# 3,730   : Draw plot
+# 3,268   : Heuristic
+# 2,689   : Get Shortest nearest Radius left
+# 1,466   : Get Squared Rayon
+# 1,156   : Possible Actions
+# 1,147   : Get Nearest
+
+# A Star Search
+# 128,732 : A Star Search
+
+# Copy
+# 9,723 : Deep Copy
+# 9,442 : Deep Copy inst
+# 8,603 : Deep Copy Dict
+# 6,911 : Deep Copy List
+# 4,320 : Deep Copy Tuple
+
+# Node
+# 14,924 : Expand Node
+# 13,691 : Create Node
+
+# Autre
+# 13,787 : map
+# 111,804 : sort of list object
+
