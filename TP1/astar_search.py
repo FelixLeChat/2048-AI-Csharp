@@ -14,6 +14,8 @@ def astar_search(initialState):
         step += 1
         node.state.show()
         print 'Action:', node.action
+        print "Cost", node.g
+        print "Heuristic", node.h
         print '----------------'
         if node.state.isGoal():
             node.state.show()

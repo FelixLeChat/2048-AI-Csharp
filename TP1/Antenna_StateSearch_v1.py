@@ -69,6 +69,12 @@ class AntennaSearch(State):
                     break
         return kNearest
 
+    def getClosestDistance(self, houseId):
+        kNearest = []
+        for key, distance in Nearest[houseId]:
+            if key in self.housesLeft:
+                return distance
+
     def cost(self,(x, y, rayon, housesInRange)):
         global K, C
         cost = K + C*pow(rayon,2)
@@ -82,9 +88,36 @@ class AntennaSearch(State):
         print("Antennas : {0}".format(self.antennas))
 
 
-# TODO
     def heuristic(self):
-        return 0
+        global K, C
+        soloCost = K + C
+
+        houseLeft = len(self.housesLeft)
+
+        if(houseLeft == 0):
+            return 0
+        if(houseLeft == 1):
+            return soloCost
+        else:
+            smallest = sys.maxint
+            for houseId in self.housesLeft:
+                nearestDistance = self.getClosestDistance(houseId)
+                if nearestDistance:
+                    if(nearestDistance < smallest):
+                        smallest = nearestDistance
+                else:
+                    return soloCost
+
+
+        heuristicValue = K + C*smallest/4
+
+        if(heuristicValue > 2*soloCost):
+            return 2*soloCost
+            #try for 3?...
+
+        return heuristicValue
+
+
 
 
 
@@ -143,3 +176,4 @@ def middlePoint(pointsId):
 
 
 search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0)],200,1)
+#search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
