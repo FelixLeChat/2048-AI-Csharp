@@ -122,14 +122,15 @@ class AntennaSearch(State):
 
         houseLeft = len(self.housesLeft)
 
-        for k in range(1, houseLeft + 1):
-            currentMinimalCost = 0
-            for houseId in self.houseLeft:
+        for k in range(1, houseLeft):
+            currentMinimalCost = sys.maxint
+
+            for houseId in self.housesLeft:
 
                 nearest = self.getKNearest(houseId, k)
                 nearest.append(houseId)
                 antennaPos = middlePoint(nearest)
-                rayon = self.getRayon(nearest, antennaPos)
+                rayon = self.getSquaredRayon(nearest, antennaPos)
                 if(rayon < currentMinimalCost):
                     currentMinimalCost = rayon
             costList.append(currentMinimalCost)
@@ -140,7 +141,7 @@ class AntennaSearch(State):
         xi elements (0, 1, ...) and the repartitionOfAntenna (y1, y2,...) says there is y1 antenna of radius x1,... '''
     def calculateCostByRepartition(self, shortestRadiusList, repartitionOfAntenna):
         totalCost = 0
-        for index in xrange(repartitionOfAntenna):
+        for index in xrange(len(shortestRadiusList)):
             totalCost += repartitionOfAntenna[index] * self.calculateCost(shortestRadiusList[index])
         return totalCost
 
@@ -233,5 +234,5 @@ def middlePoint(pointsId):
 
 
 
-search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0)],200,1)
+search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0), (1, 2), (20, 11), (30, 21), (21, 40), (0, 0), (32, 12), (21, 45)],200,1)
 #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
