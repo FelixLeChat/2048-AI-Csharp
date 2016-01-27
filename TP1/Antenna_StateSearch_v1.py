@@ -38,7 +38,7 @@ class AntennaSearch(State):
                 nearest.append(houseId)
                 if nearest:
                     antennaPos = middlePoint(nearest)
-                    squaredRayon = self.getSquaredRayon(nearest, antennaPos)
+                    squaredRayon = getSquaredRayon(nearest, antennaPos)
                     actions.append((antennaPos[0], antennaPos[1], squaredRayon, nearest))
                 # If nearest is empty -> return himself
                 else:
@@ -47,14 +47,6 @@ class AntennaSearch(State):
 
         return actions
 
-    def getSquaredRayon(self, housesId, antenna):
-        maxRayonSquared = 1
-        for house in housesId:
-            housePos = housesMap[house]
-            squaredRayon = SquaredDistance(housePos, antenna)
-            if(squaredRayon > maxRayonSquared):
-                maxRayonSquared = squaredRayon
-        return maxRayonSquared
 
     # TODO : upgrade
     ''' Return a list of id '''
@@ -130,7 +122,7 @@ class AntennaSearch(State):
                 nearest = self.getKNearest(houseId, k)
                 nearest.append(houseId)
                 antennaPos = middlePoint(nearest)
-                rayon = self.getSquaredRayon(nearest, antennaPos)
+                rayon = getSquaredRayon(nearest, antennaPos)
                 if(rayon < currentMinimalCost):
                     currentMinimalCost = rayon
             costList.append(currentMinimalCost)
@@ -166,6 +158,7 @@ def search(Positions, k, c):
     initialState = AntennaSearch(range(0, len(Positions)))
     solution = astar_search(initialState)
     print(solution)
+
 
 def init(Positions, k, c):
     initNearest(Positions, k, c)
@@ -228,11 +221,37 @@ def middlePoint(pointsId):
     for id in pointsId:
         sumX += housesMap[id][0]
         sumY += housesMap[id][1]
-    return (sumX/size, sumY/size)
+    currentMiddlePoint = (sumX/size, sumY/size)
+    #return currentMiddlePoint
+    return improveMiddlePoint(pointsId, currentMiddlePoint, getSquaredRayon(pointsId, currentMiddlePoint))
+
+def improveMiddlePoint(pointsId, currentMiddle, radiusToImprove):
+    possibleDirection = [(1,0), (-1,0), (0, 1), (0, -1)]
+    currentBest = currentMiddle
+    for direction in possibleDirection:
+        newX = currentMiddle[0] + direction[0]
+        newY = currentMiddle[1] + direction[1]
+        newPossibleMiddle = (newX, newY)
+        radius = getSquaredRayon(pointsId, newPossibleMiddle)
+        if(radius < radiusToImprove):
+            currentBest = improveMiddlePoint(pointsId, newPossibleMiddle,  radius)
+            radiusToImprove = getSquaredRayon(pointsId, currentBest)
+    return currentBest
 
 
 
+def getSquaredRayon(housesId, antenna):
+    maxRayonSquared = 1
+    for house in housesId:
+        housePos = housesMap[house]
+        squaredRayon = SquaredDistance(housePos, antenna)
+        if(squaredRayon > maxRayonSquared):
+            maxRayonSquared = squaredRayon
+    return maxRayonSquared
+    #intRadius = pow(math.ceil(math.sqrt(maxRayonSquared)), 2)
+    #return intRadius
 
 
-search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0), (1, 2), (20, 11), (30, 21), (21, 40), (0, 0), (32, 12), (21, 45)],200,1)
-#search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
+
+#search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0), (1, 2), (20, 11), (30, 21), (21, 40), (0, 0), (32, 12), (21, 45)],200,1)
+search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
