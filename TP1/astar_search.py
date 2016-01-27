@@ -5,22 +5,27 @@
 
 from node import *
 from state import *
+import datetime
+import time
 
 def astar_search(initialState):
     step = 0
     frontier = [Node(initialState)]
+    startTime = int(round(time.time() * 1000))
     while frontier:
         node = frontier.pop(0)
         step += 1
-        node.state.show()
-        print 'Action:', node.action
-        print "Cost", node.g
-        print "Heuristic", node.h
-        print '----------------'
+        #node.state.show()
+        #print 'Action:', node.action
+        #print "Cost", node.g
+        #print "Heuristic", node.h
+        #print step
+        #print '----------------'
         if node.state.isGoal():
             node.state.show()
             print 'Cost:', node.g
             print 'Steps:', step
+            print 'Time(ms) :', int(round(time.time() * 1000))-startTime
             return node
         elif node.isRepeated():
             continue
