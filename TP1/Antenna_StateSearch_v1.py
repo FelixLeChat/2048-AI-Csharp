@@ -20,10 +20,9 @@ class AntennaSearch(State):
     def equals(self,state):
         return False
 
-    def executeAction(self,(x, y, rayon, housesInRange)):
-        self.antennas.append((x, y, rayon))
+    def executeAction(self,(x, y, squaredRayon, housesInRange)):
+        self.antennas.append((x, y, squaredRayon))
         self.housesLeft = [x for x in self.housesLeft if x not in housesInRange]
-        helle = 0
 
 # TODO
     def possibleActions(self):
@@ -39,8 +38,8 @@ class AntennaSearch(State):
                 nearest.append(houseId)
                 if nearest:
                     antennaPos = middlePoint(nearest)
-                    rayon = self.getRayon(nearest, antennaPos)
-                    actions.append((antennaPos[0], antennaPos[1], rayon, nearest))
+                    squaredRayon = self.getSquaredRayon(nearest, antennaPos)
+                    actions.append((antennaPos[0], antennaPos[1], squaredRayon, nearest))
                 # If nearest is empty -> return himself
                 else:
                     housePos = housesMap[houseId]
@@ -48,14 +47,14 @@ class AntennaSearch(State):
 
         return actions
 
-    def getRayon(self, housesId, antenna):
+    def getSquaredRayon(self, housesId, antenna):
         maxRayonSquared = 1
         for house in housesId:
             housePos = housesMap[house]
             squaredRayon = SquaredDistance(housePos, antenna)
             if(squaredRayon > maxRayonSquared):
                 maxRayonSquared = squaredRayon
-        return math.sqrt(maxRayonSquared)
+        return maxRayonSquared
 
     # TODO : upgrade
     ''' Return a list of id '''
@@ -75,10 +74,8 @@ class AntennaSearch(State):
             if key in self.housesLeft:
                 return distance
 
-    def cost(self,(x, y, rayon, housesInRange)):
-        global K, C
-        cost = K + C*pow(rayon,2)
-        return cost
+    def cost(self,(x, y, squaredRayon, housesInRange)):
+        return self.calculateCost(squaredRayon)
 
     def isGoal(self):
         return len(self.housesLeft) == 0
@@ -99,24 +96,58 @@ class AntennaSearch(State):
         if(houseLeft == 1):
             return soloCost
         else:
-            smallest = sys.maxint
-            for houseId in self.housesLeft:
-                nearestDistance = self.getClosestDistance(houseId)
-                if nearestDistance:
-                    if(nearestDistance < smallest):
-                        smallest = nearestDistance
-                else:
-                    return soloCost
+            return self.awesomeHeuristic()
+
+    def awesomeHeuristic(self):
+        global K, C
+
+        housesLeft = len(self.housesLeft)
+        shortestRadiusList = self.getShortestNearestRadiusList()
+
+        minCost = sys.maxint
+        for repartition in combinaisonRepartition[housesLeft-1]:
+            cost = self.calculateCostByRepartition(shortestRadiusList, repartition)
+            if(cost < minCost):
+                minCost = cost
+
+        return minCost
 
 
-        heuristicValue = K + C*smallest/4
+    ''' Return a list of the shortest Radius to link (1 element, 2 elements,...) '''
+    def getShortestNearestRadiusList(self):
+        global K, C
+        soloCost = K + C
 
-        if(heuristicValue > 2*soloCost):
-            return 2*soloCost
-            #try for 3?...
+        costList = [soloCost]
 
-        return heuristicValue
+        houseLeft = len(self.housesLeft)
 
+        for k in range(1, houseLeft + 1):
+            currentMinimalCost = 0
+            for houseId in self.houseLeft:
+
+                nearest = self.getKNearest(houseId, k)
+                nearest.append(houseId)
+                antennaPos = middlePoint(nearest)
+                rayon = self.getRayon(nearest, antennaPos)
+                if(rayon < currentMinimalCost):
+                    currentMinimalCost = rayon
+            costList.append(currentMinimalCost)
+
+        return costList
+
+    ''' Use in the heuristic cost, the shortestDistanceList represent the lowest radius to connect
+        xi elements (0, 1, ...) and the repartitionOfAntenna (y1, y2,...) says there is y1 antenna of radius x1,... '''
+    def calculateCostByRepartition(self, shortestRadiusList, repartitionOfAntenna):
+        totalCost = 0
+        for index in xrange(repartitionOfAntenna):
+            totalCost += repartitionOfAntenna[index] * self.calculateCost(shortestRadiusList[index])
+        return totalCost
+
+    def calculateCost(self, squaredRadius):
+        global K, C
+        cost = K + C*squaredRadius
+        return cost
 
 
 
@@ -127,13 +158,19 @@ K = 0
 C = 0
 Nearest = {}
 
+combinaisonRepartition = {}
+
 def search(Positions, k, c):
     init(Positions, k, c)
-    solution = astar_search(AntennaSearch(range(0, len(Positions))))
+    initialState = AntennaSearch(range(0, len(Positions)))
+    solution = astar_search(initialState)
     print(solution)
 
+def init(Positions, k, c):
+    initNearest(Positions, k, c)
+    initRepartitionCombinaison(len(Positions))
 
-def init(Position, k, c):
+def initNearest(Position, k, c):
     global K, C
     K = k
     C = c
@@ -158,6 +195,24 @@ def init(Position, k, c):
     for key, value in Nearest.iteritems():
         value.sort(key=lambda tup: tup[1])
 
+def initRepartitionCombinaison(nbOfHouse):
+
+    for k in range(0, nbOfHouse):
+        firstList = [0] * nbOfHouse
+        firstList[k] = 1
+        combinaisonRepartition[k] = []
+        combinaisonRepartition[k].append(firstList)
+
+        for r in range(k-1, -1, -1):
+            diff = k - r
+            for previousList in combinaisonRepartition[r]:
+                copyList = copy.deepcopy(previousList)
+                copyList[diff-1] += 1
+                combinaisonRepartition[k].append(copyList)
+                b_set = set(map(tuple, combinaisonRepartition[k]))
+                combinaisonRepartition[k] = map(list, b_set)
+
+
 
 
 def SquaredDistance(a, b):
@@ -173,6 +228,9 @@ def middlePoint(pointsId):
         sumX += housesMap[id][0]
         sumY += housesMap[id][1]
     return (sumX/size, sumY/size)
+
+
+
 
 
 search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0)],200,1)
