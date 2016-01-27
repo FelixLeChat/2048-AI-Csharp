@@ -5,6 +5,8 @@ from node import *
 from state import *
 from astar_search import *
 import math
+import matplotlib.pyplot as plt
+
 
 
 import numpy as np
@@ -165,6 +167,8 @@ def search(Positions, k, c):
     init(Positions, k, c)
     initialState = AntennaSearch(range(0, len(Positions)))
     solution = astar_search(initialState)
+
+    drawPlot(Positions, solution)
     print(solution)
 
 def init(Positions, k, c):
@@ -231,8 +235,36 @@ def middlePoint(pointsId):
     return (sumX/size, sumY/size)
 
 
+def drawPlot(Positions, Antennas):
+
+    x = []
+    y = []
+    colors = []
+    area = []
+    for position in Positions:
+        x.append(position[0])
+        y.append(position[1])
+        colors.append(1)
+        area.append(10)
+
+    fig = plt.gcf()
+    for antenna in Antennas.state.antennas:
+        x.append(position[0])
+        y.append(position[1])
+        colors.append(1)
+        area.append(10)
+
+        circle1=plt.Circle((antenna[0],antenna[1]),math.sqrt(antenna[2]),color='r', alpha=0.2)
+        fig.gca().add_artist(circle1)
+
+    plt.scatter(x, y, s=area, c=colors, alpha=1)
+    ax = plt.gca()
+    ax.set_aspect(1)
+    ax.grid()
+
+    plt.show()
+    return
 
 
-
-search([(30,0),(10,10),(20,20),(30,40),(50,40), (10,20), (20,30), (0,0), (1, 2), (20, 11), (30, 21), (21, 40), (0, 0), (32, 12), (21, 45)],200,1)
+search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(40,10),(60,50),(80,20),(40,80),(50,70),(30,60)],200,1)
 #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
