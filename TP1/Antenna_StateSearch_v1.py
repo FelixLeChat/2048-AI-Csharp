@@ -21,13 +21,14 @@ class AntennaSearch(State):
         self.totalCost = 0
 
     def equals(self,state):
+        if set(self.housesLeft) == set(state.housesLeft) and self.totalCost== state.totalCost:
+            return True
         return False
 
     def executeAction(self,(x, y, squaredRayon, housesInRange)):
         self.antennas.append((x, y, squaredRayon))
         self.housesLeft = [x for x in self.housesLeft if x not in housesInRange]
 
-# TODO
     def possibleActions(self):
         actions = []
         houseLeft = len(self.housesLeft)
@@ -51,7 +52,6 @@ class AntennaSearch(State):
         return actions
 
 
-    # TODO : upgrade
     ''' Return a list of id '''
     def getKNearest(self, houseId, k):
         kNearest = []
@@ -303,16 +303,16 @@ def startSearch():
     #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70)],200,1)
 
     # 12 points, Cost:1591, Step:3540, Time: 105,837 sec
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
+    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
 
     # 11 points, Cost:1365, Step:696, Time: 4,782 sec
-    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
+    # search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
 
     # 5 points, Cost:700, Step:7, Time: 2 ms
     #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
 
 
-cProfile.run('startSearch()').sortStat('tottime')
+cProfile.run('startSearch()')#.sortStat('tottime')
 
 # Profiling
 #cProfile.run('search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)').sortStat('tottime')
