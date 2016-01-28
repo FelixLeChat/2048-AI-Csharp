@@ -4,6 +4,9 @@
 from node import *
 from state import *
 from astar_search import *
+from depthfirst_search import *
+from iterative_deepening_astar import *
+from lowestcost_search import *
 import math
 import matplotlib.pyplot as plt
 import cProfile
@@ -159,7 +162,18 @@ combinaisonRepartition = {}
 def search(Positions, k, c):
     init(Positions, k, c)
     initialState = AntennaSearch(range(0, len(Positions)))
+
+    # Search with A*
     solution = astar_search(initialState)
+
+    # Depth First
+    #solution = depthfirst_search(initialState)
+
+    # Iterative Deepening A*
+    #solution = iterative_deepening_astar_search(initialState)
+
+    # lower Cost
+    #solution = lowestcost_search(initialState)
 
     drawPlot(Positions, solution)
     print(solution)
@@ -303,17 +317,20 @@ def startSearch():
     #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70)],200,1)
 
     # 12 points, Cost:1591, Step:3540, Time: 105,837 sec
-    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
+    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,100)
 
     # 11 points, Cost:1365, Step:696, Time: 4,782 sec
-    # search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
+
+    # 8 points, Cost:2155, Step:49, Time: 168 ms
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80)],200,5)
 
     # 5 points, Cost:700, Step:7, Time: 2 ms
     #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
 
 
-cProfile.run('startSearch()')#.sortStat('tottime')
-
+#cProfile.run('startSearch()')#.sortStat('tottime')
+startSearch()
 # Profiling
 #cProfile.run('search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)').sortStat('tottime')
 # Total Time : 132,950 sec

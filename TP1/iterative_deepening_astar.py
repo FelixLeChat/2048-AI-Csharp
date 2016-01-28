@@ -5,12 +5,19 @@
 
 from node import *
 from state import *
+import time
 
 def iterative_deepening_astar_search(initialState):
     limit = 0
+    startTime = int(round(time.time() * 1000))
+    step = 0
     while True:
         (minCost,solution) = rec_df_search(Node(initialState),limit)
+        step += 1
         if solution != None:
+            print 'Cost:', solution.g
+            print 'Steps:', step
+            print 'Time(ms) :', int(round(time.time() * 1000))-startTime
             return solution
         limit = minCost
 
