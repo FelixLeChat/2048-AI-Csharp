@@ -10,6 +10,7 @@ from lowestcost_search import *
 import math
 import matplotlib.pyplot as plt
 import cProfile
+from astar_search_minheap import *
 
 
 
@@ -164,7 +165,10 @@ def search(Positions, k, c):
     initialState = AntennaSearch(range(0, len(Positions)))
 
     # Search with A*
-    solution = astar_search(initialState)
+    #solution = astar_search(initialState)
+
+    # A* with min Heap
+    solution = astar_search_minheap(initialState)
 
     # Depth First
     #solution = depthfirst_search(initialState)
@@ -324,6 +328,10 @@ def startSearch():
 
     # 8 points, Cost:2155, Step:49, Time: 168 ms
     #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80)],200,5)
+
+    # min heap : Cost : 1270, Steps : 547, Time : 6569
+    # normal:    Cost : 1270, Steps : 547, Time : 9371
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
 
     # 5 points, Cost:700, Step:7, Time: 2 ms
     #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
