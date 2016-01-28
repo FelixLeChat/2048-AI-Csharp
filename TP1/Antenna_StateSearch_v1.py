@@ -7,6 +7,7 @@ from astar_search import *
 import math
 import matplotlib.pyplot as plt
 import cProfile
+from astar_search_minheap import *
 
 
 
@@ -159,7 +160,8 @@ combinaisonRepartition = {}
 def search(Positions, k, c):
     init(Positions, k, c)
     initialState = AntennaSearch(range(0, len(Positions)))
-    solution = astar_search(initialState)
+    #solution = astar_search(initialState)
+    solution = astar_search_minheap(initialState)
 
     drawPlot(Positions, solution)
     print(solution)
@@ -303,10 +305,11 @@ def startSearch():
     #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70)],200,1)
 
     # 12 points, Cost:1591, Step:3540, Time: 105,837 sec
-    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
+    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
 
-    # 11 points, Cost:1365, Step:696, Time: 4,782 sec
-    # search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
+    # min heap : Cost : 1270, Steps : 547, Time : 6569
+    # normal:    Cost : 1270, Steps : 547, Time : 9371
+    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
 
     # 5 points, Cost:700, Step:7, Time: 2 ms
     #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
