@@ -3,371 +3,102 @@
 
 from node import *
 from state import *
-from astar_search import *
-from depthfirst_search import *
-from iterative_deepening_astar import *
-from lowestcost_search import *
-import math
-import matplotlib.pyplot as plt
-import cProfile
-from astar_search_minheap import *
-
-
 
 import numpy as np
 import copy
+import SearchHelper
+
+state_generate = 0
 
 class AntennaSearch(State):
 
-    def __init__(self, houses):
-        self.housesLeft = houses
-        self.antennas = []
-        self.totalCost = 0
+    def __init__(self, houses_id, search_helper):
+        self.HousesLeft = houses_id
+        self.Antennas = []
+        self.TotalCost = 0
+        AntennaSearch.SearchHelper = search_helper
 
-    def equals(self,state):
-        if set(self.housesLeft) == set(state.housesLeft) and self.totalCost== state.totalCost:
+    """ We consider equals if the the cost and the houses left are the same """
+    def equals(self, state):
+        if set(self.HousesLeft) == set(state.HousesLeft) and self.TotalCost == state.TotalCost:
             return True
         return False
 
-    def executeAction(self,(x, y, squaredRayon, housesInRange)):
-        self.antennas.append((x, y, squaredRayon))
-        self.housesLeft = [x for x in self.housesLeft if x not in housesInRange]
+    """ Apply the action to himself """
+    def executeAction(self, (x, y, squared_rayon, houses_in_range)):
+        self.Antennas.append((x, y, squared_rayon))
+        self.HousesLeft = [x for x in self.HousesLeft if x not in houses_in_range]
 
+    """ The possibles actions are the positioning of an antenna that cover each x(1 to houses_left_count) nearest
+        neighbor of each points """
     def possibleActions(self):
         actions = []
-        houseLeft = len(self.housesLeft)
+        houses_left_count = len(self.HousesLeft)
 
-        if(houseLeft == 1):
-            test = 1
-
-        for k in range(1, houseLeft + 1):
-            for houseId in self.housesLeft:
-                nearest = self.getKNearest(houseId, k)
+        for k in range(1, houses_left_count + 1):
+            for houseId in self.HousesLeft:
+                nearest = AntennaSearch.SearchHelper.get_k_nearest(houseId, k, self.HousesLeft)
                 nearest.append(houseId)
                 if nearest:
-                    antennaPos = middlePoint(nearest)
-                    squaredRayon = getSquaredRayon(nearest, antennaPos)
-                    actions.append((antennaPos[0], antennaPos[1], squaredRayon, nearest))
+                    antenna_pos = AntennaSearch.SearchHelper.find_middle_point(nearest)
+                    squared_rayon = AntennaSearch.SearchHelper.calculate_squared_radius_to_fit(nearest,
+                                                                                      antenna_pos)
+                    actions.append((antenna_pos[0], antenna_pos[1], squared_rayon, nearest))
                 # If nearest is empty -> return himself
                 else:
-                    housePos = housesMap[houseId]
-                    actions.append((housePos[0], housePos[1], 1, [houseId]))
+                    house_pos = self.SearchHelper.get_house_from_id(houseId)
+                    actions.append((house_pos[0], house_pos[1], 1, [houseId]))
 
+        global state_generate
+        state_generate += len(actions)
         return actions
 
-
-    ''' Return a list of id '''
-    def getKNearest(self, houseId, k):
-        kNearest = []
-        for key, distance in Nearest[houseId]:
-            if key in self.housesLeft:
-                k -= 1
-                kNearest.append(key)
-                if(k == 0):
-                    break
-        return kNearest
-
-    def getClosestDistance(self, houseId):
-        kNearest = []
-        for key, distance in Nearest[houseId]:
-            if key in self.housesLeft:
-                return distance
-
-    def cost(self,(x, y, squaredRayon, housesInRange)):
-        return self.calculateCost(squaredRayon)
+    def cost(self, (x, y, squared_rayon, houses_in_range)):
+        return AntennaSearch.SearchHelper.calculate_cost(squared_rayon)
 
     def isGoal(self):
-        return len(self.housesLeft) == 0
+        return len(self.HousesLeft) == 0
 
     def show(self):
-        print("Houses left: {0}".format(self.housesLeft))
-        print("Antennas : {0}".format(self.antennas))
-
+        global state_generate
+        state_generate += 1
+        print("State generate: {0}".format(state_generate))
+        print("Houses left: {0}".format(self.HousesLeft))
+        print("Antennas : {0}".format(self.Antennas))
 
     def heuristic(self):
-        global K, C
-        soloCost = K + C
+        houses_left_count = len(self.HousesLeft)
 
-        houseLeft = len(self.housesLeft)
-
-        if(houseLeft == 0):
+        if houses_left_count == 0:
             return 0
-        if(houseLeft == 1):
-            return soloCost
+        if houses_left_count == 1:
+            return AntennaSearch.SearchHelper.calculate_cost(1)
         else:
-            return self.awesomeHeuristic()
+            return self.awesome_heuristic()
 
-    def awesomeHeuristic(self):
-        global K, C
+    def awesome_heuristic(self):
+        houses_left_count = len(self.HousesLeft)
+        shortest_radius_list = AntennaSearch.SearchHelper.get_shortest_nearest_radius_list(self.HousesLeft)
 
-        housesLeft = len(self.housesLeft)
-        shortestRadiusList = self.getShortestNearestRadiusList()
+        minimal_cost = sys.maxint
+        for repartition in AntennaSearch.SearchHelper.get_combination(houses_left_count):
+            cost = AntennaSearch.SearchHelper.calculate_cost_by_repartition(shortest_radius_list, repartition)
+            if cost < minimal_cost:
+                minimal_cost = cost
 
-        minCost = sys.maxint
-        for repartition in combinaisonRepartition[housesLeft-1]:
-            cost = self.calculateCostByRepartition(shortestRadiusList, repartition)
-            if(cost < minCost):
-                minCost = cost
+        return minimal_cost
 
-        return minCost
 
 
-    ''' Return a list of the shortest Radius to link (1 element, 2 elements,...) '''
-    def getShortestNearestRadiusList(self):
-        global K, C
-        soloCost = K + C
 
-        costList = [soloCost]
 
-        houseLeft = len(self.housesLeft)
 
-        for k in range(1, houseLeft):
-            currentMinimalCost = sys.maxint
 
-            for houseId in self.housesLeft:
 
-                nearest = self.getKNearest(houseId, k)
-                nearest.append(houseId)
-                antennaPos = middlePoint(nearest)
-                rayon = getSquaredRayon(nearest, antennaPos)
-                if(rayon < currentMinimalCost):
-                    currentMinimalCost = rayon
-            costList.append(currentMinimalCost)
 
-        return costList
 
-    ''' Use in the heuristic cost, the shortestDistanceList represent the lowest radius to connect
-        xi elements (0, 1, ...) and the repartitionOfAntenna (y1, y2,...) says there is y1 antenna of radius x1,... '''
-    def calculateCostByRepartition(self, shortestRadiusList, repartitionOfAntenna):
-        totalCost = 0
-        for index in xrange(len(shortestRadiusList)):
-            totalCost += repartitionOfAntenna[index] * self.calculateCost(shortestRadiusList[index])
-        return totalCost
 
-    def calculateCost(self, squaredRadius):
-        global K, C
-        cost = K + C*squaredRadius
-        return cost
 
 
 
-
-housesMap = {}
-
-K = 0
-C = 0
-Nearest = {}
-
-combinaisonRepartition = {}
-
-def search(Positions, k, c):
-    init(Positions, k, c)
-    initialState = AntennaSearch(range(0, len(Positions)))
-
-    # Search with A*
-    #solution = astar_search(initialState)
-
-    # A* with min Heap
-    solution = astar_search_minheap(initialState)
-
-    # Depth First
-    #solution = depthfirst_search(initialState)
-
-    # Iterative Deepening A*
-    #solution = iterative_deepening_astar_search(initialState)
-
-    # lower Cost
-    #solution = lowestcost_search(initialState)
-
-    drawPlot(Positions, solution)
-    print(solution)
-
-
-def init(Positions, k, c):
-    initNearest(Positions, k, c)
-    initRepartitionCombinaison(len(Positions))
-
-def initNearest(Position, k, c):
-    global K, C
-    K = k
-    C = c
-
-    # Initiate index-position map
-    for index in xrange(len(Position)):
-        housesMap[index] = Position[index]
-
-    # Initiate nearest structure
-    for i in xrange(len(Position)-1):
-        for j in range(i + 1, len(Position)):
-            distance = SquaredDistance(Position[i], Position[j])
-
-            if i not in Nearest:
-                Nearest[i] = []
-            if j not in Nearest:
-                Nearest[j] = []
-
-            Nearest[i].append((j, distance))
-            Nearest[j].append((i, distance))
-
-    for key, value in Nearest.iteritems():
-        value.sort(key=lambda tup: tup[1])
-
-def initRepartitionCombinaison(nbOfHouse):
-
-    for k in range(0, nbOfHouse):
-        firstList = [0] * nbOfHouse
-        firstList[k] = 1
-        combinaisonRepartition[k] = []
-        combinaisonRepartition[k].append(firstList)
-
-        for r in range(k-1, -1, -1):
-            diff = k - r
-            for previousList in combinaisonRepartition[r]:
-                copyList = copy.deepcopy(previousList)
-                copyList[diff-1] += 1
-                combinaisonRepartition[k].append(copyList)
-                b_set = set(map(tuple, combinaisonRepartition[k]))
-                combinaisonRepartition[k] = map(list, b_set)
-
-
-
-
-def SquaredDistance(a, b):
-    squaredRayon = pow(a[0]-b[0], 2) + pow(a[1]-b[1],2)
-    return squaredRayon
-
-''' Sorry its ugly '''
-def middlePoint(pointsId):
-    sumX = 0
-    sumY = 0
-    size = len(pointsId)
-    for id in pointsId:
-        sumX += housesMap[id][0]
-        sumY += housesMap[id][1]
-    currentMiddlePoint = (sumX/size, sumY/size)
-
-    ### Fine tuning here ###
-    #return currentMiddlePoint
-    return improveMiddlePoint(pointsId, currentMiddlePoint, getSquaredRayon(pointsId, currentMiddlePoint))
-
-def improveMiddlePoint(pointsId, currentMiddle, radiusToImprove):
-    possibleDirection = [(1,0), (-1,0), (0, 1), (0, -1)]
-    currentBest = currentMiddle
-    for direction in possibleDirection:
-        newX = currentMiddle[0] + direction[0]
-        newY = currentMiddle[1] + direction[1]
-        newPossibleMiddle = (newX, newY)
-        radius = getSquaredRayon(pointsId, newPossibleMiddle)
-        if(radius < radiusToImprove):
-            ## Option 1 : more search (much slower but not better)
-            #currentBest = improveMiddlePoint(pointsId, newPossibleMiddle,  radius)
-            #radiusToImprove = getSquaredRayon(pointsId, currentBest)
-            ## Option 2 : quick search
-            return improveMiddlePoint(pointsId, newPossibleMiddle,  radius)
-    return currentBest
-
-
-
-def getSquaredRayon(housesId, antenna):
-    maxRayonSquared = 1
-    for house in housesId:
-        housePos = housesMap[house]
-        squaredRayon = SquaredDistance(housePos, antenna)
-        if(squaredRayon > maxRayonSquared):
-            maxRayonSquared = squaredRayon
-    return maxRayonSquared
-    #intRadius = pow(math.ceil(math.sqrt(maxRayonSquared)), 2)
-    #return intRadius
-
-
-def drawPlot(Positions, Antennas):
-
-    x = []
-    y = []
-    colors = []
-    area = []
-    for position in Positions:
-        x.append(position[0])
-        y.append(position[1])
-        colors.append(1)
-        area.append(10)
-
-    fig = plt.gcf()
-    for antenna in Antennas.state.antennas:
-        x.append(position[0])
-        y.append(position[1])
-        colors.append(1)
-        area.append(10)
-
-        circle1=plt.Circle((antenna[0],antenna[1]),math.sqrt(antenna[2]),color='r', alpha=0.2)
-        fig.gca().add_artist(circle1)
-
-    plt.scatter(x, y, s=area, c=colors, alpha=1)
-    ax = plt.gca()
-    ax.set_aspect(1)
-    ax.grid()
-
-    plt.show()
-    return
-
-
-def startSearch():
-
-    # 16 points, Cost:1532, step:2785, Time: 372,063
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70),(30,60),(40,60),(40,40)],200,1)
-
-    # 14 points, Cost:1532, Step:2920, Time: 80,100 sec
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70),(30,60)],200,1)
-
-    # 13 points, Cost:1520, Step:5514, Time: 61,939 sec
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70)],200,1)
-
-    # 12 points, Cost:1471, Step:1809, Time: 24,103 sec
-    search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)],200,1)
-
-    # 11 points, Cost:1270, Step:547, Time: 5,339 sec
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
-
-    # 8 points, Cost:2155, Step:49, Time: 168 ms
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80)],200,5)
-
-    # min heap : Cost : 1270, Steps : 547, Time : 6569
-    # normal:    Cost : 1270, Steps : 547, Time : 9371
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50)],200,1)
-
-    # 5 points, Cost:700, Step:7, Time: 2 ms
-    #search([(30,0),(10,10),(20,20),(30,40),(50,40)],200,1)
-
-
-cProfile.run('startSearch()')#.sortStat('tottime')
-#startSearch()
-
-
-# Antenna
-# 132,590 : Search
-# 3,185   : Awesome heuristic
-# 3,730   : Draw plot
-# 3,268   : Heuristic
-# 2,689   : Get Shortest nearest Radius left
-# 1,466   : Get Squared Rayon
-# 1,156   : Possible Actions
-# 1,147   : Get Nearest
-
-# A Star Search
-# 128,732 : A Star Search
-
-# Copy
-# 9,723 : Deep Copy
-# 9,442 : Deep Copy inst
-# 8,603 : Deep Copy Dict
-# 6,911 : Deep Copy List
-# 4,320 : Deep Copy Tuple
-
-# Node
-# 14,924 : Expand Node
-# 13,691 : Create Node
-
-# Autre
-# 13,787 : map
-# 111,804 : sort of list object
 
