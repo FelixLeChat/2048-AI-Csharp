@@ -1,8 +1,11 @@
 import cProfile
 import StateSearch
 from AntennaVisualisation import *
-import re
 import pstats
+from lineProfiler import *
+from enum import Enum
+
+
 
 def startSearch():
 
@@ -17,9 +20,9 @@ def startSearch():
     :return:
     """
 
-    #positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)]
+    positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)]
 
-    positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70),(30,60),(40,60),(40,40)]
+    #positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70),(30,60),(40,60),(40,40)]
 
     #positions = [(30,0),(10,10),(20,20),(30,40),(50,40)]
 
@@ -32,15 +35,29 @@ def search(positions, k, c):
     print(solution)
 
 
-def run(debug=False):
-    if debug:
-        cProfile.run('startSearch()', 'result')
-        p = pstats.Stats('result')
-        p.sort_stats('time').print_stats(10)
-    else:
-        startSearch()
+def run(mode):
+    func = enumToFunc[mode]
+    func()
 
-run(True)
+# Exemple de comment utiliser le
+#@do_profile(follow=[startSearch])
+def run_line_profiler():
+    startSearch()
+
+def run_cprofiler():
+    cProfile.run('startSearch()', 'result')
+    p = pstats.Stats('result')
+    p.sort_stats('time').print_stats(10)
+
+
+class RunType(Enum):
+    c_profile = 1
+    line_profile = 2
+    normal = 3
+
+enumToFunc = {RunType.c_profile: run_cprofiler, RunType.line_profile: run_line_profiler, RunType.normal: startSearch}
+
+run(RunType.line_profile)
 
 
 """ Old benchmark

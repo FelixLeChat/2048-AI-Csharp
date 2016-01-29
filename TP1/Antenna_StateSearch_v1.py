@@ -42,13 +42,14 @@ class AntennaSearch(State):
                 nearest = AntennaSearch.SearchHelper.get_k_nearest(houseId, k, self.HousesLeft)
                 nearest.append(houseId)
                 if nearest:
+
                     antenna_pos = AntennaSearch.SearchHelper.find_middle_point(nearest)
-                    squared_rayon = AntennaSearch.SearchHelper.calculate_squared_radius_to_fit(nearest, antenna_pos)
 
                     # Improvement to check if not already visited: 52953 -> 4810 state generated
-                    antenna = (antenna_pos[0], antenna_pos[1], squared_rayon)
+                    antenna = (antenna_pos[0], antenna_pos[1])
                     if antenna not in visited_antenna:
                         visited_antenna.add(antenna)
+                        squared_rayon = AntennaSearch.SearchHelper.calculate_squared_radius_to_fit(nearest, antenna_pos)
                         actions.append((antenna_pos[0], antenna_pos[1], squared_rayon, nearest))
                 # If nearest is empty -> return himself
                 else:

@@ -8,7 +8,7 @@ Helper for most common operation in the Antenna Search
 import copy
 import math
 import sys
-
+from lineProfiler import *
 
 class SearchHelper:
 
@@ -74,6 +74,7 @@ class SearchHelper:
                     self.CombinationRepartition[k] = map(list, b_set)
 
     ''' Calculate the squared distance between two points '''
+    #@do_profile()
     def calculate_squared_distance(self, a, b):
         dx = a[0] - b[0]
         dy = a[1] - b[1]
