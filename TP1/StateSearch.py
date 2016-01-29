@@ -12,7 +12,7 @@ def search(positions, k, c):
     # Config
 
     fine_tuning_mod = True
-    radius_in_int = False
+    radius_in_int = True
 
     # Bad optimisation (stay to False)
     # False : 6.618 -> True : 11.848
