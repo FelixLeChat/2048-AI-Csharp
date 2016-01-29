@@ -12,7 +12,7 @@ import sys
 
 class SearchHelper:
 
-    def __init__(self, houses, k, c, fine_tuning_mod=True, radius_in_int=True):
+    def __init__(self, houses, k, c, fine_tuning_mod=True, radius_in_int=True, use_cached_squared=False):
         self.MiddleFineTuning = fine_tuning_mod
         self.RadiusInInt = radius_in_int
         self.HousesMap = {}
@@ -20,6 +20,9 @@ class SearchHelper:
         self.C = c
         self.Nearest = {}
         self.CombinationRepartition = {}
+
+        self.UsedCachedSquared = use_cached_squared
+        self.CachedSquared = {}
 
         self.init(houses)
 
@@ -72,13 +75,23 @@ class SearchHelper:
 
     ''' Calculate the squared distance between two points '''
     def calculate_squared_distance(self, a, b):
+        dx = a[0] - b[0]
+        dy = a[1] - b[1]
 
-        # if ImproveDistanceCalculation: 1.5 -> 1.3
-        squared_rayon = (a[0] - b[0])*(a[0] - b[0]) + \
-                            (a[1] - b[1])*(a[1] - b[1])
-        # squared_rayon = pow((a[0] - b[0]), 2) + pow(a[1] - b[1], 2)
+        if self.UsedCachedSquared:
+            squared_rayon = self.get_cached_squared(dx) + self.get_cached_squared(dy)
+        else:
+            # if ImproveDistanceCalculation: 1.5 -> 1.3
+            squared_rayon = dx*dx + dy*dy
+            # squared_rayon = pow((a[0] - b[0]), 2) + pow(a[1] - b[1], 2)
 
         return squared_rayon
+
+    def get_cached_squared(self, value):
+        value = abs(value)
+        if value not in self.CachedSquared:
+            self.CachedSquared[value] = value*value
+        return self.CachedSquared[value]
 
     def calculate_cost(self, squared_radius):
         cost = self.K + self.C * squared_radius

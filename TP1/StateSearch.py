@@ -3,6 +3,7 @@ from depthfirst_search import *
 from iterative_deepening_astar import *
 from lowestcost_search import *
 from astar_search_minheap import *
+from bestfirst_search import *
 from Antenna_StateSearch_v1 import AntennaSearch
 from SearchHelper import *
 
@@ -13,7 +14,11 @@ def search(positions, k, c):
     fine_tuning_mod = True
     radius_in_int = False
 
-    search_helper = SearchHelper(positions, k, c, fine_tuning_mod, radius_in_int)
+    # Bad optimisation (stay to False)
+    # False : 6.618 -> True : 11.848
+    use_cached_squared = False
+
+    search_helper = SearchHelper(positions, k, c, fine_tuning_mod, radius_in_int, use_cached_squared)
 
     initial_state = get_state_strategy(positions, search_helper)
     search_strategy = get_search_strategy()
@@ -29,7 +34,17 @@ def get_state_strategy(positions, search_helper):
 
 
 def get_search_strategy():
+
+    # 12 points, Cost:1471, Step:1809, Time: 23,860 sec State generate: 52953
+    # With Set(actions) : Cost:1471, Step:311, Time: 4780 sec State generate: 4810
     chosen_strategy = astar_search_minheap
+
+    # 12 points, Cost:2075, Step:7, Time: 559 sec State generate: 365
+    #chosen_strategy = depthfirst_search
+
+    # 12 points, Cost:2722, Step:2, Time: 351 sec State generate: 145
+    #chosen_strategy = bestfirst_search
+
     return chosen_strategy
 
 

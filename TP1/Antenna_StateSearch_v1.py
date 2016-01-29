@@ -35,20 +35,25 @@ class AntennaSearch(State):
         actions = []
         houses_left_count = len(self.HousesLeft)
 
+        visited_antenna = set()
+
         for k in range(1, houses_left_count + 1):
             for houseId in self.HousesLeft:
                 nearest = AntennaSearch.SearchHelper.get_k_nearest(houseId, k, self.HousesLeft)
                 nearest.append(houseId)
                 if nearest:
                     antenna_pos = AntennaSearch.SearchHelper.find_middle_point(nearest)
-                    squared_rayon = AntennaSearch.SearchHelper.calculate_squared_radius_to_fit(nearest,
-                                                                                      antenna_pos)
-                    actions.append((antenna_pos[0], antenna_pos[1], squared_rayon, nearest))
+                    squared_rayon = AntennaSearch.SearchHelper.calculate_squared_radius_to_fit(nearest, antenna_pos)
+
+                    # Improvement to check if not already visited: 52953 -> 4810 state generated
+                    antenna = (antenna_pos[0], antenna_pos[1], squared_rayon)
+                    if antenna not in visited_antenna:
+                        visited_antenna.add(antenna)
+                        actions.append((antenna_pos[0], antenna_pos[1], squared_rayon, nearest))
                 # If nearest is empty -> return himself
                 else:
                     house_pos = self.SearchHelper.get_house_from_id(houseId)
                     actions.append((house_pos[0], house_pos[1], 1, [houseId]))
-
         global state_generate
         state_generate += len(actions)
         return actions
