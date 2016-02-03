@@ -18,6 +18,11 @@ class AntennaSearch(State):
         self.TotalCost = 0
         AntennaSearch.SearchHelper = search_helper
 
+    def combine(self, state):
+        self.Antennas = self.Antennas + state.Antennas
+        self.TotalCost += state.TotalCost
+        self.HousesLeft = self.HousesLeft + state.HousesLeft
+
     """ We consider equals if the the cost and the houses left are the same """
     def equals(self, state):
         if set(self.HousesLeft) == set(state.HousesLeft) and self.TotalCost == state.TotalCost:
@@ -68,8 +73,8 @@ class AntennaSearch(State):
     def show(self):
         global state_generate
         state_generate += 1
-        print("State generate: {0}".format(state_generate))
-        print("Houses left: {0}".format(self.HousesLeft))
+        #print("State generate: {0}".format(state_generate))
+        #print("Houses left: {0}".format(self.HousesLeft))
         print("Antennas : {0}".format(self.Antennas))
 
     def heuristic(self):

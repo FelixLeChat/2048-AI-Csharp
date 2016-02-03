@@ -9,6 +9,10 @@
 # To solve a problem, you must define you sub-class that redefines its methods
 
 class State:
+
+    def Combine(self, state):
+        pass
+
     # State is changed according to action
     def executeActions(self,action):
         pass

@@ -5,10 +5,10 @@ Helper for most common operation in the Antenna Search
 """
 
 
-import copy
+
 import math
 import sys
-from lineProfiler import *
+from combination_repartition import *
 
 class SearchHelper:
 
@@ -19,7 +19,7 @@ class SearchHelper:
         self.K = k
         self.C = c
         self.Nearest = {}
-        self.CombinationRepartition = {}
+        self.CombinationRepartition = get_combination_repartition(len(houses))
 
         self.UsedCachedSquared = use_cached_squared
         self.CachedSquared = {}
@@ -30,7 +30,6 @@ class SearchHelper:
     def init(self, positions):
         self.init_house_mapping(positions)
         self.init_nearest(positions)
-        self.init_repartition_combination(len(positions))
 
     ''' Initiate index-position map '''
     def init_house_mapping(self, positions):
@@ -55,26 +54,9 @@ class SearchHelper:
         for key, value in self.Nearest.iteritems():
             value.sort(key=lambda tup: tup[1])
 
-    ''' Will create all the combination where the sum of the groups will give a number of house '''
-    def init_repartition_combination(self, house_count):
 
-        for k in range(0, house_count):
-            firstList = [0] * house_count
-            firstList[k] = 1
-            self.CombinationRepartition[k] = []
-            self.CombinationRepartition[k].append(firstList)
-
-            for r in range(k-1, -1, -1):
-                diff = k - r
-                for previousList in self.CombinationRepartition[r]:
-                    copyList = copy.deepcopy(previousList)
-                    copyList[diff-1] += 1
-                    self.CombinationRepartition[k].append(copyList)
-                    b_set = set(map(tuple, self.CombinationRepartition[k]))
-                    self.CombinationRepartition[k] = map(list, b_set)
 
     ''' Calculate the squared distance between two points '''
-    #@do_profile()
     def calculate_squared_distance(self, a, b):
         dx = a[0] - b[0]
         dy = a[1] - b[1]
@@ -102,7 +84,7 @@ class SearchHelper:
         return self.HousesMap[house_id]
 
     def get_combination(self, houses_count_left):
-        return self.CombinationRepartition[houses_count_left-1]
+        return self.CombinationRepartition.get_combination(houses_count_left)
 
     ''' Givent a list of houses id, will return the middle of that will give the smallest radius to cover them '''
     def find_middle_point(self, houses_id):
@@ -184,12 +166,13 @@ class SearchHelper:
     """ Return a list of the k nearest houses id of the given house id """
     def get_k_nearest(self, house_id, k, houses_left):
         k_nearest = []
-        for key, distance in self.Nearest[house_id]:
-            if key in houses_left:
-                k -= 1
-                k_nearest.append(key)
-                if(k == 0):
-                    break
+        if len(self.Nearest) > 0:
+            for key, distance in self.Nearest[house_id]:
+                if key in houses_left:
+                    k -= 1
+                    k_nearest.append(key)
+                    if(k == 0):
+                        break
         return k_nearest
 
     """ Return the squared distance of the closes house not cover """

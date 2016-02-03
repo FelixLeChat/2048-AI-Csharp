@@ -24,6 +24,13 @@ class Node(object):
     # Public methods
     ####################
 
+    def combine(self, node):
+        self.g += node.g
+        self.h += node.h
+        self.f += node.f
+        self.state.combine(node.state)
+
+
     # Returns a lis of all new nodes that represents next possible states in the exploration
     def expand(self):
         return map(lambda s: self._createNode(s), self.state.possibleActions())

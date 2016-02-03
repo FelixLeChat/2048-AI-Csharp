@@ -12,8 +12,15 @@ import time
 from PriorityQueue import *
 from CostFollower import *
 
+power_value = 1.0
 
-def astar_search_minheap(initialState):
+def set_power_value(value):
+    global power_value
+    power_value = value
+
+
+def astar_search_squared_heuristic(initialState):
+    global power_value
     step = 0
     frontier = PriorityQueue()
     frontier.push(0, Node(initialState))
@@ -28,11 +35,10 @@ def astar_search_minheap(initialState):
         #print step
         #print '----------------'
         if node.state.isGoal():
-            print '######## Solution State ############'
             node.state.show()
-            print '----- Result for state-----'
             print 'Cost:', node.g
             print 'Steps:', step
+
             currentTime = int(round(time.time() * 1000))-startTime
             print 'Time(ms) :', currentTime
 
@@ -45,5 +51,5 @@ def astar_search_minheap(initialState):
             continue
         else:
             for newNode in node.expand():
-                frontier.push(newNode.f, newNode)
+                frontier.push(pow(newNode.h, power_value) + newNode.g, newNode)
     return None

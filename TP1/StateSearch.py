@@ -5,27 +5,85 @@ from lowestcost_search import *
 from astar_search_minheap import *
 from bestfirst_search import *
 from Antenna_StateSearch_v1 import AntennaSearch
+from Astar_search_squared_heuristic import *
 from SearchHelper import *
+from Clustering import *
+import gc
+
+# Config
+
+fine_tuning_mod = True
+radius_in_int = True
+use_cluser = True
+
+# Bad optimisation (stay to False)
+# False : 6.618 -> True : 11.848
+use_cached_squared = False
+
+use_depth_first_search = False
+
+solution = None
+cluster_limit = 30
+
+normal_a_start_limit = 12
+power_heuristic_level_1 = 25
+power_level_1 = 1.2
+power_heuristic_level_2 = 30
+power_level_2 = 1.3
+power_heuristic_level_3 = 50
+power_level_3 = 1.4
+
+quantile_init_value = 0.5
+min_quantile = 0.001
+
 
 
 def search(positions, k, c):
-    # Config
 
-    fine_tuning_mod = True
-    radius_in_int = True
+    sol = search_partial_solution(positions, None, k, c, quantile_init_value)
+    return sol
 
-    # Bad optimisation (stay to False)
-    # False : 6.618 -> True : 11.848
-    use_cached_squared = False
 
-    search_helper = SearchHelper(positions, k, c, fine_tuning_mod, radius_in_int, use_cached_squared)
+def search_partial_solution(positions, current_solution, k, c, current_quantile):
 
-    initial_state = get_state_strategy(positions, search_helper)
-    search_strategy = get_search_strategy()
+    current_quantile = max(min_quantile, current_quantile)
 
-    solution = search_strategy(initial_state)
+    for partial_positions in get_clustered_positions(use_cluser, positions, current_quantile):
 
-    return solution
+        size = len(partial_positions)
+
+        # We don't need to cluster anymore
+        if size < cluster_limit or current_quantile <= min_quantile:
+            print("********************************")
+            print("Attacking next {0} houses".format(size))
+            search_helper = SearchHelper(partial_positions, k, c, fine_tuning_mod, radius_in_int, use_cached_squared)
+
+            initial_state = get_state_strategy(partial_positions, search_helper)
+            search_strategy = get_search_strategy(partial_positions)
+
+            partial_solution = search_strategy(initial_state)
+
+            del initial_state
+            del search_helper
+            del search_strategy
+        else:
+            partial_solution = search_partial_solution(partial_positions, current_solution, k, c, current_quantile/2)
+
+        if current_solution and partial_solution:
+            current_solution.combine(partial_solution)
+        elif partial_solution:
+            current_solution = partial_solution
+
+        del partial_positions
+        gc.collect()
+    return current_solution
+
+
+def get_clustered_positions(use_cluser, positions, current_quantile):
+    if use_cluser:
+         return find_cluster(positions, current_quantile)
+    else:
+        return [positions]
 
 
 def get_state_strategy(positions, search_helper):
@@ -33,11 +91,32 @@ def get_state_strategy(positions, search_helper):
     return initial_state
 
 
-def get_search_strategy():
+def get_search_strategy(positions):
 
     # 12 points, Cost:1471, Step:1809, Time: 23,860 sec State generate: 52953
     # With Set(actions) : Cost:1471, Step:311, Time: 4780 sec State generate: 4810
-    chosen_strategy = astar_search_minheap
+    size = len(positions)
+
+    if use_depth_first_search:
+        chosen_strategy = depthfirst_search
+    else:
+        if size <= normal_a_start_limit:
+            chosen_strategy = astar_search_minheap
+
+        elif size <= power_heuristic_level_1:
+            set_power_value(power_level_1)
+            chosen_strategy = astar_search_squared_heuristic
+
+        elif size <= power_heuristic_level_2:
+            set_power_value(power_level_2)
+            chosen_strategy = astar_search_squared_heuristic
+
+        elif size <= power_heuristic_level_3:
+            set_power_value(power_level_3)
+            chosen_strategy = astar_search_squared_heuristic
+
+        else:
+            chosen_strategy = bestfirst_search
 
     # 12 points, Cost:2075, Step:7, Time: 559 sec State generate: 365
     #chosen_strategy = depthfirst_search

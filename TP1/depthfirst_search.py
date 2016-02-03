@@ -6,6 +6,12 @@
 from node import *
 from state import *
 import time
+from CostFollower import *
+
+cumulative_steps = 0
+cumulative_time = 0
+cumulative_cost = 0
+
 
 def depthfirst_search(initialState):
     frontier = [Node(initialState)]
@@ -21,7 +27,13 @@ def depthfirst_search(initialState):
             node.state.show()
             print 'Cost:', node.g
             print 'Steps:', step
-            print 'Time(ms) :', int(round(time.time() * 1000))-startTime
+            currentTime = int(round(time.time() * 1000))-startTime
+            print 'Time(ms) :', currentTime
+
+            cost_follower = get_cost_follower()
+            cost_follower.update(step, currentTime, node.g)
+            cost_follower.show()
+
             return node
         elif node.isRepeated():
             continue
