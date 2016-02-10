@@ -8,7 +8,9 @@ Helper for most common operation in the Antenna Search
 
 import math
 import sys
-from combination_repartition import *
+from itertools import islice
+from random import randint
+from Antenna import *
 
 class SearchHelper:
 
@@ -19,7 +21,6 @@ class SearchHelper:
         self.K = k
         self.C = c
         self.Nearest = {}
-        self.CombinationRepartition = get_combination_repartition(len(houses))
 
         self.UsedCachedSquared = use_cached_squared
         self.CachedSquared = {}
@@ -54,7 +55,10 @@ class SearchHelper:
         for key, value in self.Nearest.iteritems():
             value.sort(key=lambda tup: tup[1])
 
-
+    def calculate_distance_between_house(self, a, b):
+        position_a = self.HousesMap[a]
+        position_b = self.HousesMap[b]
+        return self.calculate_squared_radius_to_fit(position_a, position_b)
 
     ''' Calculate the squared distance between two points '''
     def calculate_squared_distance(self, a, b):
@@ -83,9 +87,6 @@ class SearchHelper:
     def get_house_from_id(self, house_id):
         return self.HousesMap[house_id]
 
-    def get_combination(self, houses_count_left):
-        return self.CombinationRepartition.get_combination(houses_count_left)
-
     ''' Givent a list of houses id, will return the middle of that will give the smallest radius to cover them '''
     def find_middle_point(self, houses_id):
         sum_x = 0
@@ -101,13 +102,15 @@ class SearchHelper:
                                              current_middle_point,
                                              self.calculate_squared_radius_to_fit(houses_id, current_middle_point))
         else:
-            return current_middle_point
+            return current_middle_point, self.calculate_squared_radius_to_fit(houses_id)
+
 
     ''' Will fine tuning the middle point by moving around until
         it find the position that will give the smallest radius '''
     def improve_middle_point(self, points_id, current_middle, radius_to_improve):
         possible_direction = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         current_best = current_middle
+        radius = radius_to_improve
         for direction in possible_direction:
             new_x = current_middle[0] + direction[0]
             new_y = current_middle[1] + direction[1]
@@ -115,7 +118,7 @@ class SearchHelper:
             radius = self.calculate_squared_radius_to_fit(points_id, new_possible_middle)
             if radius < radius_to_improve:
                 return self.improve_middle_point(points_id, new_possible_middle, radius)
-        return current_best
+        return current_best, radius
 
     """ Get the radius of the antenna, so it can reach every houses in the list """
     def calculate_squared_radius_to_fit(self, houses_id, antenna):
@@ -137,7 +140,8 @@ class SearchHelper:
     def get_shortest_nearest_radius_list(self, houses_left):
         solo_cost = self.K + self.C
 
-        cost_list = [solo_cost]
+        cost_list = [1]
+        associate_house_list = [houses_left[0]]
 
         house_left_count = len(houses_left)
 
@@ -147,13 +151,14 @@ class SearchHelper:
             for houseId in houses_left:
                 nearest = self.get_k_nearest(houseId, k, houses_left)
                 nearest.append(houseId)
-                antenna_position = self.find_middle_point(nearest)
-                rayon = self.calculate_squared_radius_to_fit(nearest, antenna_position)
-                if rayon < current_minimal_cost:
-                    current_minimal_cost = rayon
-            cost_list.append(current_minimal_cost)
+                antenna_position, radius = self.find_middle_point(nearest)
+                if radius < current_minimal_cost:
+                    current_minimal_cost = radius
 
-        return cost_list
+            cost_list.append(current_minimal_cost)
+            associate_house_list.append(nearest)
+
+        return cost_list, associate_house_list
 
     ''' Use in the heuristic cost, the shortestDistanceList represent the lowest radius to connect
         xi elements (0, 1, ...) and the repartitionOfAntenna (y1, y2,...) says there is y1 antenna of radius x1,... '''
@@ -166,7 +171,7 @@ class SearchHelper:
     """ Return a list of the k nearest houses id of the given house id """
     def get_k_nearest(self, house_id, k, houses_left):
         k_nearest = []
-        if len(self.Nearest) > 0:
+        if len(self.Nearest) > 0 and k > 0:
             for key, distance in self.Nearest[house_id]:
                 if key in houses_left:
                     k -= 1
@@ -180,5 +185,14 @@ class SearchHelper:
         for key, distance in self.Nearest[house_id]:
             if key in houses_left:
                 return distance
+
+    def random_chunk(self, list_to_split, min_chunk=1, max_chunk=2):
+        it = iter(list_to_split)
+        while True:
+            nxt = list(islice(it,randint(min_chunk,max_chunk)))
+            if nxt:
+                yield nxt
+            else:
+                break
 
 

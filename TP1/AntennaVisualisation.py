@@ -18,13 +18,8 @@ def draw_plot(positions, antennas):
         area.append(10)
 
     fig = plt.gcf()
-    for antenna in antennas.state.Antennas:
-        x.append(position[0])
-        y.append(position[1])
-        colors.append(1)
-        area.append(10)
-
-        circle1 = plt.Circle((antenna[0], antenna[1]), math.sqrt(antenna[2]), color='r', alpha=0.2)
+    for antenna in antennas:
+        circle1 = plt.Circle((antenna.Position[0], antenna.Position[1]), math.sqrt(antenna.Radius), color='r', alpha=0.2)
         fig.gca().add_artist(circle1)
 
     plt.scatter(x, y, s=area, c=colors, alpha=1)

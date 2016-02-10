@@ -1,5 +1,6 @@
 import cProfile
-import StateSearch
+from StateSearch import *
+from LocalSearch import *
 from AntennaVisualisation import *
 import pstats
 from lineProfiler import *
@@ -28,11 +29,17 @@ def startSearch():
 
     #positions = [(246, 111), (288, 172), (159, 220), (176, 17), (111, 54), (288, 252), (290, 111), (133, 12), (271, 143), (168, 270), (6, 29), (296, 264), (124, 160), (298, 8), (24, 0), (293, 224), (236, 29), (86, 125), (268, 20), (180, 90), (219, 240), (167, 106), (222, 158), (56, 148), (198, 22), (110, 121), (196, 117), (116, 27), (257, 220), (160, 115), (128, 154), (253, 167), (211, 127), (54, 186), (225, 26), (152, 31), (211, 204), (115, 89), (187, 280), (224, 18), (280, 195), (23, 168), (62, 48), (230, 47), (175, 261), (281, 65), (184, 224), (89, 221), (294, 140), (295, 71)]
 
-    positions = generate_position(300, 200, 200)
+    positions = [(10,30),(10,50),(0,50)]
+
+    #positions = generate_position(100, 200, 200)
 
     print(positions)
 
-    search(positions, 200, 1)
+    k = 200
+    c = 1
+
+    search(positions, k , c)
+
 
 
 def generate_position(count, x_max, y_max):
@@ -43,7 +50,9 @@ def generate_position(count, x_max, y_max):
 
 
 def search(positions, k, c):
-    solution = StateSearch.search(positions, k, c)
+    solution = state_search(positions, k, c)
+    #solution = local_search(positions, k, c)
+
     draw_plot(positions, solution)
     print(solution)
 
@@ -70,6 +79,6 @@ class RunType(Enum):
 
 enumToFunc = {RunType.c_profile: run_cprofiler, RunType.line_profile: run_line_profiler, RunType.normal: startSearch}
 
-run(RunType.normal)
+run(RunType.c_profile)
 
 

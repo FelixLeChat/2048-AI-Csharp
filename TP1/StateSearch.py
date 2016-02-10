@@ -5,7 +5,7 @@ from lowestcost_search import *
 from astar_search_minheap import *
 from bestfirst_search import *
 from Antenna_StateSearch_v1 import AntennaSearch
-from Astar_search_squared_heuristic import *
+from astar_search_squared_heuristic import *
 from SearchHelper import *
 from Clustering import *
 import gc
@@ -13,8 +13,10 @@ import gc
 # Config
 
 fine_tuning_mod = True
-radius_in_int = True
-use_cluser = True
+radius_in_int = False
+use_cluser = False
+#If false will use affinity
+use_kmean = True
 
 # Bad optimisation (stay to False)
 # False : 6.618 -> True : 11.848
@@ -23,29 +25,28 @@ use_cached_squared = False
 use_depth_first_search = False
 
 solution = None
-cluster_limit = 30
+cluster_limit = 12
 
-normal_a_start_limit = 12
+normal_a_start_limit = 14
 power_heuristic_level_1 = 25
-power_level_1 = 1.2
+power_level_1 = 1.1
 power_heuristic_level_2 = 30
-power_level_2 = 1.3
+power_level_2 = 1.2
 power_heuristic_level_3 = 50
-power_level_3 = 1.4
+power_level_3 = 1.3
 
-quantile_init_value = 0.5
+quantile_init_value = 0.6
 min_quantile = 0.001
 
 
 
-def search(positions, k, c):
+def state_search(positions, k, c):
 
     sol = search_partial_solution(positions, None, k, c, quantile_init_value)
-    return sol
+    return sol.state.Antennas
 
 
 def search_partial_solution(positions, current_solution, k, c, current_quantile):
-
     current_quantile = max(min_quantile, current_quantile)
 
     for partial_positions in get_clustered_positions(use_cluser, positions, current_quantile):
@@ -80,8 +81,8 @@ def search_partial_solution(positions, current_solution, k, c, current_quantile)
 
 
 def get_clustered_positions(use_cluser, positions, current_quantile):
-    if use_cluser:
-         return find_cluster(positions, current_quantile)
+    if use_cluser and len(positions) >= cluster_limit:
+         return find_cluster(positions, current_quantile, use_kmean)
     else:
         return [positions]
 
