@@ -10,6 +10,7 @@ use_cluser = True
 #If false will use affinity
 use_kmean = True
 
+only_test_randomize = True
 
 def local_search(positions, k, c):
 
@@ -36,5 +37,5 @@ def get_search_strategy(positions):
 
 
 def get_local_representation(positions, search_helper):
-    initial_state = AntennaLocalSearch(range(0, len(positions)), search_helper)
+    initial_state = AntennaLocalSearch(range(0, len(positions)), search_helper, only_test_randomize)
     return initial_state

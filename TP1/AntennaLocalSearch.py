@@ -11,11 +11,13 @@ from simulated_annealing import *
 
 # The state are [[House ids couver by the same antenna]...]
 class AntennaLocalSearch(State):
-    def __init__(self, houses_id, search_helper):
+    def __init__(self, houses_id, search_helper, only_test_randomize):
         self.HousesGroup = {}
         self.TotalCost = 0
         AntennaLocalSearch.SearchHelper = search_helper
         self.randomize(houses_id)
+
+        self.OnlyTestRandomize = only_test_randomize
 
     def randomize(self, houses_id):
 
@@ -82,6 +84,12 @@ class AntennaLocalSearch(State):
             if(len(group_to_add) > 0):
                 to_add = HousesGroup(group_to_add)
                 self.HousesGroup[to_add.Id] = to_add
+
+        """ Add antenna """
+        for group in self.HousesGroup:
+            position, radius = self.SearchHelper.find_middle_point(group.Houses)
+            group.Antenna = Antenna(position, radius)
+
 
         return
 
@@ -161,6 +169,8 @@ class AntennaLocalSearch(State):
         return 1
 
     def isGoal(self):
+        if self.OnlyTestRandomize:
+            return True
         return False
 
     def heuristic(self):
@@ -184,6 +194,8 @@ class AntennaLocalSearch(State):
     def consistent(self):
         return True
 
+
+"""   Representation of the group of house, which is use for representation in the local search"""
 
 class HousesGroup():
     def __init__(self, houses_id):
