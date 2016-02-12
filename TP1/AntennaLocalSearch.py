@@ -18,8 +18,72 @@ class AntennaLocalSearch(State):
         self.randomize(houses_id)
 
     def randomize(self, houses_id):
-        whole = HousesGroup(houses_id)
-        self.HousesGroup[whole.Id] = whole
+
+        if(len(houses_id) == 1):
+            whole = HousesGroup(houses_id)
+            self.HousesGroup[whole.Id] = whole
+
+        # changes to get chosen depending the distance to the selected point
+        houses_left = houses_id
+        k = self.SearchHelper.K
+        c = self.SearchHelper.C
+
+        while len(houses_left) != 0:
+
+            if(len(houses_left) == 1):
+                to_add = HousesGroup(houses_left)
+                self.HousesGroup[to_add.Id] = to_add
+                return
+
+            # Random house to start to seperate groups
+            rand = random.randint(0, len(houses_left)-1)
+            random_house = houses_left[rand]
+            nearest = self.SearchHelper.Nearest[random_house]
+
+            # remove to far
+            to_remove = []
+            for near in nearest:
+                if(near[1] * c * c > 3 * k):
+                    to_remove.append(near)
+            for remove in to_remove:
+                nearest.remove(remove)
+
+
+            # Max distances
+            max_cost = 0
+            for house in nearest:
+                if(house[1] > max_cost):
+                    max_cost = house[1]
+
+            # relative distance cost
+            relative_cost = []
+            for house in nearest:
+                cost = float(house[1])/float(max_cost)
+                #min 25% of being selected
+                if(cost > 0.65):
+                    cost = 0.65
+                relative_cost.append((house[0],int((1.0-cost)*100)))
+
+            # Generate a random number
+            chance = random.randint(0, 100)
+
+            # check against cost
+            group_to_add = []
+            group_to_add.append(random_house)
+            houses_left.remove(random_house)
+
+            for house in relative_cost:
+                if(house[1] >= chance & house[0] in houses_left):
+                    group_to_add.append(house[0])
+                    houses_left.remove(house[0])
+
+            if(len(group_to_add) > 0):
+                to_add = HousesGroup(group_to_add)
+                self.HousesGroup[to_add.Id] = to_add
+
+        return
+
+
 
     # Todo: Improve this crap
     def equals(self,state):
