@@ -4,7 +4,6 @@ from LocalSearch import *
 from AntennaVisualisation import *
 import pstats
 from lineProfiler import *
-from enum import Enum
 from random import randint
 
 
@@ -21,7 +20,7 @@ def startSearch():
 -{'middle': (25, 10), 'points': set([3713061063899871781, 3713067559082347531, 3713037248289250381, 3713074054245337831]), 'radius': 15.0}
     :return:
     """
-    #positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)]
+    positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80)]
 
     #positions = [(30,0),(10,10),(20,20),(30,40),(50,40),(60,10),(70,80),(80,80),(50,50),(40,10),(60,50),(40,80),(50,70),(30,60),(40,60),(40,40)]
 
@@ -50,8 +49,8 @@ def generate_position(count, x_max, y_max):
 
 
 def search(positions, k, c):
-    solution = state_search(positions, k, c)
-    #solution = local_search(positions, k, c)
+    #solution = state_search(positions, k, c)
+    solution = local_search(positions, k, c)
 
     draw_plot(positions, solution)
     print(solution)
@@ -72,13 +71,14 @@ def run_cprofiler():
     p.sort_stats('time').print_stats(10)
 
 
-class RunType(Enum):
+class RunType():
     c_profile = 1
     line_profile = 2
     normal = 3
 
 enumToFunc = {RunType.c_profile: run_cprofiler, RunType.line_profile: run_line_profiler, RunType.normal: startSearch}
 
-run(RunType.c_profile)
+#run(RunType.c_profile)
+startSearch()
 
 

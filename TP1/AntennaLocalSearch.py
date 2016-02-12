@@ -73,9 +73,11 @@ class AntennaLocalSearch(State):
             houses_left.remove(random_house)
 
             for house in relative_cost:
-                if(house[1] >= chance & house[0] in houses_left):
-                    group_to_add.append(house[0])
-                    houses_left.remove(house[0])
+                index = house[0]
+                if(house[1] >= chance):
+                    if(index in houses_left):
+                        group_to_add.append(index)
+                        houses_left.remove(index)
 
             if(len(group_to_add) > 0):
                 to_add = HousesGroup(group_to_add)

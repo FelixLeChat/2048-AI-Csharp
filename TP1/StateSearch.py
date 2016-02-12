@@ -7,7 +7,7 @@ from bestfirst_search import *
 from Antenna_StateSearch_v1 import AntennaSearch
 from astar_search_squared_heuristic import *
 from SearchHelper import *
-from Clustering import *
+#from Clustering import *
 import gc
 
 # Config
@@ -83,9 +83,9 @@ def search_partial_solution(positions, current_solution, k, c, current_quantile)
 
 
 def get_clustered_positions(use_cluser, positions, current_quantile):
-    if use_cluser and len(positions) >= cluster_limit:
-         return find_cluster(positions, current_quantile, use_kmean)
-    else:
+    #if use_cluser and len(positions) >= cluster_limit:
+         #return find_cluster(positions, current_quantile, use_kmean)
+    #else:
         return [positions]
 
 
