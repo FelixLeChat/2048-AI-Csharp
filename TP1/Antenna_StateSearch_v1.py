@@ -11,6 +11,8 @@ from Antenna import *
 
 state_generate = 0
 
+use_get_actions_improve = True
+
 class AntennaSearch(State):
 
     def __init__(self, houses_id, search_helper):
@@ -37,7 +39,15 @@ class AntennaSearch(State):
 
     """ The possibles actions are the positioning of an antenna that cover each x(1 to houses_left_count) nearest
         neighbor of each points """
+
     def possibleActions(self):
+        if use_get_actions_improve:
+            return self.possible_actions_improve()
+        else:
+            return self.possible_actions_original()
+
+
+    def possible_actions_original(self):
         actions = []
         houses_left_count = len(self.HousesLeft)
 
@@ -65,32 +75,65 @@ class AntennaSearch(State):
         state_generate += len(actions)
         return actions
 
-    def get_action_for_target_house(self, house_id):
+    def possible_actions_improve(self):
+        actions_to_return = []
+        houses_left_count = len(self.HousesLeft)
+
+        visited_antenna = set()
+
+        repeat_antenna = 0
+
+        for houseId in self.HousesLeft:
+                actions = self.get_actions_for_target_house(houseId)
+
+                for action in actions:
+                    current_antenna = action[0]
+                    antenna = (current_antenna.Position[0], current_antenna.Position[0])
+                    if antenna not in visited_antenna:
+                        visited_antenna.add(antenna)
+                        actions_to_return.append(action)
+                    else:
+                        repeat_antenna += 1
+
+        global state_generate
+        state_generate += len(actions_to_return)
+        return actions_to_return
+
+    def get_actions_for_target_house(self, house_id):
         houses_left_count = len(self.HousesLeft)
         actions = []
         pro_rata = [AntennaSearch.SearchHelper.calculate_cost(1)]
 
-        for k in range(0, houses_left_count + 1):
+        k = 0
+
+        while k <= houses_left_count:
             nearest = AntennaSearch.SearchHelper.get_k_nearest(house_id, k, self.HousesLeft)
-            farest = nearest[-1]
-            minimal_radius = AntennaSearch.SearchHelper.calculate_distance_between_house(house_id, farest)
+
+            if nearest:
+                farest = nearest[-1]
+            else:
+                farest = house_id
+
+            distance_with_farest = AntennaSearch.SearchHelper.calculate_distance_between_house(house_id, farest)
 
             #Minimum radius is 1
-            distance_with_farest = max(1, minimal_radius)
+            minimal_radius = max(1, distance_with_farest)
             minimal_possible_cost = AntennaSearch.SearchHelper.calculate_cost(minimal_radius)
             current_pro_rata = minimal_possible_cost / (k+1)
             current_minimal_pro_rata = min(pro_rata)
 
             # Only add the antenna as a possible one if the pro rata cost is lower than the previous one
-            if current_pro_rata < current_minimal_pro_rata:
+            # Hack
+            if current_pro_rata <= current_minimal_pro_rata or k <= 3:
                 nearest.append(house_id)
                 antenna_pos, radius = AntennaSearch.SearchHelper.find_middle_point(nearest)
                 actions.append((Antenna(antenna_pos, radius), nearest))
+                k += 1
+            # Hack
             else:
+                # check how many houses will be neessary for te cost to be acceptable!
                 k = math.ceil(minimal_possible_cost/current_minimal_pro_rata)
-
-                # check how many houses will be neessary for it to be acceptable!
-
+        return actions
 
     def cost(self, (antenna, houses_in_range)):
         return AntennaSearch.SearchHelper.calculate_cost(antenna.Radius)
@@ -101,7 +144,7 @@ class AntennaSearch(State):
     def show(self):
         global state_generate
         state_generate += 1
-        #print("State generate: {0}".format(state_generate))
+        print("State generate: {0}".format(state_generate))
         #print("Houses left: {0}".format(self.HousesLeft))
         print("Antennas : {0}".format(self.Antennas))
 
@@ -119,15 +162,6 @@ class AntennaSearch(State):
         houses_left_count = len(self.HousesLeft)
         shortest_radius_list, _ = AntennaSearch.SearchHelper.get_shortest_nearest_radius_list(self.HousesLeft)
 
-        ''' Not use anymore
-        minimal_cost = sys.maxint
-        for repartition in AntennaSearch.SearchHelper.get_combination(houses_left_count):
-            cost = AntennaSearch.SearchHelper.calculate_cost_by_repartition(shortest_radius_list, repartition)
-            if cost < minimal_cost:
-                minimal_cost = cost
-                best_repartition = repartition
-        '''
-
         minimal_cost = self.calculate_best_estimate(self.calculate_price_by_house(shortest_radius_list), houses_left_count)
 
         return minimal_cost
@@ -143,7 +177,13 @@ class AntennaSearch(State):
             price_by_house_ratio[index] = cost / (index+1)
         return price_by_house_ratio
 
-    def calculate_best_estimate(self, price_by_house_ration, house_left):
+    def calculate_best_estimate(self, price_by_house_ration, house_left_count):
+        total_cost = 0
+        #while house_left_count > 0:
+        #    cost, house_left_count = do_calculate_best_ratio(self, price_by_house_ration, house_left):
+
+
+    def do_calculate_best_ratio(self, price_by_house_ration, house_left):
         if house_left == 0:
             return 0
 
@@ -153,7 +193,7 @@ class AntennaSearch(State):
         house_left_to_cover = int( house_left - (best_index+1)*factor)
         total_cost = factor*best_cost*(best_index+1)
 
-        return total_cost + self.calculate_best_estimate(price_by_house_ration, house_left_to_cover)
+        return total_cost, house_left_to_cover
 
 
 

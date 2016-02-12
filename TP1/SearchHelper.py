@@ -58,7 +58,7 @@ class SearchHelper:
     def calculate_distance_between_house(self, a, b):
         position_a = self.HousesMap[a]
         position_b = self.HousesMap[b]
-        return self.calculate_squared_radius_to_fit(position_a, position_b)
+        return self.calculate_squared_distance(position_a, position_b)
 
     ''' Calculate the squared distance between two points '''
     def calculate_squared_distance(self, a, b):

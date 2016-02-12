@@ -24,6 +24,8 @@ use_cached_squared = False
 
 use_depth_first_search = False
 
+
+
 solution = None
 cluster_limit = 12
 
