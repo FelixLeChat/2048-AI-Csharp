@@ -18,6 +18,7 @@ class AntennaLocalSearch(State):
         self.randomize(houses_id)
 
     def randomize(self, houses_id):
+        # Take random house, take random(k) nearest house, form a group until no house left
         whole = HousesGroup(houses_id)
         self.HousesGroup[whole.Id] = whole
 
