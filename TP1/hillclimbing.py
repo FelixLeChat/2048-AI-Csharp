@@ -5,11 +5,18 @@
 
 from node import *
 from state import *
+import time
 
 
 def hillclimbing_search(initialState,maxSteps = 1000):
     step = maxSteps
     node = Node(initialState)
+
+    best_candidate = None
+    best_cost = sys.maxint
+
+    startTime = int(round(time.time() * 1000))
+
     while step > 0:
         if node.state.isGoal():
             node.state.show()
@@ -21,4 +28,11 @@ def hillclimbing_search(initialState,maxSteps = 1000):
             node = candidates.pop(0)
             step -= 1
 
-    return node
+            if node.h < best_cost:
+                best_candidate = node
+
+    currentTime = int(round(time.time() * 1000))-startTime
+    print 'Cost:', best_candidate.h
+    print 'Time(ms) :', currentTime
+
+    return best_candidate

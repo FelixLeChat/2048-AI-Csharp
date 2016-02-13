@@ -24,6 +24,7 @@ class SearchHelper:
 
         self.UsedCachedSquared = use_cached_squared
         self.CachedSquared = {}
+        self.HousesPosition = houses
 
         self.init(houses)
 
@@ -129,12 +130,18 @@ class SearchHelper:
             if squared_rayon > max_rayon_squared:
                 max_rayon_squared = squared_rayon
 
+        return self.transform_radius(max_rayon_squared)
+
+
+    def transform_radius(self, radius):
+
         if self.RadiusInInt:
-            ceil_value = math.ceil(math.sqrt(max_rayon_squared))
+            ceil_value = math.ceil(math.sqrt(radius))
             int_radius = ceil_value * ceil_value
             return int_radius
+
         else:
-            return max_rayon_squared
+            return radius
 
     ''' Return a list of the shortest Radius to link (1 element, 2 elements,...) '''
     def get_shortest_nearest_radius_list(self, houses_left):
@@ -185,6 +192,17 @@ class SearchHelper:
         for key, distance in self.Nearest[house_id]:
             if key in houses_left:
                 return distance
+
+    """ Return the 1rst farest house in an antenna radius """
+    def get_farest_point_for_antenna(self, antenna_position, antenna_radius, houses_id):
+        farest_distance = 0
+        farest_house = None
+        for house in houses_id:
+            distance = self.calculate_squared_distance(antenna_position, self.HousesMap[house])
+            if distance > farest_distance:
+                farest_distance = distance
+                farest_house = house
+        return farest_house
 
     def random_chunk(self, list_to_split, min_chunk=1, max_chunk=2):
         it = iter(list_to_split)

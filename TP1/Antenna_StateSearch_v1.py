@@ -179,8 +179,10 @@ class AntennaSearch(State):
 
     def calculate_best_estimate(self, price_by_house_ration, house_left_count):
         total_cost = 0
-        #while house_left_count > 0:
-        #    cost, house_left_count = do_calculate_best_ratio(self, price_by_house_ration, house_left):
+        while house_left_count > 0:
+            cost, house_left_count = self.do_calculate_best_ratio(price_by_house_ration, house_left_count)
+            total_cost += cost
+        return cost
 
 
     def do_calculate_best_ratio(self, price_by_house_ration, house_left):

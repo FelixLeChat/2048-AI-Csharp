@@ -7,8 +7,9 @@ from bestfirst_search import *
 from Antenna_StateSearch_v1 import AntennaSearch
 from astar_search_squared_heuristic import *
 from SearchHelper import *
-#from Clustering import *
 import gc
+from Antenna_StateSearch_Original import AntennaSearch_original
+#from Clustering import *
 
 # Config
 
@@ -56,7 +57,7 @@ def search_partial_solution(positions, current_solution, k, c, current_quantile)
         size = len(partial_positions)
 
         # We don't need to cluster anymore
-        if size < cluster_limit or current_quantile <= min_quantile:
+        if size < cluster_limit or current_quantile <= min_quantile or not use_cluser:
             print("********************************")
             print("Attacking next {0} houses".format(size))
             search_helper = SearchHelper(partial_positions, k, c, fine_tuning_mod, radius_in_int, use_cached_squared)
@@ -91,6 +92,7 @@ def get_clustered_positions(use_cluser, positions, current_quantile):
 
 def get_state_strategy(positions, search_helper):
     initial_state = AntennaSearch(range(0, len(positions)), search_helper)
+    initial_state = AntennaSearch_original(range(0, len(positions)), search_helper)
     return initial_state
 
 

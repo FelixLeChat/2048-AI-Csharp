@@ -6,18 +6,20 @@ from operator import xor
 from random import *
 import hashlib
 from Antenna import *
+from AntennaVisualisation import *
+import copy
 
 from simulated_annealing import *
 
 # The state are [[House ids couver by the same antenna]...]
 class AntennaLocalSearch(State):
-    def __init__(self, houses_id, search_helper, only_test_randomize):
+    def __init__(self, houses_id, search_helper, show_randomization):
         self.HousesGroup = {}
         self.TotalCost = 0
         AntennaLocalSearch.SearchHelper = search_helper
-        self.randomize(houses_id)
+        self.ShowRandomization = show_randomization
 
-        self.OnlyTestRandomize = only_test_randomize
+        self.randomize(houses_id)
 
     def randomize(self, houses_id):
 
@@ -35,7 +37,7 @@ class AntennaLocalSearch(State):
             if(len(houses_left) == 1):
                 to_add = HousesGroup(houses_left)
                 self.HousesGroup[to_add.Id] = to_add
-                return
+                break
 
             # Random house to start to seperate groups
             rand = random.randint(0, len(houses_left)-1)
@@ -85,19 +87,18 @@ class AntennaLocalSearch(State):
                 to_add = HousesGroup(group_to_add)
                 self.HousesGroup[to_add.Id] = to_add
 
-        """ Add antenna """
-        for group in self.HousesGroup:
-            position, radius = self.SearchHelper.find_middle_point(group.Houses)
-            group.Antenna = Antenna(position, radius)
-
+        if self.ShowRandomization:
+            self.show_current_state()
 
         return
 
+    def show_current_state(self):
+        draw_plot(self.SearchHelper.HousesPosition, self.get_antennas())
 
 
     # Todo: Improve this crap
     def equals(self,state):
-        return self.TotalCost == state.TotalCost
+        return self.TotalCost == state.TotalCost and len(state.HousesGroup) == len(self.HousesGroup)
 
     def show(self):
         print self.HousesGroup
@@ -110,67 +111,112 @@ class AntennaLocalSearch(State):
             self.HousesGroup[house_group.Id] = house_group
 
     def possibleActions(self):
+
+        #self.show_current_state()
+
         actions = []
 
-        # Random split
-        id_to_split = random.choice(self.HousesGroup.values()).Id
 
-        split_actions = self.get_splits_actions(id_to_split)
-
+        split_actions = self.get_splits_actions()
         if split_actions:
             actions.extend(split_actions)
 
-        fusion_actions = self.get_fuse_action()
 
+
+        fusion_actions = self.get_fuse_action()
         if fusion_actions:
             actions.extend(fusion_actions)
 
         return actions
 
+
+    def get_splits_actions(self):
+       """
+       Simple split: only remove farest house
+       :param self:
+       :return:
+       """
+       actions = []
+
+       for _, group in self.HousesGroup.iteritems():
+
+            size = len(group.Houses)
+
+            if size > 1:
+                action = Action()
+                action.add_delete(group.Id)
+
+                farest_house = self.SearchHelper.get_farest_point_for_antenna(group.Antenna.Position,
+                                                                              group.Antenna.Radius,
+                                                                              group.Houses)
+                copied_list = list(group.Houses)
+                copied_list.remove(farest_house)
+                group_1 = HousesGroup(copied_list)
+                group_2 = HousesGroup([farest_house])
+
+                action.add_replace(group_1)
+                action.add_replace(group_2)
+
+                actions.append(action)
+
+       return actions
+
+
+
+
     def get_fuse_action(self):
+        """
+        Fusion with nearest house group (will perform poorly with many group (need to change)
+        :param self:
+        :return:
+        """
 
         if len(self.HousesGroup) <= 1:
             return None
 
-        list = (self.HousesGroup.keys())
+        actions = []
+        visited_group = set()
 
-        id = sample(list, 2)
+        for _, group in self.HousesGroup.iteritems():
+            if group in visited_group:
+                continue
 
-        action = Action()
-        action.add_delete(id[0])
-        action.add_delete(id[1])
+            visited_group.add(group)
 
-        fusionList = self.HousesGroup[id[0]].Houses
-        fusionList.extend(self.HousesGroup[id[1]].Houses)
+            nearest_group = None
+            nearest_distance = sys.maxint
 
-        action.add_replace(HousesGroup(fusionList))
+            for _, group_to_compare in self.HousesGroup.iteritems():
+                if group_to_compare in visited_group or group.Id == group_to_compare.Id:
+                    continue
 
-        return [action]
+                distance = self.SearchHelper.calculate_squared_distance(group.Antenna.Position, group_to_compare.Antenna.Position)
+                if distance < nearest_distance:
+                    nearest_group = group_to_compare
+                    nearest_distance = group_to_compare
+
+            if nearest_group:
+                visited_group.add(nearest_group)
+
+                action = Action()
+                action.add_delete(group.Id)
+                action.add_delete(nearest_group.Id)
+
+                fusionList = list(group.Houses)
+                fusionList.extend(nearest_group.Houses)
+
+                action.add_replace(HousesGroup(fusionList))
+
+                actions.append(action)
+
+        return actions
 
 
-    def get_splits_actions(self, id):
-
-        house_groupe_to_split = self.HousesGroup[id].Houses
-        size = len(house_groupe_to_split)
-
-        if size > 1:
-            action = Action()
-            action.add_delete(id)
-            random_list = list(self.SearchHelper.random_chunk(house_groupe_to_split, 1, size))
-
-            for inner_list in random_list:
-                action.add_replace(HousesGroup(inner_list))
-
-            return [action]
-        else:
-            return None
 
     def cost(self,action):
         return 1
 
     def isGoal(self):
-        if self.OnlyTestRandomize:
-            return True
         return False
 
     def heuristic(self):
@@ -206,9 +252,12 @@ class HousesGroup():
         self.Antenna = Antenna(position, radius)
 
     def get_id(self):
+        """
         s = str(sorted(self.Houses))
         id = hashlib.sha1(s).hexdigest()
         return id
+        """
+        return random.randint(0, sys.maxint)
 
 
 class Action():

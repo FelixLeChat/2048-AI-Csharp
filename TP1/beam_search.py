@@ -5,11 +5,19 @@
 
 from node import *
 from state import *
+import time
 
-def beam_search(initialPopulation,maxSteps = 1000, populationSize = 100):
+def beam_search(initialPopulation,maxSteps = 10, populationSize = 5):
     step = maxSteps
     population = [Node(s) for s in initialPopulation]
+
+    best_candidate = None
+    best_cost = sys.maxint
+
+    startTime = int(round(time.time() * 1000))
+
     while step > 0:
+        print step
         newNodes = []
         for node in population:
             if node.state.isGoal():
@@ -22,6 +30,12 @@ def beam_search(initialPopulation,maxSteps = 1000, populationSize = 100):
         population = newNodes[0:populationSize]
         step -= 1
 
-    return None
+    best_candidate = newNodes[0]
+
+    currentTime = int(round(time.time() * 1000))-startTime
+    print 'Cost:', best_candidate.h
+    print 'Time(ms) :', currentTime
+
+    return best_candidate
 
 
