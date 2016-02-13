@@ -34,7 +34,9 @@ class AntennaLocalSearch(State):
 
         while len(houses_left) != 0:
 
-            if(len(houses_left) == 1):
+            houses_count = len(houses_left)
+
+            if(houses_count == 1):
                 to_add = HousesGroup(houses_left)
                 self.HousesGroup[to_add.Id] = to_add
                 break
@@ -46,8 +48,11 @@ class AntennaLocalSearch(State):
 
             # remove to far
             to_remove = []
+            # more point there is, the farest he goes to group them together
+            heuristic_count = 3*k +(houses_count/20)*k
+
             for near in nearest:
-                if(near[1] * c * c > 3 * k):
+                if(near[1] * c * c > heuristic_count):
                     to_remove.append(near)
             for remove in to_remove:
                 nearest.remove(remove)
@@ -63,9 +68,9 @@ class AntennaLocalSearch(State):
             relative_cost = []
             for house in nearest:
                 cost = float(house[1])/float(max_cost)
-                #min 25% of being selected
-                if(cost > 0.65):
-                    cost = 0.65
+                #min 50% of being selected
+                if(cost > 0.50):
+                    cost = 0.50
                 relative_cost.append((house[0],int((1.0-cost)*100)))
 
             # Generate a random number
