@@ -5,7 +5,7 @@ from lowestcost_search import *
 from astar_search_minheap import *
 from bestfirst_search import *
 from Antenna_StateSearch_v1 import AntennaSearch
-from astar_search_squared_heuristic import *
+from Astar_search_squared_heuristic import *
 from SearchHelper import *
 import gc
 from Antenna_StateSearch_Original import AntennaSearch_original
@@ -14,7 +14,7 @@ from Antenna_StateSearch_Original import AntennaSearch_original
 # Config
 
 fine_tuning_mod = True
-radius_in_int = False
+radius_in_int = True
 use_cluser = False
 #If false will use affinity
 use_kmean = True
@@ -41,10 +41,13 @@ power_level_3 = 1.3
 quantile_init_value = 0.6
 min_quantile = 0.001
 
+def search(positions, k, c):
+    sol = search_partial_solution(positions, None, k, c, quantile_init_value)
+    formatted_solution = map(lambda x: (x.Position[0], x.Position[1], x.Radius), sol.state.Antennas)
+    return formatted_solution
 
 
 def state_search(positions, k, c):
-
     sol = search_partial_solution(positions, None, k, c, quantile_init_value)
     return sol.state.Antennas
 

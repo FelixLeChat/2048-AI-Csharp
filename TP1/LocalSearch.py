@@ -21,7 +21,8 @@ class LocalStrategy():
 strategy_to_use = LocalStrategy.beam_search
 
 # Beam Search
-nb_of_population = 10
+nb_of_population = 5
+start_factor = 5
 beam_maxSteps = 100
 no_improvement_limit = 5
 
@@ -34,13 +35,16 @@ annealing_maxSteps = 200 # Will make more step from the same random start
 hill_maxSteps = 200
 
 
+def search(positions, k, c):
+    sol = do_search(positions, k, c)
+    formatted_solution = map(lambda x: (x.Position[0], x.Position[1], x.Radius), sol.state.get_antennas())
+    return formatted_solution
 
 def local_search(positions, k, c):
+    sol = do_search(positions, k, c)
+    return sol.state.get_antennas()
 
-    sol = search(positions, k, c)
-    return sol
-
-def search(positions, k, c):
+def do_search(positions, k, c):
 
     search_helper = SearchHelper(positions, k, c, fine_tuning_mod, radius_in_int)
     initial_state = get_local_representation(positions, search_helper, strategy_to_use)
@@ -48,7 +52,7 @@ def search(positions, k, c):
 
     solution = search_strategy(initial_state)
 
-    return solution.state.get_antennas()
+    return solution
 
 
 def get_search_strategy(choosen_strategy):
@@ -63,7 +67,7 @@ def get_search_strategy(choosen_strategy):
 def get_local_representation(positions, search_helper, strategy_to_use):
 
     if strategy_to_use == LocalStrategy.beam_search:
-        initial_state = map(lambda x: AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization), range(nb_of_population))
+        initial_state = map(lambda x: AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization), range(nb_of_population * start_factor))
         return initial_state
     else:
         initial_state = AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization)

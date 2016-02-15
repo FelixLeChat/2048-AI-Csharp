@@ -60,7 +60,7 @@ class AntennaLocalSearch(State):
 
 
             # Max distances
-            max_cost = 0
+            max_cost = 1
             for house in nearest:
                 if(house[1] > max_cost):
                     max_cost = house[1]
@@ -156,7 +156,8 @@ class AntennaLocalSearch(State):
                                                                               group.Antenna.Radius,
                                                                               group.Houses)
                 copied_list = list(group.Houses)
-                copied_list.remove(farest_house)
+                if farest_house in copied_list:
+                    copied_list.remove(farest_house)
                 group_1 = HousesGroup(copied_list)
                 group_2 = HousesGroup([farest_house])
 
