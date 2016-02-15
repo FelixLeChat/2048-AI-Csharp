@@ -11,18 +11,19 @@ use_cluser = True
 #If false will use affinity
 use_kmean = True
 
-show_randomization = True
+show_randomization = False
 
 class LocalStrategy():
     annealing = 1
     hill_climbing = 2
     beam_search = 3
 
-strategy_to_use = LocalStrategy.annealing
+strategy_to_use = LocalStrategy.beam_search
 
 # Beam Search
 nb_of_population = 10
 beam_maxSteps = 100
+no_improvement_limit = 5
 
 # Annealing
 T = 100 #Will make more random start
@@ -54,7 +55,7 @@ def get_search_strategy(choosen_strategy):
 
     enumToFunc = { LocalStrategy.annealing : lambda x: simulated_annealing_search(x, T, t_limit, annealing_maxSteps),
                    LocalStrategy.hill_climbing : lambda x: hillclimbing_search(x, hill_maxSteps),
-                   LocalStrategy.beam_search : lambda x: beam_search(x, beam_maxSteps, nb_of_population )}
+                   LocalStrategy.beam_search : lambda x: beam_search(x, beam_maxSteps, nb_of_population, no_improvement_limit )}
 
     return enumToFunc[choosen_strategy]
 
@@ -62,7 +63,7 @@ def get_search_strategy(choosen_strategy):
 def get_local_representation(positions, search_helper, strategy_to_use):
 
     if strategy_to_use == LocalStrategy.beam_search:
-        initial_state = [AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization)] * nb_of_population
+        initial_state = map(lambda x: AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization), range(nb_of_population))
         return initial_state
     else:
         initial_state = AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization)

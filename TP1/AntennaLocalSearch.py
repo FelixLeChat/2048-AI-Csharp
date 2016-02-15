@@ -12,6 +12,7 @@ import copy
 from simulated_annealing import *
 
 # The state are [[House ids couver by the same antenna]...]
+# Maybe alternative [House : group]]
 class AntennaLocalSearch(State):
     def __init__(self, houses_id, search_helper, show_randomization):
         self.HousesGroup = {}
