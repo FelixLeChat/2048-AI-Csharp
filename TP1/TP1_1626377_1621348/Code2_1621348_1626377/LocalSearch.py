@@ -58,4 +58,6 @@ def get_local_representation(positions, search_helper, strategy_to_use):
         initial_state = AntennaLocalSearch(range(0, len(positions)), search_helper, show_randomization)
         return initial_state
 
+print(search([(10,10), (20,20)], 10, 10))
+
 

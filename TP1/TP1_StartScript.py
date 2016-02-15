@@ -3,7 +3,6 @@ from StateSearch import *
 from LocalSearch import *
 from AntennaVisualisation import *
 import pstats
-from lineProfiler import *
 from random import randint
 
 class Strategy():
@@ -21,9 +20,9 @@ def startSearch():
 
     ######################################### ICI ##############################################
     ''' ICI pour mettre position '''
-    positions = [(30,0),(10,10),(20,20),(30,40),(50,40)]
+    #positions = [(30,0),(10,10),(20,20),(30,40),(50,40)]
 
-    #positions = generate_position(500, 300, 300)
+    positions = generate_position(500, 300, 300)
 
     print(positions)
 
@@ -73,7 +72,7 @@ class RunType():
 
 enumToFunc = {RunType.c_profile: run_cprofiler, RunType.line_profile: run_line_profiler, RunType.normal: startSearch}
 
-run(RunType.c_profile)
+run(RunType.normal)
 #startSearch()
 
 

@@ -129,32 +129,4 @@ def get_search_strategy(positions):
     return chosen_strategy
 
 
-#### Profiling result ####
-
-# Antenna
-# 132,590 : Search
-# 3,185   : Awesome heuristic
-# 3,730   : Draw plot
-# 3,268   : Heuristic
-# 2,689   : Get Shortest nearest Radius left
-# 1,466   : Get Squared Rayon
-# 1,156   : Possible Actions
-# 1,147   : Get Nearest
-
-# A Star Search
-# 128,732 : A Star Search
-
-# Copy
-# 9,723 : Deep Copy
-# 9,442 : Deep Copy inst
-# 8,603 : Deep Copy Dict
-# 6,911 : Deep Copy List
-# 4,320 : Deep Copy Tuple
-
-# Node
-# 14,924 : Expand Node
-# 13,691 : Create Node
-
-# Autre
-# 13,787 : map
-# 111,804 : sort of list object
+print(search([(10,10)], 10, 10))
