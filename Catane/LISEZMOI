@@ -1,0 +1,26 @@
+Vous trouverez le code source dans le répertoire Source:
+
+
+- Controleur.py
+La classe contrôleur est celle qui assure le déroulement du jeu.
+On l'instancie en lui passant une liste où chaque item correspond à un joueur (on indique le type
+de joueur). Pour l'instant, la fabrique ne produit que des joueurs de type "AI". 
+On utilise la méthode jouer() pour lancer la partie.
+
+- Mappe.py
+Représentation de la mappe. Comprend toutes les méthodes pour la mettre à jour (ajout de colonies,
+de villes, de route, etc.) et pour extraire des informations sur son état.
+Chaque intersection, route et territoire de la mappe a un identificateur unique. Consultez le fichier
+mappe.pdf pour connaître ces identificateurs. 
+
+- FabriqueJoueur.py
+Reçoit un type et retourne un joueur de ce type. 
+
+- Cartes.py
+Représentation du paquet de cartes.
+
+
+- Action
+Liste des actions possibles.
+
+
