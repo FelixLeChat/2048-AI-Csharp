@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -14,18 +15,17 @@ namespace _2048.WPF
     {
         private const int MaxGridSize = 600;
 
-        private readonly GameGrid _gameGrid;
-        private IStrategy _currentStrategy = new Defaultstrategy();
-        private Task _currentTask;
+        private GameGrid _gameGrid;
+        private readonly IStrategy _currentStrategy = new Defaultstrategy();
+        private GameManager _gameManager;
 
         public MainWindow()
         {
-            var type = GameType.Manual;
-
             InitializeComponent();
 
+            _gameManager = GameManager.Instance;
+            var type = GameType.Manual;
             _gameGrid = new GameGrid();
-
             ContentGrid.Children.Add(_gameGrid);
 
             SizeChanged += OnSizeChanged;
@@ -72,20 +72,35 @@ namespace _2048.WPF
             _gameGrid.Height = gridSize;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            //_gameGrid.HandleMove(_currentStrategy.GetDirection(_gameGrid.GameModel));
-            
+            StopButton.IsEnabled = true;
+            RestartButton.IsEnabled = true;
             StartButton.IsEnabled = false;
-            _currentTask = new Task(delegate
-            {
-                while (true)
-                {
-                    Application.Current.Dispatcher.Invoke( () => _gameGrid.HandleMove(_currentStrategy.GetDirection(_gameGrid.GameModel)));
-                }
 
-            });
-            _currentTask.Start();
+            _gameManager.StartGame(_gameGrid,_currentStrategy);
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            StopButton.IsEnabled = false;
+            StartButton.IsEnabled = true;
+            _gameManager.StopGame();
+        }
+
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            _gameManager.StopGame();
+
+            ContentGrid.Children.Remove(_gameGrid);
+            _gameGrid = new GameGrid();
+            ContentGrid.Children.Add(_gameGrid);
+
+            StopButton.IsEnabled = false;
+            StartButton.IsEnabled = true;
+            RestartButton.IsEnabled = false;
+
+            OnSizeChanged(null, null);
         }
     }
 }

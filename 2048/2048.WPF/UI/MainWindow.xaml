@@ -4,6 +4,10 @@
         Title="MainWindow" Height="350" Width="525">
 
     <Grid Background="#faf8ef" Name="ContentGrid" Grid.Row="1" Grid.Column="0">
-        <Button Name="StartButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Height="30" Content="Start" Margin="10" Click="Button_Click"/>
+        <Button Name="StartButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Height="30" Content="Start" Margin="10" Click="StartButton_Click"/>
+        <Button Name="StopButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Height="30" Content="Stop" Margin="10,50,0,0" Click="StopButton_Click" IsEnabled="false"/>
+        <Button Name="RestartButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Height="30" Content="Restart" Margin="10,90,0,0" Click="RestartButton_Click" IsEnabled="false"/>
+
+
     </Grid>
 </Window>

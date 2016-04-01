@@ -11,5 +11,15 @@ namespace _2048.WPF.Helper
                 Enumerable.Range(0, data1.Rank).All(dimension => data1.GetLength(dimension) == data2.GetLength(dimension)) &&
                 data1.SequenceEqual(data2);
         }
+
+        /// <summary>
+        /// Return true is all tiles are populated on the board
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool IsFullTileSet(Cell[][] data)
+        {
+            return data.SelectMany(col => col).All(cell => !cell.IsEmpty());
+        }
     }
 }

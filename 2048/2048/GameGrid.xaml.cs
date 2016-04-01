@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _2048.Model;
 using _2048.WPF.Game;
+using _2048.WPF.Helper;
 #if NETFX_CORE
 using Windows.Foundation;
 using Windows.System;
@@ -220,11 +221,21 @@ namespace _2048
 
         private bool _moveInProgress;
 
-        public void HandleMove(Direction direction)
+
+        private Cell[][] _passedTile = null;
+        public bool HandleMove(Direction direction)
         {
+            //TODO : Check for win or lose
+            //if (_passedTile == null)
+               // _passedTile = GameModel.Cells;
+
+            //if(Helper.IsFullTileSet(GameModel.Cells))
+
+
+            // TODO : Remove animation for move
             if (_moveInProgress)
             {
-                return;
+                return true;
             }
 
             _moveInProgress = true;
@@ -237,6 +248,8 @@ namespace _2048
             {
                 _moveInProgress = false;
             }
+
+            return true;
         }
     }
 }

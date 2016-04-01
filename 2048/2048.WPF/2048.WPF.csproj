@@ -96,6 +96,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Game\Direction.cs" />
+    <Compile Include="Game\GameManager.cs" />
     <Compile Include="Game\GameType.cs" />
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Strategy\Defaultstrategy.cs" />
