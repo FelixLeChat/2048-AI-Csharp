@@ -6,7 +6,7 @@ namespace _2048.WPF
     public class Defaultstrategy : IStrategy
     {
         private Direction _lastDirection = Direction.Up;
-        private Cell[][] _lastCells = null;
+        private Cell[][] _lastCells;
 
         public Direction GetDirection(GameModel board)
         {

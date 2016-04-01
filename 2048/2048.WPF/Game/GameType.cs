@@ -2,6 +2,8 @@
 {
     public enum GameType
     {
-        Manual
+        Manual,
+        Default,
+        Random
     }
 }

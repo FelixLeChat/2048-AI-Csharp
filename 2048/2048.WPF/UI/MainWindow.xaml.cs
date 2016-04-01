@@ -14,9 +14,9 @@ namespace _2048.WPF
         private const int MaxGridSize = 600;
 
         private GameGrid _gameGrid;
-        private readonly IStrategy _currentStrategy = new Defaultstrategy();
+        private readonly IStrategy _currentStrategy = new RandomStrategy();
         private readonly GameManager _gameManager;
-        private readonly ObservableCollection<GameEntry> _scoreList = new ObservableCollection<GameEntry>();
+        private readonly ObservableCollection<GameListEntry> _scoreList = new ObservableCollection<GameListEntry>();
         public static MainWindow Instance;
 
         public MainWindow()
@@ -96,7 +96,11 @@ namespace _2048.WPF
         public void RestartGame()
         {
             // Add Score to list
-            _scoreList.Add(new GameEntry() { Score = _gameGrid.Score });
+            _scoreList.Add(new GameListEntry()
+            {
+                Score = _gameGrid.Score,
+                MaxTile = Helper.Helper.GetMaxTile(_gameGrid.GameModel.Cells)
+            });
 
             // Add new grid to view
             ContentGrid.Children.Remove(_gameGrid);

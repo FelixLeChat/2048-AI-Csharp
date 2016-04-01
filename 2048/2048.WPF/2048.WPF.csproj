@@ -96,12 +96,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Game\Direction.cs" />
-    <Compile Include="Game\GameEntry.cs" />
+    <Compile Include="Game\GameListEntry.cs" />
     <Compile Include="Game\GameManager.cs" />
     <Compile Include="Game\GameType.cs" />
     <Compile Include="Helper\Helper.cs" />
-    <Compile Include="Strategy\Defaultstrategy.cs" />
+    <Compile Include="Strategy\DefaultStrategy.cs" />
     <Compile Include="Strategy\IStrategy.cs" />
+    <Compile Include="Strategy\RandomStrategy.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

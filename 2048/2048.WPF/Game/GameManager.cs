@@ -51,8 +51,8 @@ namespace _2048.WPF.Game
                     () =>
                     {
                         var result = task.Result;
-                        //MainWindow.Instance.RestartGame();
-                        //MainWindow.Instance.StartGame();
+                        MainWindow.Instance.RestartGame();
+                        MainWindow.Instance.StartGame();
                     });
             });
         }

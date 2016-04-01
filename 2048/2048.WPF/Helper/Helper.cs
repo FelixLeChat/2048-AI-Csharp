@@ -21,5 +21,10 @@ namespace _2048.WPF.Helper
         {
             return data.SelectMany(col => col).All(cell => !cell.IsEmpty());
         }
+
+        public static int GetMaxTile(Cell[][] data)
+        {
+            return (from coll in data from cell in coll select cell.Value).Concat(new[] {0}).Max();
+        }
     }
 }
