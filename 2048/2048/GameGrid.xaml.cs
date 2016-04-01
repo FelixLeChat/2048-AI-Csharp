@@ -209,29 +209,25 @@ namespace _2048
                     cell.PreviousPosition = null;
                 }
 
-                _moveInProgress = false;
+                MoveInProgress = false;
 
                 // Update the score
                 ScoreCard.Score = GameModel.Score;
-
-
-                // Animation ended, iterate next move
-                GameManager.Instance.Iterate(this);
             };
 
             storyboard.Begin();
         }
 
-        private bool _moveInProgress;
+        public static bool MoveInProgress { get; set; }
         public void HandleMove(Direction direction)
         {
             // TODO : Remove animation for move
-            if (_moveInProgress)
+            if (MoveInProgress)
             {
                 return;
             }
 
-            _moveInProgress = true;
+            MoveInProgress = true;
 
             if (GameModel.PerformMove(direction))
             {
@@ -239,11 +235,14 @@ namespace _2048
             }
             else
             {
-                _moveInProgress = false;
+                MoveInProgress = false;
             }
         }
 
         public enum State{Won, Lost,None}
+
+        private int _passScore;
+        private int _iter;
         public State CheckForWin()
         {
             var state = State.None;
@@ -251,9 +250,17 @@ namespace _2048
             // Check for full tileset
             if (Helper.IsFullTileSet(GameModel.Cells))
             {
+                if (Score == _passScore)
+                    _iter++;
+                else
+                    _iter = 0;
 
+                // Lost if more than 20 iteration with no score modif (no fuse of 2 blocks)
+                if(_iter > 20)
+                    state = State.Lost;
             }
-            
+
+            _passScore = Score;
             return state;
         }
     }

@@ -15,38 +15,56 @@ namespace _2048.WPF.Game
 
         private CancellationTokenSource _cancelToken;
 
-        private bool _stop;
-        private IStrategy _strategy;
-
         public void StartGame(GameGrid grid, IStrategy strategy)
         {
-            _strategy = strategy;
-            _stop = false;
-            Iterate(grid);
-        }
-
-        public void Iterate(GameGrid grid)
-        {
-            if (_stop || _strategy == null) return;
-
-            Application.Current.Dispatcher.Invoke(
-            () =>
+            _cancelToken = new CancellationTokenSource();
+            Task<bool>.Factory.StartNew(() =>
             {
-                // Move
-                grid.HandleMove(_strategy.GetDirection(grid.GameModel));
+                var gameState = GameGrid.State.None;
 
-                // Check for win or loose
-                var gameState = grid.CheckForWin();
-                if (gameState != GameGrid.State.None)
+                while (!_cancelToken.IsCancellationRequested)
                 {
-                    // Won or lost
+                    // If no animation to do
+                    if (!GameGrid.MoveInProgress)
+                    {
+                        Application.Current.Dispatcher.Invoke(
+                            () =>
+                            {
+                                // Move
+                                grid.HandleMove(strategy.GetDirection(grid.GameModel));
+
+                                // Check for win or loose
+                                gameState = grid.CheckForWin();
+                                if (gameState != GameGrid.State.None)
+                                {
+                                    // Won or lost
+                                    _cancelToken.Cancel();
+                                }
+                            });
+                    }
                 }
+                return gameState == GameGrid.State.Won;
+
+            }, _cancelToken.Token).ContinueWith(task =>
+            {
+                Application.Current.Dispatcher.Invoke(
+                    () =>
+                    {
+                        var result = task.Result;
+                        //MainWindow.Instance.RestartGame();
+                        //MainWindow.Instance.StartGame();
+                    });
             });
         }
 
         public void StopGame()
         {
-            _stop = true;
+            try
+            {
+                _cancelToken.Cancel();
+                _cancelToken.Dispose();
+            }
+            catch { }
         }
     }
 }
