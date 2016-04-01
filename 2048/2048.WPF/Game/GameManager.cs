@@ -13,38 +13,40 @@ namespace _2048.WPF.Game
         {
         }
 
-        private Task _currentTask;
         private CancellationTokenSource _cancelToken;
 
-        private bool _loop = true;
+        private bool _stop;
+        private IStrategy _strategy;
+
         public void StartGame(GameGrid grid, IStrategy strategy)
         {
-            _loop = true;
+            _strategy = strategy;
+            _stop = false;
+            Iterate(grid);
+        }
 
-            _cancelToken = new CancellationTokenSource();
-            _currentTask = Task.Factory.StartNew(() =>
+        public void Iterate(GameGrid grid)
+        {
+            if (_stop || _strategy == null) return;
+
+            Application.Current.Dispatcher.Invoke(
+            () =>
             {
-                while (_loop)
+                // Move
+                grid.HandleMove(_strategy.GetDirection(grid.GameModel));
+
+                // Check for win or loose
+                var gameState = grid.CheckForWin();
+                if (gameState != GameGrid.State.None)
                 {
-                    Application.Current.Dispatcher.Invoke(
-                        () =>
-                        {
-                            if(_loop)
-                                _loop = grid.HandleMove(strategy.GetDirection(grid.GameModel));
-                        });
+                    // Won or lost
                 }
-            }, _cancelToken.Token);
+            });
         }
 
         public void StopGame()
         {
-            _loop = false;
-            try
-            {
-                _cancelToken.Cancel();
-                _cancelToken.Dispose();
-            }
-            catch { }
+            _stop = true;
         }
     }
 }

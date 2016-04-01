@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using _2048.Model;
 using _2048.WPF.Game;
 
 namespace _2048.WPF
@@ -17,11 +15,14 @@ namespace _2048.WPF
 
         private GameGrid _gameGrid;
         private readonly IStrategy _currentStrategy = new Defaultstrategy();
-        private GameManager _gameManager;
+        private readonly GameManager _gameManager;
+        private readonly ObservableCollection<GameEntry> _scoreList = new ObservableCollection<GameEntry>();
+        public static MainWindow Instance;
 
         public MainWindow()
         {
             InitializeComponent();
+            Instance = this;
 
             _gameManager = GameManager.Instance;
             var type = GameType.Manual;
@@ -33,6 +34,8 @@ namespace _2048.WPF
             // Manual entry for game
             if(type == GameType.Manual)
                 KeyDown += MainWindow_KeyDown;
+
+            ListGameScore.ItemsSource = _scoreList;
         }
 
         #region Manual Entry
@@ -74,11 +77,7 @@ namespace _2048.WPF
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            StopButton.IsEnabled = true;
-            RestartButton.IsEnabled = true;
-            StartButton.IsEnabled = false;
-
-            _gameManager.StartGame(_gameGrid,_currentStrategy);
+            StartGame();
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -91,16 +90,33 @@ namespace _2048.WPF
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             _gameManager.StopGame();
+            RestartGame();
+        }
 
+        public void RestartGame()
+        {
+            // Add Score to list
+            _scoreList.Add(new GameEntry() { Score = _gameGrid.Score });
+
+            // Add new grid to view
             ContentGrid.Children.Remove(_gameGrid);
             _gameGrid = new GameGrid();
             ContentGrid.Children.Add(_gameGrid);
+            OnSizeChanged(null, null);
 
+            // Button visibility
             StopButton.IsEnabled = false;
             StartButton.IsEnabled = true;
             RestartButton.IsEnabled = false;
+        }
 
-            OnSizeChanged(null, null);
+        public void StartGame()
+        {
+            StopButton.IsEnabled = true;
+            RestartButton.IsEnabled = true;
+            StartButton.IsEnabled = false;
+
+            _gameManager.StartGame(_gameGrid, _currentStrategy);
         }
     }
 }

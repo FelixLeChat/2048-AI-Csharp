@@ -19,14 +19,6 @@ namespace _2048.WPF
                 return direction;
             }
 
-            // Stuck
-            /*if (Helper.Helper.Equal(_lastCells, board.Cells))
-            {
-                _lastCells = board.Cells;
-                 return Direction.Down;
-            }*/
-
-
             switch (_lastDirection)
             {
                 case Direction.Up:

@@ -120,7 +120,6 @@ namespace _2048
             //this.ManipulationMode = ManipulationModes.All;
         }
 
-
         private void UpdateUi()
         {
             foreach (var cell in GameModel.CellsIterator())
@@ -214,28 +213,22 @@ namespace _2048
 
                 // Update the score
                 ScoreCard.Score = GameModel.Score;
+
+
+                // Animation ended, iterate next move
+                GameManager.Instance.Iterate(this);
             };
 
             storyboard.Begin();
         }
 
         private bool _moveInProgress;
-
-
-        private Cell[][] _passedTile = null;
-        public bool HandleMove(Direction direction)
+        public void HandleMove(Direction direction)
         {
-            //TODO : Check for win or lose
-            //if (_passedTile == null)
-               // _passedTile = GameModel.Cells;
-
-            //if(Helper.IsFullTileSet(GameModel.Cells))
-
-
             // TODO : Remove animation for move
             if (_moveInProgress)
             {
-                return true;
+                return;
             }
 
             _moveInProgress = true;
@@ -248,8 +241,20 @@ namespace _2048
             {
                 _moveInProgress = false;
             }
+        }
 
-            return true;
+        public enum State{Won, Lost,None}
+        public State CheckForWin()
+        {
+            var state = State.None;
+            
+            // Check for full tileset
+            if (Helper.IsFullTileSet(GameModel.Cells))
+            {
+
+            }
+            
+            return state;
         }
     }
 }
