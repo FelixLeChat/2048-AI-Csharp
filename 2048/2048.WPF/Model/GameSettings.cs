@@ -9,7 +9,7 @@ namespace _2048.WPF.Converter
         /// <summary>
         /// Mode of the online game
         /// </summary>
-        private Mode _gameMode;
+        /*private Mode _gameMode;
         public Mode GameMode
         {
             get { return _gameMode; }
@@ -22,8 +22,7 @@ namespace _2048.WPF.Converter
                 }
             }
 
-        }
-
+        }*/
 
         /// <summary>
         /// Type of the online game
@@ -58,7 +57,40 @@ namespace _2048.WPF.Converter
                     OnPropertyChanged();
                 }
             }
+        }
 
+        /// <summary>
+        /// Animate the game or not
+        /// </summary>
+        private bool _isAnimated;
+        public bool IsAnimated
+        {
+            get { return _isAnimated; }
+            set
+            {
+                if (_isAnimated != value)
+                {
+                    _isAnimated = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Restart the game when done
+        /// </summary>
+        private bool _isRestart = true;
+        public bool IsRestart
+        {
+            get { return _isRestart; }
+            set
+            {
+                if (_isRestart != value)
+                {
+                    _isRestart = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -5,6 +5,9 @@ namespace _2048.WPF
 {
     public interface IStrategy
     {
-        Direction GetDirection(GameModel board);
+        void Initialize(GameModel model);
+        void Ended(ScoreModel score);
+
+        Direction GetDirection(GameModel model);
     }
 }

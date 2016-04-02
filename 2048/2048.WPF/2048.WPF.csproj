@@ -54,12 +54,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converter\GameSettings.cs" />
+    <Compile Include="Enums\State.cs" />
+    <Compile Include="Model\GameSettings.cs" />
     <Compile Include="Converter\RadioButtonCheckedConverter.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Type.cs" />
-    <Compile Include="UI\GameSetting.xaml.cs">
-      <DependentUpon>GameSetting.xaml</DependentUpon>
+    <Compile Include="Strategy\MasterAlgo.cs" />
+    <Compile Include="UI\GameSettingWindow.xaml.cs">
+      <DependentUpon>GameSettingWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="..\2048\GameGrid.xaml">
       <Link>UI\GameGrid.xaml</Link>
@@ -90,10 +92,10 @@
       <Link>UI\GameTile.xaml.cs</Link>
     </Compile>
     <Compile Include="..\2048\Model\Cell.cs">
-      <Link>Game\Cell.cs</Link>
+      <Link>Model\Cell.cs</Link>
     </Compile>
     <Compile Include="..\2048\Model\GameModel.cs">
-      <Link>Game\GameModel.cs</Link>
+      <Link>Model\GameModel.cs</Link>
     </Compile>
     <Compile Include="..\2048\ScoreCard.xaml.cs">
       <Link>UI\ScoreCard.xaml.cs</Link>
@@ -102,19 +104,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Game\Direction.cs" />
-    <Compile Include="Game\GameListEntry.cs" />
+    <Compile Include="Enums\Direction.cs" />
+    <Compile Include="Model\ScoreModel.cs" />
     <Compile Include="Game\GameManager.cs" />
-    <Compile Include="Game\GameType.cs" />
     <Compile Include="Helper\Helper.cs" />
-    <Compile Include="Strategy\DefaultStrategy.cs" />
     <Compile Include="Strategy\IStrategy.cs" />
     <Compile Include="Strategy\RandomStrategy.cs" />
     <Compile Include="UI\GameWindow.xaml.cs">
       <DependentUpon>GameWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UI\GameSetting.xaml">
+    <Page Include="UI\GameSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

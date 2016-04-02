@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using _2048.Model;
+using _2048.WPF.Enums;
 using _2048.WPF.Game;
 using _2048.WPF.Helper;
 #if NETFX_CORE
@@ -103,21 +104,7 @@ namespace _2048
         private void StartGame()
         {
             LoadMap();
-
-            /*var first = new Tuple<int, int>(0, 0);//GetRandomEmptyTile();
-            _gameModel.Cells[first.Item1][first.Item2].Value = GetRandomStartingNumber();
-            _gameModel.Cells[first.Item1][first.Item2].WasCreated = true;
-
-            /*var second = GetRandomEmptyTile();
-            _gameModel.Cells[second.Item1][second.Item2].Value = GetRandomStartingNumber();
-            _gameModel.Cells[second.Item1][second.Item2].WasCreated = true;*/
-
             UpdateUi();
-
-            //Window.Current.CoreWindow.KeyDown += OnKeyDown;
-            //this.ManipulationStarted += OnManipulationStarted;
-            //this.ManipulationDelta += OnManipulationDelta;
-            //this.ManipulationMode = ManipulationModes.All;
         }
 
         private void UpdateUi()
@@ -218,6 +205,20 @@ namespace _2048
             storyboard.Begin();
         }
 
+        // Reset state of cells for when animation does not occur
+        public void ResetCells()
+        {
+            foreach (var col in GameModel.Cells)
+            {
+                foreach (var cell in col)
+                {
+                    cell.WasCreated = false;
+                    cell.WasMerged = false;
+                    cell.PreviousPosition = null;
+                }
+            }
+        }
+
         public static bool MoveInProgress { get; set; }
         public void HandleMove(Direction direction)
         {
@@ -238,8 +239,6 @@ namespace _2048
                 MoveInProgress = false;
             }
         }
-
-        public enum State{Won, Lost,None}
 
         private int _passScore;
         private int _iter;
