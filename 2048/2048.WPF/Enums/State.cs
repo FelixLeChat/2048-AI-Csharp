@@ -2,6 +2,6 @@
 {
     public enum State
     {
-        Won, Lost, None
+        Won, Lost, NotFinished
     }
 }

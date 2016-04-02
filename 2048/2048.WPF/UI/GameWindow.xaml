@@ -6,12 +6,31 @@
         <Grid Background="#faf8ef" Name="ContentGrid">
         </Grid>
 
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="auto">
-            <Button Name="StartButton" Content="Start" Margin="10,10,0,0" Click="StartButton_Click"/>
-            <Button Name="StopButton" Content="Stop" Margin="10,5,0,0" Click="StopButton_Click" IsEnabled="false"/>
-            <Button Name="RestartButton" Content="Restart" Margin="10,5,0,0" Click="RestartButton_Click" IsEnabled="false"/>
-            
-            <Button Name="MainMenuButton" Content="Main Menu" Margin="10,20,0,0" Click="MainMenuButton_Click"></Button>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Width="250" Height="auto">
+            <Button Name="StartButton" Content="Start" Margin="10,10,0,0" Click="StartButton_Click" MaxWidth="120"/>
+            <Button Name="StopButton" Content="Stop" Margin="10,5,0,0" Click="StopButton_Click" IsEnabled="false" MaxWidth="120"/>
+            <Button Name="RestartButton" Content="Restart" Margin="10,5,0,0" Click="RestartButton_Click" IsEnabled="false" MaxWidth="120"/>
+            <Button Name="MainMenuButton" Content="Main Menu" Margin="10,20,0,0" Click="MainMenuButton_Click" MaxWidth="120"/>
+
+            <Label Content="Top Score :" Margin="10,10,10,0" />
+            <Border BorderThickness="2,2,2,2" Margin="10,0,10,10"
+                                CornerRadius="5,5,5,5" 
+                                Background="Gainsboro" 
+                                BorderBrush="Gray" 
+                                HorizontalAlignment="Stretch">
+
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Score :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Score}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                        <Label Content="Max Tile :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding MaxTile}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+
+                    </StackPanel>
+                </StackPanel>
+            </Border>
         </StackPanel>
 
         <ScrollViewer VerticalAlignment="Top" HorizontalAlignment="Right" Width="250">
@@ -42,7 +61,6 @@
                 </ListBox>
             </StackPanel>
         </ScrollViewer >
-        
-        
+      
     </Grid>
 </Window>

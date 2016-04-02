@@ -34,7 +34,9 @@ namespace _2048.WPF
                 StartButton.Visibility = Visibility.Collapsed;
             }
 
+            //Data Bindings
             ListGameScore.ItemsSource = _gameManager.ScoreList;
+            DataContext = _gameManager.MaxScore;
         }
 
         #region Manual Entry

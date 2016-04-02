@@ -16,6 +16,7 @@ namespace _2048.WPF.Game
         }
 
         public ObservableCollection<ScoreModel> ScoreList { get; set; } = new ObservableCollection<ScoreModel>();
+        public ScoreModel MaxScore { get; set; } = new ScoreModel();
         private CancellationTokenSource _cancelToken;
         public IStrategy Strategy { get; set; }
         public bool Animate { get; set; }
@@ -62,7 +63,7 @@ namespace _2048.WPF.Game
             _cancelToken = new CancellationTokenSource();
             Task<State>.Factory.StartNew(() =>
             {
-                var gameState = State.None;
+                var gameState = State.NotFinished;
 
                 while (!_cancelToken.IsCancellationRequested)
                 {
@@ -85,7 +86,7 @@ namespace _2048.WPF.Game
 
                                 // Check for win or loose
                                 gameState = GameGrid.CheckForWin();
-                                if (gameState != State.None)
+                                if (gameState != State.NotFinished)
                                 {
                                     // Won or lost
                                     _cancelToken.Cancel();
@@ -100,12 +101,23 @@ namespace _2048.WPF.Game
                 Application.Current.Dispatcher.Invoke(
                     () =>
                     {
-                        ScoreList.Add(new ScoreModel()
+                        var newScore = new ScoreModel()
                         {
                             MaxTile = Helper.Helper.GetMaxTile(GameGrid.GameModel.Cells),
                             Score = GameGrid.Score,
                             State = task.Result
-                        });
+                        };
+                        ScoreList.Add(newScore);
+
+                        // UpdateMax Score
+                        if (newScore.MaxTile >= MaxScore.MaxTile)
+                        {
+                            if (newScore.Score > MaxScore.Score)
+                            {
+                                MaxScore.Score = newScore.Score;
+                                MaxScore.MaxTile = newScore.MaxTile;
+                            }
+                        }
 
                         //Restart if not force stop
                         if (Restart && !ForceStop)

@@ -3,19 +3,9 @@ using _2048.Model;
 using _2048.WPF.Enums;
 using _2048.WPF.Game;
 using _2048.WPF.Helper;
-#if NETFX_CORE
-using Windows.Foundation;
-using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media.Animation;
-#elif (WINDOWS_PHONE || NETFX_451)
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-#endif
 
 namespace _2048
 {
@@ -24,7 +14,7 @@ namespace _2048
         private const int Rows = 4;
         private const int Cols = 4;
 
-        private GameTile[][] _underlyingTiles;
+        private readonly GameTile[][] _underlyingTiles;
         public GameModel GameModel { get; set; }
 
         public ScoreCard ScoreCard { get; set; }
@@ -190,10 +180,7 @@ namespace _2048
                         _underlyingTiles[cell.X][cell.Y].BeginDoubledAnimation();
                     }
 
-                    // TODO move this to a 'ResetTurn' method in the model
-                    cell.WasCreated = false;
-                    cell.WasMerged = false;
-                    cell.PreviousPosition = null;
+                    ResetCell(cell);
                 }
 
                 MoveInProgress = false;
@@ -212,17 +199,21 @@ namespace _2048
             {
                 foreach (var cell in col)
                 {
-                    cell.WasCreated = false;
-                    cell.WasMerged = false;
-                    cell.PreviousPosition = null;
+                    ResetCell(cell);
                 }
             }
+        }
+
+        private static void ResetCell(Cell cell)
+        {
+            cell.WasCreated = false;
+            cell.WasMerged = false;
+            cell.PreviousPosition = null;
         }
 
         public static bool MoveInProgress { get; set; }
         public void HandleMove(Direction direction)
         {
-            // TODO : Remove animation for move
             if (MoveInProgress)
             {
                 return;
@@ -244,7 +235,7 @@ namespace _2048
         private int _iter;
         public State CheckForWin()
         {
-            var state = State.None;
+            var state = State.NotFinished;
             
             // Check for full tileset
             if (Helper.IsFullTileSet(GameModel.Cells))

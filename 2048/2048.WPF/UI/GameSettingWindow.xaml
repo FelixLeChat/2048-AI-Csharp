@@ -14,27 +14,7 @@
     <Grid Background="#FFE7E7E7">
         <Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Background="#FFFCFCFC" Margin="10">
             <StackPanel>
-    
-                <!--
-                <GroupBox  Margin="10,5,10,0" FontSize="16" FontWeight="Bold"
-                  Background="LightGray">
-                    <GroupBox.Header>
-                        Game Mode
-                    </GroupBox.Header>
-                    <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
-                        <RadioButton GroupName="GameMode" Content="Visual" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Mode.Visual}}"/>
-                        <RadioButton GroupName="GameMode" Content="Stats" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Mode.Stats}}"/>
-                        <RadioButton GroupName="GameMode" Content="Training" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Mode.Training}}"/>
-                    </StackPanel>
-                </GroupBox>
-                -->
-                
+
                 <GroupBox  Margin="10,5,10,0" FontSize="16" FontWeight="Bold"
                   Background="LightGray">
                     <GroupBox.Header>
