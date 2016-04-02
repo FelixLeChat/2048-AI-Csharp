@@ -1,4 +1,6 @@
-﻿namespace _2048.Model
+﻿using System;
+
+namespace _2048.Model
 {
     public class Coordinate
     {
@@ -11,6 +13,7 @@
         }
     }
 
+    [Serializable]
     public class Cell
     {
         public int Value { get; set; }

@@ -60,6 +60,7 @@
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Type.cs" />
     <Compile Include="Properties\Annotations1.cs" />
+    <Compile Include="Strategy\DeptFirstStrategy.cs" />
     <Compile Include="Strategy\MasterAlgo.cs" />
     <Compile Include="UI\GameSettingWindow.xaml.cs">
       <DependentUpon>GameSettingWindow.xaml</DependentUpon>

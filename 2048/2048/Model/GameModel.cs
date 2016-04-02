@@ -5,6 +5,7 @@ using _2048.WPF.Game;
 
 namespace _2048.Model
 {
+    [Serializable]
     public class GameModel
     {
         public int Score { get; private set; }
@@ -41,17 +42,44 @@ namespace _2048.Model
 
                 if (newTile != null)
                 {
-                    // TODO move this to its own testable method
                     Cells[newTile.Item1][newTile.Item2].Value = GetRandomStartingNumber();
                     Cells[newTile.Item1][newTile.Item2].WasCreated = true;
                     return true;
                 }
-                else
-                {
-                    // Game over?
-                }
             }
             return false;
+        }
+
+        #region Algo Functions
+        /// <summary>
+        /// Passed move changed something on the grid
+        /// </summary>
+        public bool MoveChange { get; set; }
+        public GameModel IterateNoRandom(Direction direction)
+        {
+            var gameModel = new GameModel(RowCount, ColumnCount) {Score = Score};
+            Array.Copy(Cells,0,gameModel.Cells,0,Cells.Length);
+
+            //Bypass the random
+            var moveChange = gameModel.PackAndMerge(direction);
+            gameModel.MoveChange = MoveChange;
+            gameModel.ResetCellInfos();
+
+            return gameModel;
+        }
+        #endregion
+
+        private void ResetCellInfos()
+        {
+            foreach (var col in Cells)
+            {
+                foreach (var cell in col)
+                {
+                    cell.PreviousPosition = null;
+                    cell.WasCreated = false;
+                    cell.WasMerged = false;
+                }
+            }
         }
 
         private bool PackAndMerge(Direction direction)

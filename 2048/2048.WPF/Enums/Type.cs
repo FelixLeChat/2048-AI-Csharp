@@ -2,6 +2,9 @@
 {
     public enum Type
     {
-        Manual, Random, MasterAlgo
+        Manual,
+        Random,
+        MasterAlgo,
+        DepthFirst
     }
 }

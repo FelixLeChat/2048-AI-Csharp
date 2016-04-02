@@ -38,6 +38,9 @@ namespace _2048.WPF.Game
                 case Type.MasterAlgo:
                     Strategy = new MasterAlgo();
                     break;
+                case Type.DepthFirst:
+                    Strategy = new DeptFirstStrategy();
+                    break;
             }
 
             GameGrid = new GameGrid();
@@ -101,6 +104,8 @@ namespace _2048.WPF.Game
                 Application.Current.Dispatcher.Invoke(
                     () =>
                     {
+                        if (task.Result == State.NotFinished) return;
+
                         var newScore = new ScoreModel()
                         {
                             MaxTile = Helper.Helper.GetMaxTile(GameGrid.GameModel.Cells),
