@@ -54,6 +54,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\GameSettings.cs" />
+    <Compile Include="Converter\RadioButtonCheckedConverter.cs" />
+    <Compile Include="Enums\Mode.cs" />
+    <Compile Include="Enums\Type.cs" />
+    <Compile Include="UI\GameSetting.xaml.cs">
+      <DependentUpon>GameSetting.xaml</DependentUpon>
+    </Compile>
     <Page Include="..\2048\GameGrid.xaml">
       <Link>UI\GameGrid.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -69,7 +76,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\MainWindow.xaml">
+    <Page Include="UI\GameWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -103,10 +110,14 @@
     <Compile Include="Strategy\DefaultStrategy.cs" />
     <Compile Include="Strategy\IStrategy.cs" />
     <Compile Include="Strategy\RandomStrategy.cs" />
-    <Compile Include="UI\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="UI\GameWindow.xaml.cs">
+      <DependentUpon>GameWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\GameSetting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
