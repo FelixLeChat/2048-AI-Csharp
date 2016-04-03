@@ -41,10 +41,14 @@ namespace _2048.WPF.Game
                 case Type.DepthFirst:
                     Strategy = new DeptFirstStrategy();
                     break;
+                case Type.IterativeDeepening:
+                    Strategy =new IterativeDeepening();
+                    break;
             }
 
             GameGrid = new GameGrid();
             ScoreList = new ObservableCollection<ScoreModel>();
+            MaxScore = new ScoreModel();
             Animate = settings.IsAnimated;
             Restart = settings.IsRestart;
         }
@@ -104,14 +108,17 @@ namespace _2048.WPF.Game
                 Application.Current.Dispatcher.Invoke(
                     () =>
                     {
-                        if (task.Result == State.NotFinished) return;
-
                         var newScore = new ScoreModel()
                         {
                             MaxTile = Helper.Helper.GetMaxTile(GameGrid.GameModel.Cells),
                             Score = GameGrid.Score,
                             State = task.Result
                         };
+                        // Notice Strategy
+                        Strategy.Ended(newScore);
+
+                        // Do not add to board if not finished
+                        if (task.Result == State.NotFinished) return;
                         ScoreList.Add(newScore);
 
                         // UpdateMax Score

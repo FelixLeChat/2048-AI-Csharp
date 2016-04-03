@@ -33,7 +33,7 @@
             </Border>
         </StackPanel>
 
-        <ScrollViewer VerticalAlignment="Top" HorizontalAlignment="Right" Width="250">
+        <ScrollViewer Name="ScoreScroll" VerticalAlignment="Top" HorizontalAlignment="Right" Width="250" LayoutUpdated="ScoreScroll_LayoutUpdated">
             <StackPanel >
                 <ListBox Name="ListGameScore" HorizontalAlignment="Stretch">
                     <ListBox.ItemTemplate>

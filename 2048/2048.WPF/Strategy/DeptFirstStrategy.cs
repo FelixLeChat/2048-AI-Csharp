@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _2048.Model;
 using _2048.WPF.Game;
+using _2048.WPF.Scoring;
 
 namespace _2048.WPF
 {
@@ -18,7 +19,7 @@ namespace _2048.WPF
 
         public Direction GetDirection(GameModel model)
         {
-            var dfs = new DepthFirstSearch(model);
+            var dfs = new DepthFirstSearch(model, new GameScore());
             return dfs.Search();
         }
     }
@@ -32,6 +33,7 @@ namespace _2048.WPF
         public TreeNode Up { get; set; }
         public TreeNode Down { get; set; }
 
+        public double Score { get; set; }
         public GameModel GameModel { get; set; }
     }
 
@@ -40,19 +42,24 @@ namespace _2048.WPF
         private readonly Random _random = new Random();
         private readonly Stack<TreeNode> _searchStack;
         private readonly TreeNode _root;
-        public DepthFirstSearch(GameModel game)
+        private readonly IScore _score;
+
+        public DepthFirstSearch(GameModel game, IScore score)
         {
             _root = GetNode(Helper.ObjectExtensions.Copy(game));
+            _score = score;
             _searchStack = new Stack<TreeNode>();
         }
 
         private static readonly List<Direction> PassDirection = new List<Direction>();
         public Direction Search()
         {
+            Direction direction = Direction.Up;
+
             if (PassDirection.Count > 5)
                 PassDirection.Remove(PassDirection[0]);
 
-            var score = new Dictionary<Direction, int>();
+            var score = new Dictionary<Direction, double>();
 
             //if(_root.Left.GameModel.MoveChange)
                 score.Add(Direction.Left, GetBestScore(_root.Left));
@@ -63,21 +70,24 @@ namespace _2048.WPF
             //if (_root.Down.GameModel.MoveChange)
                 score.Add(Direction.Down, GetBestScore(_root.Down));
 
-            if (score.Values.Distinct().Count() == 1 || score.Count == 0 || PassDirection.Distinct().Count() == 1)
+            // All same score
+            if (score.Values.Distinct().Count() == 1 || PassDirection.Distinct().Count() == 1)
             {
-                var direction = (Direction)_random.Next((int)Direction.Up, (int)Direction.Right + 1);
-                PassDirection.Add(direction);
-                return direction;
+                direction = (Direction)_random.Next((int)Direction.Up, (int)Direction.Right + 1);
+            }
+            else
+            {
+                direction = score.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
             }
 
-            var select = score.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-            PassDirection.Add(select);
-            return select;
+            
+            PassDirection.Add(direction);
+            return direction;
         }
 
-        private int GetBestScore(TreeNode node)
+        private double GetBestScore(TreeNode node)
         {
-            var score = 0;
+            var score = 0.0;
 
             _searchStack.Clear();
             _searchStack.Push(node);
@@ -87,8 +97,11 @@ namespace _2048.WPF
             {
                 var current = _searchStack.Pop();
 
-                if (current.GameModel.Score > score)
-                    score = current.GameModel.Score;
+                // Call scoring algo
+                current.Score = _score.Score(current);
+
+                if (current.Score > score)
+                    score = current.Score;
 
                 // Spawn Childs
                 current = GetNode(current.GameModel);
@@ -108,7 +121,7 @@ namespace _2048.WPF
             if (!node.GameModel.MoveChange) return;
 
             // Same score as grandparent
-            if (node.Parent?.Parent?.GameModel.Score <= node.GameModel.Score) return;
+            if (node.Parent?.Parent?.Parent?.Score <= node.Score) return;
 
             _searchStack.Push(node);
         }

@@ -119,5 +119,10 @@ namespace _2048.WPF
             mainMenu.Show();
             Close();
         }
+
+        private void ScoreScroll_LayoutUpdated(object sender, EventArgs e)
+        {
+            ScoreScroll.ScrollToBottom();
+        }
     }
 }

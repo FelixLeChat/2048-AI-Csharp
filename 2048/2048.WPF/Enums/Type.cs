@@ -5,6 +5,7 @@
         Manual,
         Random,
         MasterAlgo,
-        DepthFirst
+        DepthFirst,
+        IterativeDeepening
     }
 }
