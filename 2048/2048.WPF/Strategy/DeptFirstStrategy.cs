@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _2048.Model;
 using _2048.WPF.Game;
+using _2048.WPF.Model;
 using _2048.WPF.Scoring;
 
 namespace _2048.WPF
@@ -22,19 +23,6 @@ namespace _2048.WPF
             var dfs = new DepthFirstSearch(model, new GameScore());
             return dfs.Search();
         }
-    }
-
-    public class TreeNode
-    {
-        public TreeNode Parent { get; set; }
-
-        public TreeNode Left { get; set; }
-        public TreeNode Right { get; set; }
-        public TreeNode Up { get; set; }
-        public TreeNode Down { get; set; }
-
-        public double Score { get; set; }
-        public GameModel GameModel { get; set; }
     }
 
     public class DepthFirstSearch
@@ -120,8 +108,10 @@ namespace _2048.WPF
             // Nothing changed
             if (!node.GameModel.MoveChange) return;
 
+            if (node.Depth >= 7) return;
+
             // Same score as grandparent
-            if (node.Parent?.Parent?.Parent?.Score <= node.Score) return;
+            if (node.Parent?.Parent?.Score <= node.Score) return;
 
             _searchStack.Push(node);
         }
@@ -129,10 +119,10 @@ namespace _2048.WPF
         private TreeNode GetNode(GameModel game)
         {
             var node = new TreeNode { GameModel = game };
-            node.Down = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Down), Parent = node };
-            node.Up = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Up), Parent = node };
-            node.Left = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Left), Parent = node };
-            node.Right = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Right), Parent = node };
+            node.Down = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Down), Parent = node, Depth = node.Depth + 1};
+            node.Up = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Up), Parent = node, Depth = node.Depth + 1 };
+            node.Left = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Left), Parent = node, Depth = node.Depth + 1 };
+            node.Right = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Right), Parent = node, Depth = node.Depth + 1 };
 
             return node;
         }

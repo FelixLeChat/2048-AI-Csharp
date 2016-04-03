@@ -99,10 +99,12 @@ namespace _2048.WPF.Helper
         {
             var previous = cell;
             var newCell = cell;
+            var canContinue = true;
 
             // Progress towards the vector direction until an obstacle is found
             do
             {
+                canContinue = true;
                 previous = newCell;
 
                 // next position
@@ -117,8 +119,12 @@ namespace _2048.WPF.Helper
                     {
                         newCell = cells[x][y];
                     }
+                    else
+                        canContinue = false;
                 }
-            } while (newCell.Value == 0);
+                else
+                    canContinue = false;
+            } while (newCell.Value == 0 && canContinue);
 
             return new Tuple<Cell, Cell>(previous, newCell);
         }

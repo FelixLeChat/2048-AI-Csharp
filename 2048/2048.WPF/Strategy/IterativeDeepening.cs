@@ -12,7 +12,6 @@ namespace _2048.WPF
     {
         public void Initialize(GameModel model)
         {
-            var eval = Eval(model);
         }
 
         public void Ended(ScoreModel score)
@@ -24,21 +23,6 @@ namespace _2048.WPF
             return Direction.Up;
         }
 
-
-        private const double SmoothWeight = 0.1;
-        private const double Mono2Weight = 1.0;
-        private const double EmptyWeight = 2.7;
-        private const double MaxWeight = 1.0;
-
-        private static double Eval(GameModel model)
-        {
-            var emptyCells = Helper.CellHelper.GetEmptyCellCount(model.Cells);
-
-            return Helper.CellHelper.GetSmoothness(model.Cells)*SmoothWeight
-                   + Helper.CellHelper.Monotonicity2(model.Cells)*Mono2Weight
-                   + Math.Log(emptyCells)*EmptyWeight
-                   + Helper.CellHelper.GetMaxValue(model.Cells).Value*MaxWeight;
-        }
 
         private static Direction Search(Cell[][] gameCells, int depth, double alpha, double beta, int positions, double cutoffs)
         {

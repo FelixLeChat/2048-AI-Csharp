@@ -115,6 +115,9 @@ namespace _2048.WPF
 
         private void MainMenuButton_Click(object sender, RoutedEventArgs e)
         {
+            // Stop Game
+            _gameManager.StopGame(true);
+
             var mainMenu = new GameSettingWindow();
             mainMenu.Show();
             Close();
