@@ -60,6 +60,8 @@
     <Compile Include="Converter\RadioButtonCheckedConverter.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Type.cs" />
+    <Compile Include="Model\Interface\IGameModel.cs" />
+    <Compile Include="Model\OptimizeGameModel.cs" />
     <Compile Include="Model\Position.cs" />
     <Compile Include="Model\StatModel.cs" />
     <Compile Include="Model\TreeNode.cs" />
