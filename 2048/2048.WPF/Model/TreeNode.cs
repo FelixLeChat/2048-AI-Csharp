@@ -1,7 +1,9 @@
-﻿using _2048.Model;
+﻿using System;
+using _2048.Model;
 
 namespace _2048.WPF.Model
 {
+    [Serializable]
     public class TreeNode
     {
         public TreeNode Parent { get; set; }

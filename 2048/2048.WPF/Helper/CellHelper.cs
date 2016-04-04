@@ -54,6 +54,16 @@ namespace _2048.WPF.Helper
             return maxCell;
         }
 
+        /// <summary>
+        /// Get if the game is won
+        /// </summary>
+        /// <param name="cells"></param>
+        /// <returns></returns>
+        public static bool IsWon(Cell[][] cells)
+        {
+            var max = GetMaxValue(cells);
+            return max.Value >= 2048;
+        }
 
         #region Javascript Translation
         // measures how smooth the grid is (as if the values of the pieces

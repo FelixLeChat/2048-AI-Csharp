@@ -2,6 +2,7 @@
 
 namespace _2048.Model
 {
+    [Serializable]
     public class Coordinate
     {
         public int X { get; set; }

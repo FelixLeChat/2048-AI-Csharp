@@ -8,12 +8,12 @@ namespace _2048.Model
     [Serializable]
     public class GameModel
     {
-        public int Score { get; private set; }
+        public int Score { get; set; }
         
         public int RowCount { get; }
         public int ColumnCount { get; }
 
-        public Cell[][] Cells { get; private set; }
+        public Cell[][] Cells { get; set; }
 
         public IEnumerable<Cell> CellsIterator()
         {
@@ -36,6 +36,8 @@ namespace _2048.Model
 
         public bool PerformMove(Direction direction)
         {
+            if (direction == Direction.NONE) return false;
+
             if (PackAndMerge(direction))
             {
                 var newTile = GetRandomEmptyTile();
