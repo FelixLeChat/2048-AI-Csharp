@@ -36,7 +36,7 @@ namespace _2048.WPF
 
             //Data Bindings
             ListGameScore.ItemsSource = _gameManager.ScoreList;
-            DataContext = _gameManager.MaxScore;
+            DataContext = _gameManager.Stats;
         }
 
         #region Manual Entry
