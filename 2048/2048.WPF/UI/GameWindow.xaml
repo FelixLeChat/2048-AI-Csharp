@@ -21,13 +21,23 @@
 
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" >
-                        <Label Content="Score :" VerticalAlignment="Center" Margin="2"/>
+                        <Label Content="Max Score :" VerticalAlignment="Center" Margin="2"/>
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
-                                             Text="{Binding Score}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                                             Text="{Binding MaxScore}" TextWrapping="Wrap" Margin="2" Padding="5"/>
                         <Label Content="Max Tile :" VerticalAlignment="Center" Margin="2"/>
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding MaxTile}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Avg. Game Time :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding AverageGameTime}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
 
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Avg. move Time :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding AverageMoveTime}" TextWrapping="Wrap" Margin="2" Padding="5"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

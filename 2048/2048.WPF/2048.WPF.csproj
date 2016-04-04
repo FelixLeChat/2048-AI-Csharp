@@ -61,6 +61,7 @@
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Type.cs" />
     <Compile Include="Model\Position.cs" />
+    <Compile Include="Model\StatModel.cs" />
     <Compile Include="Model\TreeNode.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="Scoring\GameScore.cs" />

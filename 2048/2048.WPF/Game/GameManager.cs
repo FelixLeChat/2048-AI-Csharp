@@ -72,15 +72,16 @@ namespace _2048.WPF.Game
             // Initialize Strategy
             Strategy.Initialize(GameGrid.GameModel);
 
-            // Stats
-            _gameTimer.Restart();
-            _moveTimer.Restart();
 
             // Token for thread cancelation
             _cancelToken = new CancellationTokenSource();
             Task<State>.Factory.StartNew(() =>
             {
                 var gameState = State.NotFinished;
+
+                // Stats
+                _gameTimer.Restart();
+                _moveTimer.Restart();
 
                 while (!_cancelToken.IsCancellationRequested)
                 {
@@ -105,6 +106,7 @@ namespace _2048.WPF.Game
                                     GameGrid.ResetCells();
                                 }
                                 _moveTimer.Stop();
+
                                 Stats.TotalMoveTime += _moveTimer.ElapsedMilliseconds;
                                 Stats.AverageMoveTime = Stats.TotalMoveTime/Stats.TotalMoveCount;
 
