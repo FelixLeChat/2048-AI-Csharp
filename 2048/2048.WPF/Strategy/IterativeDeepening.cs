@@ -33,8 +33,7 @@ namespace _2048.WPF
             var bestMove = Direction.NONE;
             var result = new Result();
 
-            // try a 2 and 4 in each cell and measure how annoying it is
-            // with metrics from eval
+            // try a 2 and 4 in each cell
             var cells = Helper.CellHelper.GetEmptyCellPositions(gameCells);
             var scores = new Dictionary<int, List<Tuple<Cell, double>>>()
             {
