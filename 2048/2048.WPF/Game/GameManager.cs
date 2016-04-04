@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using _2048.WPF.Converter;
 using _2048.WPF.Enums;
+using _2048.WPF.Model;
 
 namespace _2048.WPF.Game
 {
@@ -16,8 +18,10 @@ namespace _2048.WPF.Game
         }
 
         public ObservableCollection<ScoreModel> ScoreList { get; set; } = new ObservableCollection<ScoreModel>();
-        public ScoreModel MaxScore { get; set; } = new ScoreModel();
+        public StatModel Stats { get; set; } = new StatModel();
         private CancellationTokenSource _cancelToken;
+        private Stopwatch _moveTimer;
+        private Stopwatch _gameTimer;
         public IStrategy Strategy { get; set; }
         public bool Animate { get; set; }
         public bool Restart { get; set; }
@@ -48,9 +52,11 @@ namespace _2048.WPF.Game
 
             GameGrid = new GameGrid();
             ScoreList = new ObservableCollection<ScoreModel>();
-            MaxScore = new ScoreModel();
+            Stats = new StatModel();
             Animate = settings.IsAnimated;
             Restart = settings.IsRestart;
+            _moveTimer = new Stopwatch();
+            _gameTimer = new Stopwatch();
         }
 
         public void RestartGrid()
@@ -66,6 +72,10 @@ namespace _2048.WPF.Game
             // Initialize Strategy
             Strategy.Initialize(GameGrid.GameModel);
 
+            // Stats
+            _gameTimer.Restart();
+            _moveTimer.Restart();
+
             // Token for thread cancelation
             _cancelToken = new CancellationTokenSource();
             Task<State>.Factory.StartNew(() =>
@@ -80,6 +90,10 @@ namespace _2048.WPF.Game
                         Application.Current.Dispatcher.Invoke(
                             () =>
                             {
+                                // Stats
+                                _moveTimer.Start();
+                                Stats.TotalMoveCount++;
+
                                 var direction = Strategy.GetDirection(GameGrid.GameModel);
                                 // Move
                                 if (Animate)
@@ -90,6 +104,10 @@ namespace _2048.WPF.Game
                                     GameGrid.MoveInProgress = false;
                                     GameGrid.ResetCells();
                                 }
+                                _moveTimer.Stop();
+                                Stats.TotalMoveTime += _moveTimer.ElapsedMilliseconds;
+                                Stats.AverageMoveTime = Stats.TotalMoveTime/Stats.TotalMoveCount;
+
 
                                 // Check for win or loose
                                 gameState = GameGrid.CheckForWin();
@@ -97,6 +115,7 @@ namespace _2048.WPF.Game
                                 {
                                     // Won or lost
                                     _cancelToken.Cancel();
+                                    _gameTimer.Stop();
                                 }
                             });
                     }
@@ -121,15 +140,29 @@ namespace _2048.WPF.Game
                         if (task.Result == State.NotFinished) return;
                         ScoreList.Add(newScore);
 
-                        // UpdateMax Score
-                        if (newScore.MaxTile >= MaxScore.MaxTile)
+                        #region Stats
+
+                        //Max tile and score
+                        if (newScore.MaxTile >= Stats.MaxTile)
                         {
-                            if (newScore.Score > MaxScore.Score)
+                            if (newScore.Score > Stats.MaxScore)
                             {
-                                MaxScore.Score = newScore.Score;
-                                MaxScore.MaxTile = newScore.MaxTile;
+                                Stats.MaxScore = newScore.Score;
+                                Stats.MaxTile = newScore.MaxTile;
                             }
                         }
+
+                        // Gamecount
+                        Stats.TotalGamePlayed++;
+                        if (task.Result == State.Won) Stats.TotalWins++;
+                        else Stats.TotalLosses++;
+
+                        // Time
+                        Stats.TotalGameTime += _gameTimer.ElapsedMilliseconds;
+                        Stats.AverageGameTime = Stats.TotalGameTime/Stats.TotalGamePlayed;
+
+                        Stats.AverageMoveCount = Stats.TotalMoveCount/Stats.TotalGamePlayed;
+                        #endregion
 
                         //Restart if not force stop
                         if (Restart && !ForceStop)
