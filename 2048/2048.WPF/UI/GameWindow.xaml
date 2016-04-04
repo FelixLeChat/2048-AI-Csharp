@@ -6,7 +6,7 @@
         <Grid Background="#faf8ef" Name="ContentGrid">
         </Grid>
 
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Width="250" Height="auto">
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Width="auto" Height="auto">
             <Button Name="StartButton" Content="Start" Margin="10,10,0,0" Click="StartButton_Click" MaxWidth="120"/>
             <Button Name="StopButton" Content="Stop" Margin="10,5,0,0" Click="StopButton_Click" IsEnabled="false" MaxWidth="120"/>
             <Button Name="RestartButton" Content="Restart" Margin="10,5,0,0" Click="RestartButton_Click" IsEnabled="false" MaxWidth="120"/>
@@ -28,6 +28,9 @@
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding MaxTile}" TextWrapping="Wrap" Margin="2" Padding="5"/>
                     </StackPanel>
+                    
+                    <Rectangle Fill="Gray" Height="2"/>
+
                     <StackPanel Orientation="Horizontal" >
                         <Label Content="Avg. Game Time :" VerticalAlignment="Center" Margin="2"/>
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
@@ -38,6 +41,52 @@
                         <Label Content="Avg. move Time :" VerticalAlignment="Center" Margin="2"/>
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding AverageMoveTime}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
+                    
+                    <Rectangle Fill="Gray" Height="2"/>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Total Games:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding TotalGamePlayed}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Win (2048):" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding TotalWins}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                        <Label Content="Loss:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding TotalLosses}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
+
+                    <Rectangle Fill="Gray" Height="2"/>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="Average Move:" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding AverageMoveCount}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
+
+                    <Rectangle Fill="Gray" Height="2"/>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="128 :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get128}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+
+                        <Label Content="256 :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get256}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                        <Label Content="512 :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get512}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+
+                        <Label Content="1024 :" VerticalAlignment="Center" Margin="2"/>
+                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get1024}" TextWrapping="Wrap" Margin="2" Padding="5"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
