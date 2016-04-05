@@ -6,6 +6,7 @@ using System.Windows;
 using _2018.AI.Enums;
 using _2018.AI.Helper;
 using _2018.AI.Model.Core;
+using _2018.AI.Model.Optimize;
 using _2018.AI.Strategy;
 using _2048.WPF.Model;
 
@@ -66,6 +67,10 @@ namespace _2048.WPF.Game
             _gameTimer = new Stopwatch();
 
             BoardType = settings.BoardType;
+            if (BoardType == BoardType.Optimized)
+            {
+                OptimizeBoardHelper.InitLookupTable();
+            }
         }
 
         public void RestartGrid()
@@ -109,7 +114,7 @@ namespace _2048.WPF.Game
                                     GameGrid.HandleMove(direction);
                                 else
                                 {
-                                    GameGrid.GameModel.PerformMove(direction);
+                                    board.PerformMove(direction);
                                     GameGrid.MoveInProgress = false;
                                     GameGrid.ResetCells();
                                 }

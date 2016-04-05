@@ -71,30 +71,37 @@ namespace _2018.AI.Model.Optimize
                     (row >> 12) & 0xf
                 };
 
-                //CalculateRowScore(row, line);
+                CalculateRowScore(row, line);
 
                 CalculateRowTransformation((Row)row, ref line);
 
             }
         }
 
-        //// TODO: Felix exemple comment calculer score
         //// Calculate the score of this row
-        //private static void CalculateRowScore(uint row, int[] line)
-        //{
+        private static void CalculateRowScore(int row, int[] line)
+        {
 
-        //    float score = 0;
-        //    for (int i = 0; i < 4; ++i)
-        //    {
-        //        int rank = (int)line[i];
-        //        if (rank >= 2)
-        //        {
-        //            // The score is the total sum of the title and all intermediate merged tiles
-        //            score += (rank - 1) * (1 << rank);
-        //        }
-        //    }
-        //    _scoreTable[row] = score;
-        //}
+            float score = 0;
+            for (int i = 0; i < 4; ++i)
+            {
+                int rank = (int)line[i];
+                if (rank >= 2)
+                {
+                    // The score is the total sum of the title and all intermediate merged tiles
+                    score += (rank - 1) * (1 << rank);
+                }
+            }
+            _scoreTable[row] = score;
+        }
+
+        public static float GetScore(Board board)
+        {
+            return _scoreTable[(board >> 0) & ROW_MASK] +
+                   _scoreTable[(board >> 16) & ROW_MASK] +
+                   _scoreTable[(board >> 32) & ROW_MASK] +
+                   _scoreTable[(board >> 48) & ROW_MASK];
+        }
 
         // Precalculate the possible transformation (execute move the the left)
         private static void CalculateRowTransformation(Row row, ref int[] line)

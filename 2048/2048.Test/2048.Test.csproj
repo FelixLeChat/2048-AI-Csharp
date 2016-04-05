@@ -51,7 +51,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="OptimizeBoardTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\2018.AI\2018.AI.csproj">
@@ -62,6 +61,9 @@
       <Project>{6fe96390-1c33-4a5a-8899-b151b0609fc2}</Project>
       <Name>2048.WPF</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

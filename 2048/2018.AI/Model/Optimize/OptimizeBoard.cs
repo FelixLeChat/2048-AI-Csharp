@@ -25,8 +25,7 @@ namespace _2018.AI.Model.Optimize
 
         public int GetScore()
         {
-            // TODO : Implement score
-            return 0;
+            return (int) OptimizeBoardHelper.GetScore(Board);
         }
 
         public int GetSize()
@@ -54,7 +53,7 @@ namespace _2018.AI.Model.Optimize
 
         public void SetValue(int x, int y, int value)
         {
-            InsertValue(x, y, (short) Math.Sqrt(value));
+            InsertValue(x, y, (short) Math.Log(value, 2));
         }
 
         public void InsertValue(int x, int y, short value)

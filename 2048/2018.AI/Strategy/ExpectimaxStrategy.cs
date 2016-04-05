@@ -18,7 +18,7 @@ namespace _2018.AI.Strategy
             Direction.Right
         };
 
-        private int MaxDepth = 3;
+        private int MaxDepth = 8;
 
         public Direction GetDirection(IBoard board)
         {
@@ -29,14 +29,23 @@ namespace _2018.AI.Strategy
             foreach (var direction in PossibleDirection)
             {
                 var copy = board.GetCopy();
-                copy.PerformMove(direction);
+                var hadChanged = copy.PerformMove(direction);
                 var score = Expectimax(copy, MaxDepth);
 
-                if (score > bestScore)
+                if (hadChanged)
                 {
-                    bestScore = score;
-                    bestDirection = direction;
+                    // Prevent getting stuck
+                    if (bestScore == 0)
+                    {
+                        bestDirection = direction;
+                    }
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestDirection = direction;
+                    }
                 }
+
             }
 
             return bestDirection;
@@ -52,7 +61,7 @@ namespace _2018.AI.Strategy
         {
             if (depth == 0)
             {
-                board.GetScore();
+               return board.GetScore();
             }
 
             float bestScore = 0.0f;
