@@ -20,7 +20,7 @@ namespace _2048.WPF
 
         public Direction GetDirection(GameModel model)
         {
-            var dfs = new DepthFirstSearch(model, new GameScore());
+            var dfs = new DepthFirstSearch(model, new MasterScore());
             return dfs.Search();
         }
     }
@@ -111,7 +111,7 @@ namespace _2048.WPF
             if (node.Depth >= 7) return;
 
             // Same score as grandparent
-            if (node.Parent?.Parent?.Score <= node.Score) return;
+            //if (node.Parent?.Parent?.Score <= node.Score) return;
 
             _searchStack.Push(node);
         }

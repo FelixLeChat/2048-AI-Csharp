@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using _2048.WPF.Game;
+using _2048.WPF.Model.Core;
 
 namespace _2048.Model
 {
     [Serializable]
-    public class GameModel
+    public class GameModel : IBoard
     {
         public int Score { get; set; }
         
@@ -50,6 +51,16 @@ namespace _2048.Model
                 }
             }
             return false;
+        }
+
+        public int GetValue(int x, int y)
+        {
+            return Cells[x][y].Value;
+        }
+
+        public int GetSize()
+        {
+            return RowCount;
         }
 
         #region Algo Functions
