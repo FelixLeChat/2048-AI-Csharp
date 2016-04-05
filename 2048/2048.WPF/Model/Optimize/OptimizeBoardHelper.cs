@@ -14,7 +14,7 @@ namespace _2048.WPF.Model
     /// Inspired from https://github.com/nneonneo/2048-ai
     /// </summary>
 
-    public class OptimizeBoardHelper
+    public static class OptimizeBoardHelper
     {
         private const Board ROW_MASK = 0xFFFF;
         private const Board COL_MASK = 0x000F000F000F000F;
@@ -61,9 +61,9 @@ namespace _2048.WPF.Model
 
         static readonly float[] _scoreTable = new float[65536];
 
-        private void InitLookupTable()
+        public static void InitLookupTable()
         {
-            for (Row row = 0; row < 65536; ++row)
+            for (int row = 0; row < 65536; ++row)
             {
                 // Transform the uint of row into [nible1, nible2, nible3, nible 4]
                 int[] line = new int[]
@@ -74,33 +74,33 @@ namespace _2048.WPF.Model
                     (row >> 12) & 0xf
                 };
 
-                CalculateRowScore(row, line);
+                //CalculateRowScore(row, line);
 
-                CalculateRowTransformation(row, ref line);
+                CalculateRowTransformation((Row)row, ref line);
 
             }
         }
 
-        // TODO: Felix exemple comment calculer score
-        // Calculate the score of this row
-        private void CalculateRowScore(uint row, int[] line)
-        {
+        //// TODO: Felix exemple comment calculer score
+        //// Calculate the score of this row
+        //private static void CalculateRowScore(uint row, int[] line)
+        //{
 
-            float score = 0;
-            for (int i = 0; i < 4; ++i)
-            {
-                int rank = (int)line[i];
-                if (rank >= 2)
-                {
-                    // The score is the total sum of the title and all intermediate merged tiles
-                    score += (rank - 1) * (1 << rank);
-                }
-            }
-            _scoreTable[row] = score;
-        }
+        //    float score = 0;
+        //    for (int i = 0; i < 4; ++i)
+        //    {
+        //        int rank = (int)line[i];
+        //        if (rank >= 2)
+        //        {
+        //            // The score is the total sum of the title and all intermediate merged tiles
+        //            score += (rank - 1) * (1 << rank);
+        //        }
+        //    }
+        //    _scoreTable[row] = score;
+        //}
 
         // Precalculate the possible transformation (execute move the the left)
-        private void CalculateRowTransformation(Row row, ref int[] line)
+        private static void CalculateRowTransformation(Row row, ref int[] line)
         {
             // Precalculate the possible transformation (execute move the the left)
             for (int i = 0; i < 3; ++i)
@@ -136,14 +136,14 @@ namespace _2048.WPF.Model
             var reverseRow = ReverseRow(row);
 
             _rowLeftTable[row] = (ushort)(row ^ result);
-            _rowLeftTable[reverseRow] = (ushort)(reverseRow ^ reverseResult);
+            _rowRightTable[reverseRow] = (ushort)(reverseRow ^ reverseResult);
             _colUpTable[row] = ConvertToColumn(row) ^ ConvertToColumn(result);
             _colDownTable[reverseRow] = ConvertToColumn(reverseRow) ^ ConvertToColumn(reverseResult);
 
 
         }
 
-        private Row LineArrayToRow(int[] line)
+        private static Row LineArrayToRow(int[] line)
         {
             Row result = (Row)((line[0] << 0) |
                                 (line[1] << 4) |
@@ -154,7 +154,7 @@ namespace _2048.WPF.Model
 
         #endregion
 
-        public static Board PerformMove(Board board ,Direction direction)
+        public static Board PerformMove(Board board, Direction direction)
         {
             switch (direction)
             {
@@ -214,9 +214,72 @@ namespace _2048.WPF.Model
             return result;
         }
 
-        public static void InsertRandomTile(Board board, Board tile)
+        public static Board InsertTile(Board board, int x, int y, short value)
         {
+            if (x < 0 || x >= 4 || y < 0 || y >= 4)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
 
+            Board insertBoard = (ulong)(value & 0xf);
+
+            // Move to right column
+            insertBoard = insertBoard << (x * 4);
+            // Move to right row
+            insertBoard = insertBoard << (y * 16);
+
+            return board | insertBoard;
+        }
+
+
+
+        //public static Board InsertRandomTile(Board board, Board tile)
+        //{
+
+        //}
+
+        /// <summary>
+        /// Return the nyblet at the 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static short GetValue(Board board, int x, int y)
+        {
+            if (x < 0 || x >= 4 || y < 0 || y >= 4)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            // Shift the wanted nyblet to the last column
+            board = board >> (x * 4);
+
+            //Shift to the last row
+            board = board >> (y * 16);
+
+            // Keep the last nyblet
+            board = board & 0xf;
+
+            return (short)board;
+        }
+
+
+        public static string ToString(Board board)
+        {
+            StringBuilder result = new StringBuilder();
+            int i, j;
+            for (i = 0; i < 4; i++)
+            {
+                for (j = 0; j < 4; j++)
+                {
+                    short powerVal = (short) ((board) & 0xf);
+                    result.Append(((powerVal == 0) ? 0 : 1 << powerVal) + " ");
+                    board >>= 4;
+                }
+                result.AppendLine();
+            }
+            return result.ToString();
         }
 
 

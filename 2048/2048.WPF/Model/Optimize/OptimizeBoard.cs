@@ -17,7 +17,9 @@ namespace _2048.WPF.Model
         public bool PerformMove(Direction direction)
         {
             var result = OptimizeBoardHelper.PerformMove(Board, direction);
-            return Board != result;
+            var hadChange = result != Board;
+            Board = result;
+            return hadChange;
         }
 
         public int GetSize()
@@ -29,43 +31,30 @@ namespace _2048.WPF.Model
         {
             if (x < 0 || x >= GetSize() || y < 0 || y >= GetSize())
             {
-                throw new ArgumentOutOfRangeException();
+                throw new IndexOutOfRangeException("The index in out of range");
             }
+            var power = OptimizeBoardHelper.GetValue(Board, x, y);
+            return  (power == 0) ? 0 :  1 << OptimizeBoardHelper.GetValue(Board, x, y);
 
-            int tmp = 0;
-            // Shift the wanted nyblet to the last column
-            switch (x)
+        }
+
+        public void InsertValue(int x, int y, short value)
+        {
+            if (x < 0 || x >= GetSize() || y < 0 || y >= GetSize())
             {
-                case 0:
-                    tmp = tmp >> 12;
-                    break;
-                case 1:
-                    tmp = tmp >> 8;
-                    break;
-                case 2:
-                    tmp = tmp >> 4;
-                    break;
-
+                throw new IndexOutOfRangeException("The index in out of range");
             }
-
-            //Shift to the last row
-            switch (y)
+            if (value > 0xff)
             {
-                case 0:
-                    tmp = tmp >> 48;
-                    break;
-                case 1:
-                    tmp = tmp >> 32;
-                    break;
-                case 2:
-                    tmp = tmp >> 16;
-                    break;
+                throw new ArgumentOutOfRangeException("The value must fit in a nyblet");
             }
-            tmp = tmp & 0xf;
 
-            var result = 0x2 << tmp;
+            Board = OptimizeBoardHelper.InsertTile(Board, x, y, value);
+        }
 
-            return result;
+        public override string ToString()
+        {
+           return  OptimizeBoardHelper.ToString(Board);
         }
     }
 }
