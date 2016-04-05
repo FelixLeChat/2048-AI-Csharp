@@ -132,7 +132,7 @@ namespace _2018.AI.Heuristics
             double smoothness = 0.0f;
             for (var x = 0; x < board.GetSize(); x++)
             {
-                for (var y = 0; y < 4; y++)
+                for (var y = 0; y < board.GetSize(); y++)
                 {
                     var val = board.GetValue(x, y);
                     if (val != 0)

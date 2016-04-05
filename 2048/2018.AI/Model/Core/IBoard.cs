@@ -11,5 +11,7 @@ namespace _2018.AI.Model.Core
 
         int GetScore();
         int GetSize();
+
+        IBoard GetCopy();
     }
 }

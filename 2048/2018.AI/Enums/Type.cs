@@ -6,6 +6,7 @@
         Random,
         MasterAlgo,
         DepthFirst,
-        IterativeDeepening
+        IterativeDeepening,
+        Expectimax
     }
 }

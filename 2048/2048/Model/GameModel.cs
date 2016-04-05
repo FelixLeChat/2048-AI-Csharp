@@ -73,6 +73,11 @@ namespace _2048.Model
             return RowCount;
         }
 
+        public IBoard GetCopy()
+        {
+            throw new NotImplementedException();
+        }
+
         #region Algo Functions
         /// <summary>
         /// Passed move changed something on the grid

@@ -7,10 +7,6 @@ namespace _2018.AI.Strategy
 {
     public class RandomStrategy : IStrategy
     {
-        public void Initialize(GameModel model)
-        {
-        }
-
         private readonly Random _random = new Random();
         public Direction GetDirection(IBoard board)
         {

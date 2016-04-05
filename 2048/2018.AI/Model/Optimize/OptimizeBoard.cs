@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using _2018.AI.Enums;
 using _2018.AI.Model.Core;
 using Board = System.UInt64;
@@ -31,6 +32,13 @@ namespace _2018.AI.Model.Optimize
         public int GetSize()
         {
             return 4;
+        }
+
+        public IBoard GetCopy()
+        {
+            OptimizeBoard copy = new OptimizeBoard();
+            copy.Board = Board;
+            return copy;
         }
 
         public int GetValue(int x, int y)

@@ -11,10 +11,6 @@ namespace _2018.AI.Strategy
 {
     public class DeptFirstStrategy : IStrategy
     {
-        public void Initialize(GameModel model)
-        {
-        }
-
         public Direction GetDirection(IBoard board)
         {
             var dfs = new DepthFirstSearch(board, new MasterScore());
