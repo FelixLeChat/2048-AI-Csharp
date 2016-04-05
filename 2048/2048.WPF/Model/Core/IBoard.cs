@@ -6,5 +6,6 @@ namespace _2048.WPF.Model.Core
     {
         bool PerformMove(Direction direction);
         int GetValue(int x, int y);
+        int GetSize();
     }
 }
