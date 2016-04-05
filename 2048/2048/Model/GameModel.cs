@@ -75,7 +75,11 @@ namespace _2048.Model
 
         public IBoard GetCopy()
         {
-            throw new NotImplementedException();
+            return new GameModel(RowCount, ColumnCount)
+            {
+                Score = Score,
+                Cells = Cells
+            };
         }
 
         #region Algo Functions

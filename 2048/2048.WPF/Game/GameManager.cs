@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using _2018.AI.Enums;
 using _2018.AI.Helper;
+using _2018.AI.Model.Core;
 using _2018.AI.Strategy;
 using _2048.WPF.Model;
 
@@ -26,6 +27,8 @@ namespace _2048.WPF.Game
         public IStrategy Strategy { get; set; }
         public bool Animate { get; set; }
         public bool Restart { get; set; }
+
+        private BoardType BoardType { get; set; }
 
         // GameGrid a les elements visuels mais mous n'avons besoin que de GameModel pour la simulation rapide
         public GameGrid GameGrid { get; set; }
@@ -61,6 +64,8 @@ namespace _2048.WPF.Game
             Restart = settings.IsRestart;
             _moveTimer = new Stopwatch();
             _gameTimer = new Stopwatch();
+
+            BoardType = settings.BoardType;
         }
 
         public void RestartGrid()
@@ -72,10 +77,6 @@ namespace _2048.WPF.Game
         {
             if (Strategy == null)
                 return;
-
-            // Initialize Strategy
-            //Strategy.Initialize(GameGrid.GameModel);
-
 
             // Token for thread cancelation
             _cancelToken = new CancellationTokenSource();
@@ -98,7 +99,11 @@ namespace _2048.WPF.Game
                                 _moveTimer.Restart();
                                 Stats.TotalMoveCount++;
 
-                                var direction = Strategy.GetDirection(GameGrid.GameModel);
+                                IBoard board = GameGrid.GameModel;
+                                if (BoardType == BoardType.Optimized)
+                                    board = Helper.Translate(GameGrid.GameModel);
+
+                                var direction = Strategy.GetDirection(board);
                                 // Move
                                 if (Animate)
                                     GameGrid.HandleMove(direction);

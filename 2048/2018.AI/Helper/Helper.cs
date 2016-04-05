@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using _2018.AI.Helper.ArrayExtensions;
+using _2018.AI.Model.Optimize;
 using _2048.Model;
 
 namespace _2018.AI.Helper
@@ -47,7 +48,20 @@ namespace _2018.AI.Helper
         }
 
 
+        public static OptimizeBoard Translate(GameModel board)
+        {
+            var newBoard = new OptimizeBoard();
+            var size = board.GetSize();
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    newBoard.SetValue(i,j, board.GetValue(i,j));
+                }
+            }
 
+            return newBoard;
+        }
 
     }
 

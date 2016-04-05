@@ -5,7 +5,6 @@ using _2018.AI.Enums;
 using _2018.AI.Model;
 using _2018.AI.Model.Core;
 using _2018.AI.Scoring;
-using _2048.Model;
 
 namespace _2018.AI.Strategy
 {
@@ -35,21 +34,18 @@ namespace _2018.AI.Strategy
         private static readonly List<Direction> PassDirection = new List<Direction>();
         public Direction Search()
         {
-            Direction direction = Direction.Up;
+            Direction direction;
 
             if (PassDirection.Count > 5)
                 PassDirection.Remove(PassDirection[0]);
 
-            var score = new Dictionary<Direction, double>();
-
-            //if(_root.Left.GameModel.MoveChange)
-                score.Add(Direction.Left, GetBestScore(_root.Left));
-            //if (_root.Up.GameModel.MoveChange)
-                score.Add(Direction.Up, GetBestScore(_root.Up));
-            //if (_root.Right.GameModel.MoveChange)
-                score.Add(Direction.Right, GetBestScore(_root.Right));
-            //if (_root.Down.GameModel.MoveChange)
-                score.Add(Direction.Down, GetBestScore(_root.Down));
+            var score = new Dictionary<Direction, double>
+            {
+                {Direction.Left, GetBestScore(_root.Left)},
+                {Direction.Up, GetBestScore(_root.Up)},
+                {Direction.Right, GetBestScore(_root.Right)},
+                {Direction.Down, GetBestScore(_root.Down)}
+            };
 
             // All same score
             if (score.Values.Distinct().Count() == 1 || PassDirection.Distinct().Count() == 1)
@@ -106,23 +102,23 @@ namespace _2018.AI.Strategy
             _searchStack.Push(node);
         }
 
-        private TreeNode GetNode(IBoard board, int depth)
+        private static TreeNode GetNode(IBoard board, int depth)
         {
             var node = new TreeNode { Board = board };
 
-            var downBoard = Helper.Helper.DeepClone(board);
+            var downBoard = board.GetCopy();
             downBoard.PerformMove(Direction.Down);
             node.Down = new TreeNode() { Board = downBoard, Parent = node, Depth = depth + 1};
 
-            var upBoard = Helper.Helper.DeepClone(board);
+            var upBoard = board.GetCopy();
             upBoard.PerformMove(Direction.Up);
             node.Up = new TreeNode() { Board = upBoard, Parent = node, Depth = depth + 1 };
 
-            var leftBoard = Helper.Helper.DeepClone(board);
+            var leftBoard = board.GetCopy();
             leftBoard.PerformMove(Direction.Left);
             node.Left = new TreeNode() { Board = leftBoard, Parent = node, Depth = depth + 1 };
 
-            var lightBoard = Helper.Helper.DeepClone(board);
+            var lightBoard = board.GetCopy();
             lightBoard.PerformMove(Direction.Right);
             node.Right = new TreeNode() { Board = lightBoard, Parent = node, Depth = depth + 1 };
 

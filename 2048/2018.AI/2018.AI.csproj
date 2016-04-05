@@ -48,6 +48,7 @@
     <Compile Include="..\2048\model\GameModel.cs">
       <Link>Model\GameModel.cs</Link>
     </Compile>
+    <Compile Include="Enums\BoardType.cs" />
     <Compile Include="Enums\Direction.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\State.cs" />

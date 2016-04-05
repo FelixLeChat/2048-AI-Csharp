@@ -43,6 +43,24 @@ namespace _2048.WPF.Model
         }
 
         /// <summary>
+        /// Board type to set
+        /// </summary>
+        private BoardType _boardType;
+        public BoardType BoardType
+        {
+            get { return _boardType; }
+            set
+            {
+                if (_boardType != value)
+                {
+                    _boardType = value;
+                    OnPropertyChanged();
+                }
+            }
+
+        }
+
+        /// <summary>
         /// Seed for the random cell generation in the game
         /// </summary>
         private string _gameSeed;
