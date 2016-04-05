@@ -68,8 +68,10 @@
     <Compile Include="Model\TreeNode.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="Scoring\GameScore.cs" />
+    <Compile Include="Scoring\IOptimizedScore.cs" />
     <Compile Include="Scoring\IScore.cs" />
     <Compile Include="Scoring\IterativeEvalScore.cs" />
+    <Compile Include="Scoring\MasterScore.cs" />
     <Compile Include="Strategy\DeptFirstStrategy.cs" />
     <Compile Include="Strategy\IterativeDeepening.cs" />
     <Compile Include="Strategy\MasterAlgo.cs" />

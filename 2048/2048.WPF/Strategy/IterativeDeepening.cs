@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
 using _2048.Model;
 using _2048.WPF.Game;
 using _2048.WPF.Model;
@@ -11,6 +10,7 @@ namespace _2048.WPF
 {
     public class IterativeDeepening : IStrategy
     {
+        private static IScore Scoring { get; set; } = new IterativeEvalScore();
         public void Initialize(GameModel model)
         {
         }
@@ -53,6 +53,11 @@ namespace _2048.WPF
                     // score of each cell for 3 or 4 value of new brick
                     scores[value.Key].Add(new Tuple<Cell, double>(newCells[i.X][i.Y],
                         Helper.CellHelper.GetSmoothness(newCells) + Helper.CellHelper.GetIslandCount(newCells)));
+
+                    /*var newBoard = new GameModel(4, 4) {Cells = newCells};
+
+                    scores[value.Key].Add(new Tuple<Cell, double>(newCells[i.X][i.Y],
+                        Scoring.Score(new TreeNode() {GameModel = newBoard}));*/
                 }
             }
 
@@ -136,7 +141,7 @@ namespace _2048.WPF
 
                     if (depth == 0)
                     {
-                        result = new Result() { Move = dir, Score = new IterativeEvalScore().Score(new TreeNode() {GameModel = gameModel}), Position = positions, Cutoff = cutoffs };
+                        result = new Result() { Move = dir, Score = Scoring.Score(new TreeNode() {GameModel = gameModel}), Position = positions, Cutoff = cutoffs };
                     }
                     else {
                         result = Search2(model,depth - 1, bestScore, beta, positions, cutoffs);
