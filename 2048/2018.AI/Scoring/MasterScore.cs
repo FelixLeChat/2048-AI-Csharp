@@ -52,7 +52,7 @@ namespace _2018.AI.Scoring
         /// <returns></returns>
         public double Score(TreeNode node)
         {
-            return GetScore(node.GameModel);
+            return GetScore(node.Board);
         }
 
         /// <summary>

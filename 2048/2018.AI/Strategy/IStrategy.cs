@@ -1,4 +1,5 @@
 ﻿using _2018.AI.Enums;
+using _2018.AI.Model.Core;
 using _2048.Model;
 
 namespace _2018.AI.Strategy
@@ -7,6 +8,6 @@ namespace _2018.AI.Strategy
     {
         void Initialize(GameModel model);
 
-        Direction GetDirection(GameModel model);
+        Direction GetDirection(IBoard board);
     }
 }

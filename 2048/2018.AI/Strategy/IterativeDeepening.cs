@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _2018.AI.Enums;
 using _2018.AI.Model;
+using _2018.AI.Model.Core;
 using _2018.AI.Scoring;
 using _2048.Model;
 
@@ -15,26 +16,25 @@ namespace _2018.AI.Strategy
         {
         }
 
-        public Direction GetDirection(GameModel model)
+        public Direction GetDirection(IBoard board)
         {
-            return Search(model, 0, - 10000, 10000, 0, 0).Move;
+            return Search(board, 0, - 10000, 10000, 0, 0).Move;
         }
 
         private static readonly Random Random = new Random();
-        private static Result Search(GameModel model, int depth, double alpha, double beta, int positions,int cutoffs)
+        private static Result Search(IBoard board, int depth, double alpha, double beta, int positions,int cutoffs)
         {
             //return Direction.Up;
-            var gameCells = model.Cells;
             var bestScore = beta;
             var bestMove = Direction.NONE;
             var result = new Result();
 
             // try a 2 and 4 in each cell
-            var cells = Helper.CellHelper.GetEmptyCellPositions(gameCells);
-            var scores = new Dictionary<int, List<Tuple<Cell, double>>>()
+            var cells = Helper.CellHelper.GetEmptyCellPositions(board);
+            var scores = new Dictionary<int, List<Tuple<Position, double>>>()
             {
-                {2, new List<Tuple<Cell, double>>()},
-                {4, new List<Tuple<Cell, double>>()}
+                {2, new List<Tuple<Position, double>>()},
+                {4, new List<Tuple<Position, double>>()}
             };
 
             // for each value (2 and 4)
@@ -43,28 +43,21 @@ namespace _2018.AI.Strategy
                 // for each cell that is empty
                 foreach (var i in cells)
                 {
-                    var newCells = Helper.Helper.DeepClone(gameCells);
-                    newCells[i.X][i.Y].Value = value.Key; // 2 or 4
+                    var newCells = Helper.Helper.DeepClone(board);
+                    newCells.SetValue(i.X, i.Y, value.Key); // 2 or 4
 
                     // score of each cell for 3 or 4 value of new brick
-                    scores[value.Key].Add(new Tuple<Cell, double>(newCells[i.X][i.Y],
-                        Helper.CellHelper.GetSmoothness(newCells) + Helper.CellHelper.GetIslandCount(newCells)));
-
-                    /*var newBoard = new GameModel(4, 4) {Cells = newCells};
-
-                    scores[value.Key].Add(new Tuple<Cell, double>(newCells[i.X][i.Y],
-                        Scoring.Score(new TreeNode() {GameModel = newBoard}));*/
+                    scores[value.Key].Add(new Tuple<Position, double>(i,
+                        MasterScore.GetSmoothness(newCells) + Helper.CellHelper.GetIslandCount(newCells)));
                 }
             }
 
             // now just pick out the most annoying moves
             var maxScore = -10000000.0;
-            var maxCell = new Cell(0, 0);
             foreach (
                 var tuple in from score in scores from tuple in score.Value where tuple.Item2 > maxScore select tuple)
             {
                 maxScore = tuple.Item2;
-                maxCell = tuple.Item1;
             }
 
 
@@ -81,11 +74,11 @@ namespace _2018.AI.Strategy
                 var position = t.Item1;
                 var value = t.Item2;
 
-                var newGrid = Helper.Helper.DeepClone(gameCells);
-                newGrid[position.X][position.Y].Value = value;
+                var newGrid = Helper.Helper.DeepClone(board);
+                board.SetValue(position.X, position.Y, value);
 
                 positions++;
-                result = Search2(model,depth, alpha, bestScore, positions, cutoffs);
+                result = Search2(board,depth, alpha, bestScore, positions, cutoffs);
 
                 positions = result.Position;
                 cutoffs = result.Cutoff;
@@ -110,9 +103,8 @@ namespace _2018.AI.Strategy
             return new Result() { Move = bestMove, Score = bestScore, Position = positions, Cutoff = cutoffs };
         }
 
-        private static Result Search2(GameModel model, int depth, double alpha, double beta, int positions, int cutoffs)
+        private static Result Search2(IBoard board, int depth, double alpha, double beta, int positions, int cutoffs)
         {
-            var gameCells = model.Cells;
             var bestMove = Direction.NONE;
             var result = new Result();
             var bestScore = alpha;
@@ -121,15 +113,12 @@ namespace _2018.AI.Strategy
 
             foreach (var dir in values)
             {
-                var newGrid = Helper.Helper.DeepClone(gameCells);
-                var gameModel = new GameModel(4,4);
-                gameModel.Cells = newGrid;
-                gameModel.Score = model.Score;
+                var newGrid = Helper.Helper.DeepClone(board);
 
-                if (gameModel.PerformMove(dir))
+                if (newGrid.PerformMove(dir))
                 {
                     positions++;
-                    if (Helper.CellHelper.IsWon(gameModel.Cells))
+                    if (Helper.CellHelper.IsWon(newGrid))
                     {
                         return new Result() { Move = dir, Score = bestScore, Position = positions, Cutoff = cutoffs };
                     }
@@ -137,10 +126,10 @@ namespace _2018.AI.Strategy
 
                     if (depth == 0)
                     {
-                        result = new Result() { Move = dir, Score = Scoring.Score(new TreeNode() {GameModel = gameModel}), Position = positions, Cutoff = cutoffs };
+                        result = new Result() { Move = dir, Score = Scoring.Score(new TreeNode() {Board = newGrid}), Position = positions, Cutoff = cutoffs };
                     }
                     else {
-                        result = Search2(model,depth - 1, bestScore, beta, positions, cutoffs);
+                        result = Search2(board,depth - 1, bestScore, beta, positions, cutoffs);
                         if (result.Score > 9900)
                         { // win
                             result.Score--; // to slightly penalize higher depth from win

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using _2018.AI.Model;
+using _2018.AI.Model.Core;
 using _2048.Model;
 
 namespace _2018.AI.Helper
@@ -13,18 +13,17 @@ namespace _2018.AI.Helper
         /// </summary>
         /// <param name="cells"></param>
         /// <returns></returns>
-        public static List<Position> GetEmptyCellPositions(Cell[][] cells)
+        public static List<Position> GetEmptyCellPositions(IBoard cells)
         {
             var emptyCells = new List<Position>();
-            foreach (var col in cells)
+            for (int x = 0; x < cells.GetSize(); x++)
             {
-                foreach (var cell in col)
+                for (int y = 0; y < cells.GetSize(); y++)
                 {
-                    if (cell.Value == 0)
-                        emptyCells.Add(new Position() { X = cell.X, Y = cell.Y });
+                    if(cells.GetValue(x,y)== 0)
+                        emptyCells.Add(new Position() { X = x, Y = y });
                 }
             }
-
             return emptyCells;
         }
 
@@ -33,7 +32,7 @@ namespace _2018.AI.Helper
         /// </summary>
         /// <param name="cells"></param>
         /// <returns></returns>
-        public static int GetEmptyCellCount(Cell[][] cells)
+        public static int GetEmptyCellCount(IBoard cells)
         {
             return GetEmptyCellPositions(cells).Count;
         }
@@ -43,15 +42,19 @@ namespace _2018.AI.Helper
         /// </summary>
         /// <param name="cells"></param>
         /// <returns></returns>
-        public static Cell GetMaxValue(Cell[][] cells)
+        public static int GetMaxValue(IBoard cells)
         {
-            var maxCell = new Cell(0,0){Value = 0};
+            var max = 0;
 
-            foreach (var cell in from col in cells from cell in col where cell.Value > maxCell.Value select cell)
+            for (var x = 0; x < cells.GetSize(); x++)
             {
-                maxCell = cell;
+                for (var y = 0; y < cells.GetSize(); y++)
+                {
+                    if (cells.GetValue(x, y) > max)
+                        max = cells.GetValue(x, y);
+                }
             }
-            return maxCell;
+            return max;
         }
 
         /// <summary>
@@ -59,89 +62,15 @@ namespace _2018.AI.Helper
         /// </summary>
         /// <param name="cells"></param>
         /// <returns></returns>
-        public static bool IsWon(Cell[][] cells)
+        public static bool IsWon(IBoard cells)
         {
             var max = GetMaxValue(cells);
-            return max.Value >= 2048;
-        }
-
-        #region Javascript Translation
-        // measures how smooth the grid is (as if the values of the pieces
-        // were interpreted as elevations). Sums of the pairwise difference
-        // between neighboring tiles (in log space, so it represents the
-        // number of merges that need to happen before they can merge). 
-        // Note that the pieces can be distant
-        private static readonly List<Position> DirectionVectors = new List<Position>()
-        {
-            new Position() {X=0, Y=-1}, new Position() {X=1,Y=0},
-            new Position() {X=0, Y=1}, new Position() {X=-1,Y=0},
-        }; 
-        public static double GetSmoothness(Cell[][] cells)
-        {
-            var smoothness = 0.0;
-            for (var x = 0; x < 4; x++)
-            {
-                for (var y = 0; y < 4; y++)
-                {
-                    var cell = cells[x][x];
-                    if (cell.Value != 0)
-                    {
-                        var value = Math.Log(cell.Value) / Math.Log(2);
-
-                        for (var direction = 1; direction <= 2; direction++)
-                        {
-                            var vector = DirectionVectors[direction];
-                            var targetCell = FindFartestPosition(cells, cell, vector).Item2;
-
-                            if (targetCell.Value != 0)
-                            {
-                                var targetValue = Math.Log(targetCell.Value) / Math.Log(2);
-                                smoothness -= Math.Abs(value - targetValue);
-                            }
-                        }
-                    }
-                }
-            }
-            return smoothness;
-        }
-
-        private static Tuple<Cell,Cell> FindFartestPosition(Cell[][] cells, Cell cell, Position vector)
-        {
-            var previous = cell;
-            var newCell = cell;
-            var canContinue = true;
-
-            // Progress towards the vector direction until an obstacle is found
-            do
-            {
-                canContinue = true;
-                previous = newCell;
-
-                // next position
-                var x = previous.X + vector.X;
-                var y = previous.Y + vector.Y;
-
-                // Check X validity
-                if (x >= 0 && x <= 3)
-                {
-                    // check Y validity
-                    if (y >= 0 && y <= 3)
-                    {
-                        newCell = cells[x][y];
-                    }
-                    else
-                        canContinue = false;
-                }
-                else
-                    canContinue = false;
-            } while (newCell.Value == 0 && canContinue);
-
-            return new Tuple<Cell, Cell>(previous, newCell);
+            return max >= 2048;
         }
 
         // measures how monotonic the grid is. This means the values of the tiles are strictly increasing
         // or decreasing in both the left/right and up/down directions
-        public static double Monotonicity2(Cell[][] cells)
+        public static double Monotonicity2(IBoard cells)
         {
             // scores for all four directions
             var totals = new double[4] {0,0,0,0};
@@ -156,18 +85,18 @@ namespace _2018.AI.Helper
 
                 while (next < 4)
                 {
-                    while (next < 4 && cells[x][next].Value == 0)
+                    while (next < 4 && cells.GetValue(x,next) == 0)
                     {
                         next++;
                     }
                     if (next >= 4) { next--; }
 
-                    currentValue = cells[x][current].Value != 0 ?
-                        Math.Log(cells[x][current].Value) / Math.Log(2) :
+                    currentValue = cells.GetValue(x,current) != 0 ?
+                        Math.Log(cells.GetValue(x, current)) / Math.Log(2) :
                         0;
 
-                    nextValue = cells[x][next].Value != 0 ?
-                        Math.Log(cells[x][next].Value) / Math.Log(2) :
+                    nextValue = cells.GetValue(x, next) != 0 ?
+                        Math.Log(cells.GetValue(x, next)) / Math.Log(2) :
                         0;
 
                     if (currentValue > nextValue)
@@ -189,18 +118,18 @@ namespace _2018.AI.Helper
                 var next = current + 1;
 
                 while ( next<4 ) {
-                    while ( next<4 && cells[next][y].Value == 0)
+                    while ( next<4 && cells.GetValue(next,y) == 0)
                     {
                         next++;
                     }
                     if (next>=4) { next--; }
 
-                    currentValue = cells[current][y].Value != 0 ?
-                        Math.Log(cells[current][y].Value) / Math.Log(2) :
+                    currentValue = cells.GetValue(current, y) != 0 ?
+                        Math.Log(cells.GetValue(current, y)) / Math.Log(2) :
                         0;
 
-                    nextValue = cells[next][y].Value != 0 ?
-                        Math.Log(cells[next][y].Value) / Math.Log(2) :
+                    nextValue = cells.GetValue(next, y) != 0 ?
+                        Math.Log(cells.GetValue(next, y)) / Math.Log(2) :
                         0;
 
                     if (currentValue > nextValue)
@@ -220,11 +149,11 @@ namespace _2018.AI.Helper
         /// <summary>
         /// Count the number of isolated groups
         /// </summary>
-        /// <param name="cells"></param>
+        /// <param name="board"></param>
         /// <returns></returns>
-        public static int GetIslandCount(Cell[][] cells)
+        public static int GetIslandCount(IBoard board)
         {
-            var markedCells = GenerateTuple(cells);
+            var markedCells = GenerateTuple(board);
             var islands = 0;
 
             for (var x = 0; x < 4; x++)
@@ -234,48 +163,56 @@ namespace _2018.AI.Helper
                     if (!markedCells[x][y].Item2)
                     {
                         islands++;
-                        Mark(markedCells,x, y, markedCells[x][y].Item1.Value);
+                        Mark(markedCells, board,x, y, board.GetValue(x,y));
                     }
                 }
             }
 
             return islands;
         }
-        
-        private static Tuple<Cell,bool>[][] Mark(Tuple<Cell, bool>[][] cells, int x, int y, int value)
+
+        private static readonly List<Position> DirectionVectors = new List<Position>()
         {
-            if (x >= 0 && x <= 3 && y >= 0 && y <= 3 && cells[x][y].Item1.Value == value && !cells[x][y].Item2)
+            new Position() {X=0, Y=-1}, new Position() {X=1,Y=0},
+            new Position() {X=0, Y=1}, new Position() {X=-1,Y=0},
+        };
+        private static Tuple<Position, bool>[][] Mark(Tuple<Position, bool>[][] cells, IBoard board, int x, int y, int value)
+        {
+            var size = board.GetSize();
+
+            if (x >= 0 && x < size && y >= 0 && y < size && board.GetValue(x,y) == value && !cells[x][y].Item2)
             {
-                cells[x][y] = new Tuple<Cell, bool>(cells[x][y].Item1, true);
+                cells[x][y] = new Tuple<Position, bool>(cells[x][y].Item1, true);
 
                 foreach (var directionVector in DirectionVectors)
                 {
-                    Mark(cells, x + directionVector.X, y + directionVector.Y, value);
+                    Mark(cells, board, x + directionVector.X, y + directionVector.Y, value);
                 }
             }
 
             return cells;
         }
 
-        private static Tuple<Cell, bool>[][] GenerateTuple(Cell[][] cells)
+        private static Tuple<Position, bool>[][] GenerateTuple(IBoard cells)
         {
-            var tuple = new Tuple<Cell, bool>[4][];
+            var tuple = new Tuple<Position, bool>[4][];
 
-            for (var i = 0; i < 4; ++i)
+            var size = cells.GetSize();
+
+            for (var i = 0; i < size; ++i)
             {
-                tuple[i] = new Tuple<Cell, bool>[4];
+                tuple[i] = new Tuple<Position, bool>[4];
             }
 
-            for (var y = 0; y < 4; ++y)
+            for (var y = 0; y < size; ++y)
             {
-                for (var x = 0; x < 4; ++x)
+                for (var x = 0; x < size; ++x)
                 {
-                    tuple[x][y] = new Tuple<Cell, bool>(cells[x][y], false);
+                    tuple[x][y] = new Tuple<Position, bool>(new Position() {X = x, Y = y}, false);
                 }
             }
 
             return tuple;
         }
-        #endregion
     }
 }

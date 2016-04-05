@@ -6,7 +6,7 @@ namespace _2018.AI.Scoring
     {
         public double Score(TreeNode node)
         {
-            return node.GameModel.Score;
+            return node.Board.GetScore();
         }
     }
 }

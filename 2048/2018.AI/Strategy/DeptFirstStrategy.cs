@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _2018.AI.Enums;
 using _2018.AI.Model;
+using _2018.AI.Model.Core;
 using _2018.AI.Scoring;
 using _2048.Model;
 
@@ -14,9 +15,9 @@ namespace _2018.AI.Strategy
         {
         }
 
-        public Direction GetDirection(GameModel model)
+        public Direction GetDirection(IBoard board)
         {
-            var dfs = new DepthFirstSearch(model, new MasterScore());
+            var dfs = new DepthFirstSearch(board, new MasterScore());
             return dfs.Search();
         }
     }
@@ -28,9 +29,9 @@ namespace _2018.AI.Strategy
         private readonly TreeNode _root;
         private readonly IScore _score;
 
-        public DepthFirstSearch(GameModel game, IScore score)
+        public DepthFirstSearch(IBoard board, IScore score)
         {
-            _root = GetNode(Helper.ObjectExtensions.Copy(game));
+            _root = GetNode(Helper.ObjectExtensions.Copy(board));
             _score = score;
             _searchStack = new Stack<TreeNode>();
         }
@@ -88,7 +89,7 @@ namespace _2018.AI.Strategy
                     score = current.Score;
 
                 // Spawn Childs
-                current = GetNode(current.GameModel);
+                current = GetNode(current.Board);
 
                 PushIfGood(current.Down);
                 PushIfGood(current.Up);
@@ -101,24 +102,33 @@ namespace _2018.AI.Strategy
 
         private void PushIfGood(TreeNode node)
         {
-            // Nothing changed
-            if (!node.GameModel.MoveChange) return;
-
             if (node.Depth >= 7) return;
 
             // Same score as grandparent
-            //if (node.Parent?.Parent?.Score <= node.Score) return;
+            if (node.Parent?.Parent?.Score <= node.Score) return;
 
             _searchStack.Push(node);
         }
 
-        private TreeNode GetNode(GameModel game)
+        private TreeNode GetNode(IBoard board)
         {
-            var node = new TreeNode { GameModel = game };
-            node.Down = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Down), Parent = node, Depth = node.Depth + 1};
-            node.Up = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Up), Parent = node, Depth = node.Depth + 1 };
-            node.Left = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Left), Parent = node, Depth = node.Depth + 1 };
-            node.Right = new TreeNode() { GameModel = game.IterateNoRandom(Direction.Right), Parent = node, Depth = node.Depth + 1 };
+            var node = new TreeNode { Board = board };
+
+            var downBoard = Helper.Helper.DeepClone(board);
+            downBoard.PerformMove(Direction.Down);
+            node.Down = new TreeNode() { Board = downBoard, Parent = node, Depth = node.Depth + 1};
+
+            var upBoard = Helper.Helper.DeepClone(board);
+            upBoard.PerformMove(Direction.Up);
+            node.Up = new TreeNode() { Board = upBoard, Parent = node, Depth = node.Depth + 1 };
+
+            var leftBoard = Helper.Helper.DeepClone(board);
+            leftBoard.PerformMove(Direction.Left);
+            node.Left = new TreeNode() { Board = leftBoard, Parent = node, Depth = node.Depth + 1 };
+
+            var RightBoard = Helper.Helper.DeepClone(board);
+            RightBoard.PerformMove(Direction.Left);
+            node.Right = new TreeNode() { Board = RightBoard, Parent = node, Depth = node.Depth + 1 };
 
             return node;
         }

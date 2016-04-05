@@ -58,6 +58,16 @@ namespace _2048.Model
             return Cells[x][y].Value;
         }
 
+        public void SetValue(int x, int y, int value)
+        {
+            Cells[x][y].Value = value;
+        }
+
+        public int GetScore()
+        {
+           return Score;
+        }
+
         public int GetSize()
         {
             return RowCount;

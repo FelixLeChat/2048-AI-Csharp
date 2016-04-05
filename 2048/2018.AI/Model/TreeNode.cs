@@ -1,5 +1,5 @@
 ﻿using System;
-using _2048.Model;
+using _2018.AI.Model.Core;
 
 namespace _2018.AI.Model
 {
@@ -15,6 +15,6 @@ namespace _2018.AI.Model
 
         public double Score { get; set; }
         public int Depth { get; set; }
-        public GameModel GameModel { get; set; }
+        public IBoard Board { get; set; }
     }
 }
