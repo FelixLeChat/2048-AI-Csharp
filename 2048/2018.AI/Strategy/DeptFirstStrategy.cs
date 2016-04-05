@@ -26,7 +26,7 @@ namespace _2018.AI.Strategy
 
         public DepthFirstSearch(IBoard board, IScore score)
         {
-            _root = GetNode(Helper.ObjectExtensions.Copy(board),0);
+            _root = GetNode(board.GetCopy(),0);
             _score = score;
             _searchStack = new Stack<TreeNode>();
         }

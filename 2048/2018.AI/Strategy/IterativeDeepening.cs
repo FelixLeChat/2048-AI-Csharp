@@ -41,7 +41,7 @@ namespace _2018.AI.Strategy
                 // for each cell that is empty
                 foreach (var i in cells)
                 {
-                    var newCells = Helper.Helper.DeepClone(board);
+                    var newCells = board.GetCopy();
                     newCells.SetValue(i.X, i.Y, value.Key); // 2 or 4
 
                     // score of each cell for 3 or 4 value of new brick
@@ -72,7 +72,7 @@ namespace _2018.AI.Strategy
                 var position = t.Item1;
                 var value = t.Item2;
 
-                var newGrid = Helper.Helper.DeepClone(board);
+                var newGrid = board.GetCopy();
                 newGrid.SetValue(position.X, position.Y, value);
 
                 positions++;
@@ -110,7 +110,7 @@ namespace _2018.AI.Strategy
 
             foreach (var dir in values)
             {
-                var newGrid = Helper.Helper.DeepClone(board);
+                var newGrid = board.GetCopy();
 
                 if (!newGrid.PerformMove(dir)) continue;
                 positions++;

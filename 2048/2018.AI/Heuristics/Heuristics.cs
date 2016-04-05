@@ -83,6 +83,16 @@ namespace _2018.AI.Heuristics
 
             return Math.Min(monotonicityLeft, monotonicityRight);
         }
+        public static double GetMonotonicity(IBoard board, double monotonicityPower)
+        {
+            var size = board.GetSize();
+            var total = 0.0;
+            for (var i = 0; i < size; i++)
+            {
+                total += GetMonotonicity(board, i, monotonicityPower);
+            }
+            return total;
+        }
 
         /// <summary>
         /// Count the number of cells that can be merge in the given line
