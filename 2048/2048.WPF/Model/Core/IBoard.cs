@@ -1,8 +1,8 @@
 ﻿using _2048.WPF.Game;
 
-namespace _2048.WPF.Model.Interface
+namespace _2048.WPF.Model.Core
 {
-    public interface IGameModel
+    public interface IBoard
     {
         bool PerformMove(Direction direction);
     }
