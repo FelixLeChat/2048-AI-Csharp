@@ -14,10 +14,24 @@ namespace _2018.AI.Strategy
     public class IterativeDeepening : IStrategy
     {
         private static IScore Scoring { get; } = new IterativeEvalScore();
+        private readonly Random _random = new Random();
+        private static readonly List<Direction> PassDirection = new List<Direction>();
 
         public Direction GetDirection(IBoard board)
         {
-            return Search(board, 0, - 10000, 10000, 0, 0).Move;
+            if (PassDirection.Count > 5)
+                PassDirection.Remove(PassDirection[0]);
+
+            var direction = Search(board, 0, - 10000, 10000, 0, 0).Move;
+
+            if (PassDirection.Distinct().Count() == 1)
+            {
+                direction = (Direction) _random.Next((int) Direction.Up, (int) Direction.Right + 1);
+            }
+
+            PassDirection.Add(direction);
+
+            return direction;
         }
 
         private static readonly Random Random = new Random();
