@@ -6,10 +6,6 @@ namespace _2018.AI.Strategy
 {
     public class MasterAlgo : IStrategy
     {
-        public void Initialize(GameModel model)
-        {
-        }
-
         public Direction GetDirection(IBoard board)
         {
             return Direction.Up;

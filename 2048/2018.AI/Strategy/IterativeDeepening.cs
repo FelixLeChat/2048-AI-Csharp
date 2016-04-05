@@ -14,9 +14,6 @@ namespace _2018.AI.Strategy
     public class IterativeDeepening : IStrategy
     {
         private static IScore Scoring { get; } = new IterativeEvalScore();
-        public void Initialize(GameModel model)
-        {
-        }
 
         public Direction GetDirection(IBoard board)
         {

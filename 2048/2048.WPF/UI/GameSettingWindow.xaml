@@ -37,9 +37,12 @@
                             <RadioButton GroupName="GameType" Content="DFS" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
                         IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:Type.DepthFirst}}"/>
-                            <RadioButton GroupName="GameType" Content="Iterative Deepening" FontSize="12" FontWeight="Normal" Margin="10,0,10,0"
+                            <RadioButton GroupName="GameType" Content="It Deep" FontSize="12" FontWeight="Normal" Margin="10,0,10,0"
                         IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:Type.IterativeDeepening}}"/>
+                            <RadioButton GroupName="GameType" Content="Expectimax" FontSize="12" FontWeight="Normal" Margin="10,0,10,0"
+                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:Type.Expectimax}}"/>
                         </StackPanel>                        
                     </StackPanel>
 

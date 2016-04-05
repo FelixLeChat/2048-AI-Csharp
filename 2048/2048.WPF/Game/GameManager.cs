@@ -49,6 +49,9 @@ namespace _2048.WPF.Game
                 case Type.IterativeDeepening:
                     Strategy =new IterativeDeepening();
                     break;
+                case Type.Expectimax:
+                    Strategy = new ExpectimaxStrategy();
+                    break;
             }
 
             GameGrid = new GameGrid();
@@ -71,7 +74,7 @@ namespace _2048.WPF.Game
                 return;
 
             // Initialize Strategy
-            Strategy.Initialize(GameGrid.GameModel);
+            //Strategy.Initialize(GameGrid.GameModel);
 
 
             // Token for thread cancelation
