@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using _2048.WPF.Model;
 using _2048.WPF.Model.Core;
 
@@ -11,6 +12,7 @@ namespace _2048.WPF.Scoring
         private const float MonotonicityPower = 4.0f;
         private const float MonotonicityWeight = 47.0f;
         private const float MergesWeight = 700.0f;
+        private const float SmoothnessWeight = 200.0f;
 
         /// <summary>
         /// Get the Heiristic score of the given board
@@ -33,9 +35,12 @@ namespace _2048.WPF.Scoring
                 // Heuristic for Monotonicity
                 score += MonotonicityWeight*GetMonotonicity(board, i);
 
-                // Heiristic for cell Merge count
+                // Heuristic for cell Merge count
                 score += MergesWeight*GetMergeCount(board, i);
             }
+
+            // Heuritic for smoothness
+            score += GetSmoothness(board)*SmoothnessWeight;
 
             return score;
         }
@@ -153,6 +158,98 @@ namespace _2048.WPF.Scoring
             }
 
             return merges;
+        }
+
+        /// <summary>
+        /// Definition in vector form of all the directions
+        /// </summary>
+        private static readonly List<Position> DirectionVectors = new List<Position>()
+        {
+            new Position() {X=0, Y=-1}, new Position() {X=1,Y=0},
+            new Position() {X=0, Y=1}, new Position() {X=-1,Y=0},
+        };
+
+        /// <summary>
+        /// Get the smootness of the board (relative difference between value of closest neighbourgs)
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public static float GetSmoothness(IBoard board)
+        {
+            var smoothness = 0.0f;
+            for (var x = 0; x < board.GetSize(); x++)
+            {
+                for (var y = 0; y < 4; y++)
+                {
+                    var val = board.GetValue(x, y);
+                    if (val != 0)
+                    {
+                        var value = ToBase2Exp(val);
+
+                        for (var direction = 1; direction <= 2; direction++)
+                        {
+                            var vector = DirectionVectors[direction];
+                            var targetCellValue = FindFartestCellValue(board, x, y, vector);
+
+                            if (targetCellValue != 0)
+                            {
+                                var targetValue = ToBase2Exp(targetCellValue);
+                                smoothness -= Math.Abs(value - targetValue);
+                            }
+                        }
+                    }
+                }
+            }
+            return smoothness;
+        }
+
+        /// <summary>
+        /// Find the next populated cell in the direction of the given vector
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        private static int FindFartestCellValue(IBoard board, int x, int y, Position vector)
+        {
+            var previousX = 0;
+            var previousY = 0;
+
+            var newCellX = 0;
+            var newCellY = 0;
+            var canContinue = true;
+
+            var boardSize = board.GetSize();
+
+            // Progress towards the vector direction until an obstacle is found
+            do
+            {
+                canContinue = true;
+                previousX = newCellX;
+                previousY = newCellY;
+
+                // next position
+                newCellX = previousX + vector.X;
+                newCellY = previousY + vector.Y;
+
+                // Check X validity
+                if (x >= 0 && x < boardSize)
+                {
+                    // check Y validity
+                    if (y >= 0 && y < boardSize)
+                    {
+                        newCellX = x;
+                        newCellY = y;
+                    }
+                    else
+                        canContinue = false;
+                }
+                else
+                    canContinue = false;
+            } while (board.GetValue(newCellX, newCellY) == 0 && canContinue);
+
+            return board.GetValue(newCellX, newCellY);
         }
 
         /// <summary>
