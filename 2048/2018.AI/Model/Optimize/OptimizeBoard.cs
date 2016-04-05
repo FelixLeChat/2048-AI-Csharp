@@ -22,6 +22,11 @@ namespace _2018.AI.Model.Optimize
             return hadChange;
         }
 
+        public int GetScore()
+        {
+            throw new NotImplementedException();
+        }
+
         public int GetSize()
         {
             return 4;
@@ -36,6 +41,11 @@ namespace _2018.AI.Model.Optimize
             var power = OptimizeBoardHelper.GetValue(Board, x, y);
             return  (power == 0) ? 0 :  1 << OptimizeBoardHelper.GetValue(Board, x, y);
 
+        }
+
+        public void SetValue(int x, int y, int value)
+        {
+            InsertValue(x, y, (short) Math.Sqrt(value));
         }
 
         public void InsertValue(int x, int y, short value)
