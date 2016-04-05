@@ -12,8 +12,6 @@ namespace _2048.WPF.Scoring
         private const float MonotonicityWeight = 47.0f;
         private const float MergesWeight = 700.0f;
 
-        // X => Line , Y => Collumn
-
         /// <summary>
         /// Get the Heiristic score of the given board
         /// </summary>
@@ -27,13 +25,13 @@ namespace _2048.WPF.Scoring
             for (var i = 0; i < board.GetSize(); i++)
             {
                 // Heuristic for sum of cells
-                score -= SumWeight*(float) (Math.Log(GetLineScore(board, i))/Math.Log(2));
+                score += SumWeight* ToBase2Exp(GetLineScore(board, i));
 
                 // Heuristic for empty cells count
                 score += EmptyWeight*CountEmptyCells(board, i);
 
                 // Heuristic for Monotonicity
-                score -= MonotonicityWeight*GetMonotonicity(board, i);
+                score += MonotonicityWeight*GetMonotonicity(board, i);
 
                 // Heiristic for cell Merge count
                 score += MergesWeight*GetMergeCount(board, i);
@@ -42,6 +40,11 @@ namespace _2048.WPF.Scoring
             return score;
         }
 
+        /// <summary>
+        /// Scoring method for TreeNode Based Strategy
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public double Score(TreeNode node)
         {
             return GetScore(node.GameModel);
@@ -101,13 +104,13 @@ namespace _2048.WPF.Scoring
                 if (board.GetValue(line, i-1) > board.GetValue(line, i))
                 {
                     monotonicityLeft +=(float)(
-                        Math.Pow((Math.Log(board.GetValue(line, i - 1))/Math.Log(2)), MonotonicityPower)
-                        - Math.Pow((Math.Log(board.GetValue(line, i))/Math.Log(2)), MonotonicityPower));
+                        Math.Pow(ToBase2Exp(board.GetValue(line, i - 1)), MonotonicityPower)
+                        - Math.Pow(ToBase2Exp(board.GetValue(line, i)), MonotonicityPower));
                 }
                 else {
                     monotonicityRight += (float)(
-                        Math.Pow((Math.Log(board.GetValue(line, i)) / Math.Log(2)), MonotonicityPower)
-                        - Math.Pow((Math.Log(board.GetValue(line, i -1)) / Math.Log(2)), MonotonicityPower));
+                        Math.Pow(ToBase2Exp(board.GetValue(line, i)), MonotonicityPower)
+                        - Math.Pow(ToBase2Exp(board.GetValue(line, i - 1)), MonotonicityPower));
                 }
             }
 
@@ -150,6 +153,16 @@ namespace _2048.WPF.Scoring
             }
 
             return merges;
+        }
+
+        /// <summary>
+        /// Get the base 2 exponent represented by the given value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static float ToBase2Exp(float value)
+        {
+            return (float)(Math.Log(value) / Math.Log(2));
         }
     }
 }
