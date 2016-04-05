@@ -4,6 +4,6 @@ namespace _2018.AI.Scoring
 {
     public interface IOptimizedScore
     {
-        float GetScore(IBoard board);
+        double GetScore(IBoard board);
     }
 }

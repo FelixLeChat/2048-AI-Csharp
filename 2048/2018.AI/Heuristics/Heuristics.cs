@@ -22,7 +22,7 @@ namespace _2018.AI.Heuristics
         /// <param name="board"></param>
         /// <param name="line"></param>
         /// <returns></returns>
-        public static float GetLineScore(IBoard board, int line)
+        public static double GetLineScore(IBoard board, int line)
         {
             var score = 0;
 
@@ -61,21 +61,21 @@ namespace _2018.AI.Heuristics
         /// <param name="line"></param>
         /// <param name="monotonicityPower"></param>
         /// <returns></returns>
-        public static float GetMonotonicity(IBoard board, int line, float monotonicityPower)
+        public static double GetMonotonicity(IBoard board, int line, double monotonicityPower)
         {
-            var monotonicityLeft = 0.0f;
-            var monotonicityRight = 0.0f;
+            double monotonicityLeft = 0.0f;
+            double monotonicityRight = 0.0f;
 
             for (var i = 1; i < 4; ++i)
             {
                 if (board.GetValue(line, i - 1) > board.GetValue(line, i))
                 {
-                    monotonicityLeft += (float)(
+                    monotonicityLeft += (
                         Math.Pow(ToBase2Exp(board.GetValue(line, i - 1)), monotonicityPower)
                         - Math.Pow(ToBase2Exp(board.GetValue(line, i)), monotonicityPower));
                 }
                 else {
-                    monotonicityRight += (float)(
+                    monotonicityRight += (
                         Math.Pow(ToBase2Exp(board.GetValue(line, i)), monotonicityPower)
                         - Math.Pow(ToBase2Exp(board.GetValue(line, i - 1)), monotonicityPower));
                 }
@@ -127,9 +127,9 @@ namespace _2018.AI.Heuristics
         /// </summary>
         /// <param name="board"></param>
         /// <returns></returns>
-        public static float GetSmoothness(IBoard board)
+        public static double GetSmoothness(IBoard board)
         {
-            var smoothness = 0.0f;
+            double smoothness = 0.0f;
             for (var x = 0; x < board.GetSize(); x++)
             {
                 for (var y = 0; y < 4; y++)
@@ -207,9 +207,11 @@ namespace _2018.AI.Heuristics
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static float ToBase2Exp(float value)
+        public static double ToBase2Exp(double value)
         {
-            return (float)(Math.Log(value) / Math.Log(2));
+            if (value <= 0)
+                return 0;
+            return (Math.Log(value) / Math.Log(2));
         }
 
         /// <summary>

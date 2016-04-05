@@ -7,21 +7,21 @@ namespace _2018.AI.Scoring
 {
     public class MasterScore : IOptimizedScore, IScore
     {
-        private const float SumWeight = 11.0f;
-        private const float EmptyWeight = 270.0f;
-        private const float MonotonicityPower = 4.0f;
-        private const float MonotonicityWeight = 47.0f;
-        private const float MergesWeight = 700.0f;
-        private const float SmoothnessWeight = 200.0f;
+        private const double SumWeight = 11.0f;
+        private const double EmptyWeight = 270.0f;
+        private const double MonotonicityPower = 4.0f;
+        private const double MonotonicityWeight = 47.0f;
+        private const double MergesWeight = 700.0f;
+        private const double SmoothnessWeight = 200.0f;
 
         /// <summary>
         /// Get the Heiristic score of the given board
         /// </summary>
         /// <param name="board"></param>
         /// <returns></returns>
-        public float GetScore(IBoard board)
+        public double GetScore(IBoard board)
         {
-            var score = 0.0f;
+            double score = 0.0f;
 
             // for each collumn
             for (var i = 0; i < board.GetSize(); i++)

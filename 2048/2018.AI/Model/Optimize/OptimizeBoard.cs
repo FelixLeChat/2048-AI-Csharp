@@ -24,7 +24,8 @@ namespace _2018.AI.Model.Optimize
 
         public int GetScore()
         {
-            throw new NotImplementedException();
+            // TODO : Implement score
+            return 0;
         }
 
         public int GetSize()
