@@ -83,12 +83,118 @@ namespace _2048.WPF.Model
         }
 
         public int TotalMoveCount { get; set; }
+        /*private int _totalMoveCount;
+        public int TotalMoveCount
+        {
+            get { return _totalMoveCount; }
+            set
+            {
+                if (_totalMoveCount != value)
+                {
+                    _totalMoveCount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }*/
 
+        private int _totalWins;
+        public int TotalWins
+        {
+            get { return _totalWins; }
+            set
+            {
+                if (_totalWins != value)
+                {
+                    _totalWins = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public int TotalWins { get; set; }
-        public int TotalLosses { get; set; }
+        private int _totalLosses;
+        public int TotalLosses
+        {
+            get { return _totalLosses; }
+            set
+            {
+                if (_totalLosses != value)
+                {
+                    _totalLosses = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public int TotalGamePlayed { get; set; }
+        private int _totalGamesPlayed;
+        public int TotalGamePlayed
+        {
+            get { return _totalGamesPlayed; }
+            set
+            {
+                if (_totalGamesPlayed != value)
+                {
+                    _totalGamesPlayed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get128;
+        public int Get128
+        {
+            get { return _get128; }
+            set
+            {
+                if (_get128 != value)
+                {
+                    _get128 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get256;
+        public int Get256
+        {
+            get { return _get256; }
+            set
+            {
+                if (_get256 != value)
+                {
+                    _get256 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get512;
+        public int Get512
+        {
+            get { return _get512; }
+            set
+            {
+                if (_get512 != value)
+                {
+                    _get512 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get1024;
+        public int Get1024
+        {
+            get { return _get1024; }
+            set
+            {
+                if (_get1024 != value)
+                {
+                    _get1024 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
