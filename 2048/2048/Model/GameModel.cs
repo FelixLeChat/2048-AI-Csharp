@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _2018.AI.Enums;
+using _2018.AI.Helper;
 using _2018.AI.Model.Core;
 
 namespace _2048.Model
@@ -75,11 +76,22 @@ namespace _2048.Model
 
         public IBoard GetCopy()
         {
-            return new GameModel(RowCount, ColumnCount)
+            return this.Copy();
+            /*
+            var newBoard = new GameModel(RowCount, ColumnCount)
             {
-                Score = Score,
-                Cells = Cells
+                Score = Score
             };
+
+            for (var x = 0; x < GetSize(); x++)
+            {
+                for (var y = 0; y < GetSize(); y++)
+                {
+                    newBoard.SetValue(x,y,GetValue(x,y));
+                }
+            }
+
+            return newBoard;*/
         }
 
         #region Algo Functions

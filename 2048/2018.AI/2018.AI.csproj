@@ -53,6 +53,7 @@
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\State.cs" />
     <Compile Include="Enums\Type.cs" />
+    <Compile Include="Helper\CloneObject.cs" />
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Heuristics\Heuristics.cs" />
     <Compile Include="Model\Core\IBoard.cs" />
