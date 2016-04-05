@@ -14,7 +14,7 @@ namespace _2048.WPF.Scoring
         private const float SCORE_MERGES_WEIGHT = 700.0f;
         private const float SCORE_EMPTY_WEIGHT = 270.0f;
 
-        // X => , Y => 
+        // X => Line , Y => Collumn
 
         /// <summary>
         /// 

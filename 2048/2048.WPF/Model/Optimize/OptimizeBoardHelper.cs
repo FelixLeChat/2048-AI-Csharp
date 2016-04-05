@@ -1,6 +1,12 @@
-﻿using _2048.WPF.Game;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using _2048.WPF.Game;
 using Board = System.UInt64;
 using Row = System.UInt16;
+
 
 namespace _2048.WPF.Model
 {
@@ -8,7 +14,7 @@ namespace _2048.WPF.Model
     /// Inspired from https://github.com/nneonneo/2048-ai
     /// </summary>
 
-    public class OptimizeGameModel
+    public class OptimizeBoardHelper
     {
         private const Board ROW_MASK = 0xFFFF;
         private const Board COL_MASK = 0x000F000F000F000F;
@@ -148,21 +154,21 @@ namespace _2048.WPF.Model
 
         #endregion
 
-        public Board PerformMove(OptimizeBoard board ,Direction direction)
+        public static Board PerformMove(Board board ,Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    return MoveUp(board.Board);
+                    return MoveUp(board);
                     break;
                 case Direction.Down:
-                    return MoveDown(board.Board);
+                    return MoveDown(board);
                     break;
                 case Direction.Left:
-                    return MoveLeft(board.Board);
+                    return MoveLeft(board);
                     break;
                 case Direction.Right:
-                    return MoveRight(board.Board);
+                    return MoveRight(board);
                     break;
                 default:
                     return 0;
