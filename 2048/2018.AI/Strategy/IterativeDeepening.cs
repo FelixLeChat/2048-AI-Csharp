@@ -7,11 +7,13 @@ using _2018.AI.Model.Core;
 using _2018.AI.Scoring;
 using _2048.Model;
 
+using static _2018.AI.Heuristics.Heuristics;
+
 namespace _2018.AI.Strategy
 {
     public class IterativeDeepening : IStrategy
     {
-        private static IScore Scoring { get; set; } = new IterativeEvalScore();
+        private static IScore Scoring { get; } = new IterativeEvalScore();
         public void Initialize(GameModel model)
         {
         }
@@ -27,10 +29,9 @@ namespace _2018.AI.Strategy
             //return Direction.Up;
             var bestScore = beta;
             var bestMove = Direction.NONE;
-            var result = new Result();
 
             // try a 2 and 4 in each cell
-            var cells = Helper.CellHelper.GetEmptyCellPositions(board);
+            var cells = GetEmptyCellPositions(board);
             var scores = new Dictionary<int, List<Tuple<Position, double>>>()
             {
                 {2, new List<Tuple<Position, double>>()},
@@ -48,22 +49,22 @@ namespace _2018.AI.Strategy
 
                     // score of each cell for 3 or 4 value of new brick
                     scores[value.Key].Add(new Tuple<Position, double>(i,
-                        MasterScore.GetSmoothness(newCells) + Helper.CellHelper.GetIslandCount(newCells)));
+                        GetSmoothness(newCells) + GetIslandCount(newCells)));
                 }
             }
 
             // now just pick out the most annoying moves
-            var maxScore = -10000000.0;
+            double[] maxScore = {-10000000.0};
             foreach (
-                var tuple in from score in scores from tuple in score.Value where tuple.Item2 > maxScore select tuple)
+                var tuple in from score in scores from tuple in score.Value where tuple.Item2 > maxScore[0] select tuple)
             {
-                maxScore = tuple.Item2;
+                maxScore[0] = tuple.Item2;
             }
 
 
             var candidates = (from score in scores
                 from tupple in score.Value
-                where Math.Ceiling(tupple.Item2) == Math.Ceiling(maxScore)
+                where Math.Abs(Math.Ceiling(tupple.Item2) - Math.Ceiling(maxScore[0])) < 0.001
                 select
                     new Tuple<Position, int>(new Position() {X = tupple.Item1.X, Y = tupple.Item1.Y}, score.Key))
                 .ToList();
@@ -75,10 +76,10 @@ namespace _2018.AI.Strategy
                 var value = t.Item2;
 
                 var newGrid = Helper.Helper.DeepClone(board);
-                board.SetValue(position.X, position.Y, value);
+                newGrid.SetValue(position.X, position.Y, value);
 
                 positions++;
-                result = Search2(board,depth, alpha, bestScore, positions, cutoffs);
+                var result = Search2(newGrid, depth, alpha, bestScore, positions, cutoffs);
 
                 positions = result.Position;
                 cutoffs = result.Cutoff;
@@ -106,49 +107,44 @@ namespace _2018.AI.Strategy
         private static Result Search2(IBoard board, int depth, double alpha, double beta, int positions, int cutoffs)
         {
             var bestMove = Direction.NONE;
-            var result = new Result();
             var bestScore = alpha;
 
-            var values = Enum.GetValues(typeof(Direction)).Cast<Direction>(); ;
+            var values = Enum.GetValues(typeof(Direction)).Cast<Direction>();
 
             foreach (var dir in values)
             {
                 var newGrid = Helper.Helper.DeepClone(board);
 
-                if (newGrid.PerformMove(dir))
+                if (!newGrid.PerformMove(dir)) continue;
+                positions++;
+                if (IsWon(newGrid))
                 {
-                    positions++;
-                    if (Helper.CellHelper.IsWon(newGrid))
-                    {
-                        return new Result() { Move = dir, Score = bestScore, Position = positions, Cutoff = cutoffs };
-                    }
-                    
-
-                    if (depth == 0)
-                    {
-                        result = new Result() { Move = dir, Score = Scoring.Score(new TreeNode() {Board = newGrid}), Position = positions, Cutoff = cutoffs };
-                    }
-                    else {
-                        result = Search2(board,depth - 1, bestScore, beta, positions, cutoffs);
-                        if (result.Score > 9900)
-                        { // win
-                            result.Score--; // to slightly penalize higher depth from win
-                        }
-                        positions = result.Position;
-                        cutoffs = result.Cutoff;
-                    }
-
-                    if (result.Score > bestScore)
-                    {
-                        bestScore = result.Score;
-                        bestMove = dir;
-                    }
-                    if (bestScore > beta)
-                    {
-                        cutoffs++;
-                        return new Result() { Move = bestMove, Score = beta, Position = positions, Cutoff = cutoffs };
-                    }
+                    return new Result() { Move = dir, Score = bestScore, Position = positions, Cutoff = cutoffs };
                 }
+                    
+                Result result;
+                if (depth == 0)
+                {
+                    result = new Result() { Move = dir, Score = Scoring.Score(new TreeNode() {Board = newGrid}), Position = positions, Cutoff = cutoffs };
+                }
+                else {
+                    result = Search2(board,depth - 1, bestScore, beta, positions, cutoffs);
+                    if (result.Score > 9900)
+                    { // win
+                        result.Score--; // to slightly penalize higher depth from win
+                    }
+                    positions = result.Position;
+                    cutoffs = result.Cutoff;
+                }
+
+                if (result.Score > bestScore)
+                {
+                    bestScore = result.Score;
+                    bestMove = dir;
+                }
+                if (!(bestScore > beta)) continue;
+                cutoffs++;
+                return new Result() { Move = bestMove, Score = beta, Position = positions, Cutoff = cutoffs };
             }
             return new Result() { Move = bestMove, Score = bestScore, Position = positions, Cutoff = cutoffs };
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using _2018.AI.Model;
 using _2018.AI.Model.Core;
-using _2048.Model;
+using static _2018.AI.Heuristics.Heuristics;
 
 namespace _2018.AI.Scoring
 {
@@ -19,13 +19,13 @@ namespace _2018.AI.Scoring
 
         private static double Eval(IBoard cells)
         {
-            var emptyCells = Helper.CellHelper.GetEmptyCellCount(cells);
+            var emptyCells = GetEmptyCellCount(cells);
 
             var result = 0.0;
-            result += MasterScore.GetSmoothness(cells)*SmoothWeight;
-            result += Helper.CellHelper.Monotonicity2(cells)*Mono2Weight;
-            result += Math.Log(emptyCells)*EmptyWeight;
-            result += Helper.CellHelper.GetMaxValue(cells) * MaxWeight;
+            result += GetSmoothness(cells)*SmoothWeight;
+            result += Monotonicity2(cells)*Mono2Weight;
+            result += emptyCells*EmptyWeight;
+            result += GetMaxValue(cells) * MaxWeight;
             return result;
         }
     }
