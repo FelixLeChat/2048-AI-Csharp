@@ -1,4 +1,4 @@
-﻿<Window x:Class="_2048.WPF.GameWindow"
+﻿<Window x:Class="_2048.WPF.UI.GameWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="GameWindow" Height="500" Width="950">

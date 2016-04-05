@@ -1,12 +1,11 @@
-﻿using _2048.Model;
-using _2048.WPF.Game;
+﻿using _2018.AI.Enums;
+using _2048.Model;
 
-namespace _2048.WPF
+namespace _2018.AI.Strategy
 {
     public interface IStrategy
     {
         void Initialize(GameModel model);
-        void Ended(ScoreModel score);
 
         Direction GetDirection(GameModel model);
     }

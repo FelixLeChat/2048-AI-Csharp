@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using _2048.WPF.Converter;
-using _2048.WPF.Enums;
+using _2018.AI.Enums;
+using _2018.AI.Helper;
+using _2018.AI.Strategy;
 using _2048.WPF.Model;
 
 namespace _2048.WPF.Game
@@ -128,12 +129,10 @@ namespace _2048.WPF.Game
                     {
                         var newScore = new ScoreModel()
                         {
-                            MaxTile = Helper.Helper.GetMaxTile(GameGrid.GameModel.Cells),
+                            MaxTile = Helper.GetMaxTile(GameGrid.GameModel.Cells),
                             Score = GameGrid.Score,
                             State = task.Result
                         };
-                        // Notice Strategy
-                        Strategy.Ended(newScore);
 
                         // Do not add to board if not finished
                         if (task.Result == State.NotFinished) return;

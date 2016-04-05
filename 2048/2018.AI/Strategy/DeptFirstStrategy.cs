@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _2018.AI.Enums;
+using _2018.AI.Model;
+using _2018.AI.Scoring;
 using _2048.Model;
-using _2048.WPF.Game;
-using _2048.WPF.Model;
-using _2048.WPF.Scoring;
 
-namespace _2048.WPF
+namespace _2018.AI.Strategy
 {
     public class DeptFirstStrategy : IStrategy
     {
         public void Initialize(GameModel model)
-        {
-        }
-
-        public void Ended(ScoreModel score)
         {
         }
 

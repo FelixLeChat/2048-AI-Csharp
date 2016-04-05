@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using _2048.Model;
-using _2048.WPF.Enums;
-using _2048.WPF.Game;
-using _2048.WPF.Helper;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using _2018.AI.Enums;
+using _2018.AI.Helper;
 
 namespace _2048
 {

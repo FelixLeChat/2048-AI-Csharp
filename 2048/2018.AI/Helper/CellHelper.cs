@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _2018.AI.Model;
 using _2048.Model;
-using _2048.WPF.Model;
 
-namespace _2048.WPF.Helper
+namespace _2018.AI.Helper
 {
     public class CellHelper
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using _2048.WPF.Model;
-using _2048.WPF.Model.Core;
+using _2018.AI.Model;
+using _2018.AI.Model.Core;
 
-namespace _2048.WPF.Scoring
+namespace _2018.AI.Scoring
 {
     public class MasterScore : IOptimizedScore, IScore
     {

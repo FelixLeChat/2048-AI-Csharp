@@ -1,9 +1,9 @@
 ﻿using System;
-using _2048.WPF.Game;
-using _2048.WPF.Model.Core;
+using _2018.AI.Enums;
+using _2018.AI.Model.Core;
 using Board = System.UInt64;
 
-namespace _2048.WPF.Model
+namespace _2018.AI.Model.Optimize
 {
     public struct OptimizeBoard : IBoard
     {

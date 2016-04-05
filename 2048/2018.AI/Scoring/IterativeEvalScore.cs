@@ -1,8 +1,8 @@
 ﻿using System;
+using _2018.AI.Model;
 using _2048.Model;
-using _2048.WPF.Model;
 
-namespace _2048.WPF.Scoring
+namespace _2018.AI.Scoring
 {
     public class IterativeEvalScore :IScore
     {

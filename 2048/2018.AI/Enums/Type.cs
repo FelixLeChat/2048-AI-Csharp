@@ -1,4 +1,4 @@
-﻿namespace _2048.WPF.Enums
+﻿namespace _2018.AI.Enums
 {
     public enum Type
     {

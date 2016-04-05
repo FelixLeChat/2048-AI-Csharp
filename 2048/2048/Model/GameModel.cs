@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _2048.WPF.Game;
-using _2048.WPF.Model.Core;
+using _2018.AI.Enums;
+using _2018.AI.Model.Core;
 
 namespace _2048.Model
 {

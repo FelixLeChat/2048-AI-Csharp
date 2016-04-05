@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using _2018.AI.Helper.ArrayExtensions;
 using _2048.Model;
-using _2048.WPF.Helper.ArrayExtensions;
 
-namespace _2048.WPF.Helper
+namespace _2018.AI.Helper
 {
     public class Helper
     {

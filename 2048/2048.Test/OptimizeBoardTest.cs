@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using _2048.WPF.Model;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using _2018.AI.Enums;
+using _2018.AI.Model.Optimize;
 
 namespace _2048.Test
 {
@@ -29,7 +29,7 @@ namespace _2048.Test
             Assert.AreEqual(2, board.GetValue(0, 0));
             Assert.AreEqual(2, board.GetValue(1, 0));
             var s1 = board.ToString();
-            board.PerformMove(WPF.Game.Direction.Left);
+            board.PerformMove(Direction.Left);
             var s2 = board.ToString();
             Assert.AreEqual(4, board.GetValue(0, 0));
             Assert.AreEqual(0, board.GetValue(1, 0));
@@ -47,7 +47,7 @@ namespace _2048.Test
             Assert.AreEqual(2, board.GetValue(0, 0));
             Assert.AreEqual(2, board.GetValue(1, 0));
             var s1 = board.ToString();
-            board.PerformMove(WPF.Game.Direction.Left);
+            board.PerformMove(Direction.Left);
             var s2 = board.ToString();
             Assert.AreEqual(4, board.GetValue(0, 0));
             Assert.AreEqual(2, board.GetValue(1, 0));

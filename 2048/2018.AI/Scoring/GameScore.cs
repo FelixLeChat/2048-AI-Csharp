@@ -1,6 +1,6 @@
-﻿using _2048.WPF.Model;
+﻿using _2018.AI.Model;
 
-namespace _2048.WPF.Scoring
+namespace _2018.AI.Scoring
 {
     public class GameScore : IScore
     {

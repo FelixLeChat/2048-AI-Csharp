@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using _2048.WPF.Enums;
+using _2018.AI.Enums;
 
-namespace _2048.WPF.Converter
+namespace _2048.WPF.Model
 {
     public class GameSettings : INotifyPropertyChanged
     {

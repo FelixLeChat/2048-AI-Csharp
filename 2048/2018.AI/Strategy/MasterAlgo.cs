@@ -1,15 +1,11 @@
-﻿using _2048.Model;
-using _2048.WPF.Game;
+﻿using _2018.AI.Enums;
+using _2048.Model;
 
-namespace _2048.WPF
+namespace _2018.AI.Strategy
 {
     public class MasterAlgo : IStrategy
     {
         public void Initialize(GameModel model)
-        {
-        }
-
-        public void Ended(ScoreModel score)
         {
         }
 

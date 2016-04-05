@@ -1,4 +1,4 @@
-﻿namespace _2048.WPF.Model
+﻿namespace _2018.AI.Model
 {
     public class Position
     {

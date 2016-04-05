@@ -1,6 +1,6 @@
-﻿using _2048.WPF.Game;
+﻿using _2018.AI.Enums;
 
-namespace _2048.WPF.Model.Core
+namespace _2018.AI.Model.Core
 {
     public interface IBoard
     {

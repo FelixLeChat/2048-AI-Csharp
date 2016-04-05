@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using _2018.AI.Enums;
 using _2048.WPF.Annotations;
-using _2048.WPF.Enums;
 
-namespace _2048.WPF.Game
+namespace _2048.WPF.Model
 {
     public class ScoreModel : INotifyPropertyChanged
     {

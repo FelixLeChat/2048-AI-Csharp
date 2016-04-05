@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converter="clr-namespace:_2048.WPF.Converter"
-        xmlns:enum="clr-namespace:_2048.WPF.Enums"
+        xmlns:enum="clr-namespace:_2018.AI.Enums;assembly=2018.AI"
         mc:Ignorable="d"
         Title="Main Menu" Height="400" Width="400">
     <Window.Resources>

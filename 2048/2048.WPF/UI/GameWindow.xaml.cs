@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using _2048.WPF.Converter;
+using _2018.AI.Enums;
 using _2048.WPF.Game;
-using _2048.WPF.UI;
-using Type = _2048.WPF.Enums.Type;
+using _2048.WPF.Model;
+using Type = _2018.AI.Enums.Type;
 
-namespace _2048.WPF
+namespace _2048.WPF.UI
 {
     public partial class GameWindow
     {

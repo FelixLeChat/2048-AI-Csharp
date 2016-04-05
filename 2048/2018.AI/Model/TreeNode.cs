@@ -1,7 +1,7 @@
 ﻿using System;
 using _2048.Model;
 
-namespace _2048.WPF.Model
+namespace _2018.AI.Model
 {
     [Serializable]
     public class TreeNode
