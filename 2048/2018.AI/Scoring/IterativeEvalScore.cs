@@ -3,7 +3,7 @@ using _2048.AI.Model.Core;
 
 namespace _2048.AI.Scoring
 {
-    public class IterativeEvalScore :IScore
+    public class IterativeEvalScore :IScore, IOptimizedScore
     {
         public double Score(TreeNode node)
         {
@@ -25,6 +25,11 @@ namespace _2048.AI.Scoring
             result += emptyCells*EmptyWeight;
             result += Heuristics.Heuristics.GetMaxValue(cells) * MaxWeight;
             return result;
+        }
+
+        public double GetScore(IBoard board)
+        {
+            return Eval(board);
         }
     }
 }

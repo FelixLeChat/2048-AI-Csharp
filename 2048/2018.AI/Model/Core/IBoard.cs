@@ -7,6 +7,8 @@ namespace _2048.AI.Model.Core
         bool PerformMove(Direction direction);
         void Initialize();
 
+        double GetHeuristicEvaluation();
+
         int GetValue(int x, int y);
         void SetValue(int x, int y, int value);
 

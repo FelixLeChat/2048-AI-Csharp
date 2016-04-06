@@ -4,6 +4,7 @@ using System.Linq;
 using _2048.AI.Enums;
 using _2048.AI.Helper;
 using _2048.AI.Model.Core;
+using _2048.AI.Scoring;
 
 namespace _2048.Model
 {
@@ -16,6 +17,7 @@ namespace _2048.Model
         public int ColumnCount { get; }
 
         public Cell[][] Cells { get; set; }
+        private IOptimizedScore Scoring { get; set; } = new IterativeEvalScore();
 
         public IEnumerable<Cell> CellsIterator()
         {
@@ -55,6 +57,11 @@ namespace _2048.Model
 
         public void Initialize()
         {
+        }
+
+        public double GetHeuristicEvaluation()
+        {
+            return Scoring.GetScore(this);
         }
 
         public bool PerformMoveAndSpawn(Direction direction)
