@@ -32,10 +32,11 @@ namespace _2048.AI.Helper
         public static OptimizeBoard Translate(GameModel board)
         {
             var newBoard = new OptimizeBoard();
+
             var size = board.GetSize();
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
-                for (int j = 0; j < size; j++)
+                for (var j = 0; j < size; j++)
                 {
                     newBoard.SetValue(i,j, board.GetValue(i,j));
                 }

@@ -220,7 +220,7 @@ namespace _2048
 
             MoveInProgress = true;
 
-            if (GameModel.PerformMove(direction))
+            if (GameModel.PerformMoveAndSpawn(direction))
             {
                 UpdateUi();
             }

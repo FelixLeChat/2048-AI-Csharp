@@ -5,6 +5,7 @@ namespace _2048.AI.Model.Core
     public interface IBoard
     {
         bool PerformMove(Direction direction);
+        void Initialize();
 
         int GetValue(int x, int y);
         void SetValue(int x, int y, int value);

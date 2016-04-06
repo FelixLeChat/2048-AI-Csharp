@@ -114,7 +114,7 @@ namespace _2048.WPF.Game
                                     GameGrid.HandleMove(direction);
                                 else
                                 {
-                                    GameGrid.GameModel.PerformMove(direction);
+                                    GameGrid.GameModel.PerformMoveAndSpawn(direction);
                                     GameGrid.MoveInProgress = false;
                                     GameGrid.ResetCells();
                                 }

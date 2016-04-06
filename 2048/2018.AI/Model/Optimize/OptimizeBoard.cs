@@ -22,6 +22,11 @@ namespace _2048.AI.Model.Optimize
             return hadChange;
         }
 
+        public void Initialize()
+        {
+            OptimizeBoardHelper.InitLookupTable();
+        }
+
         public int GetScore()
         {
             return (int) OptimizeBoardHelper.GetScore(Board);

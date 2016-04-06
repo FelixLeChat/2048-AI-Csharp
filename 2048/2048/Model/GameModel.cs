@@ -38,6 +38,27 @@ namespace _2048.Model
 
         public bool PerformMove(Direction direction)
         {
+            var result = PackAndMerge(direction);
+
+            foreach (var col in Cells)
+            {
+                foreach (var cell in col)
+                {
+                    cell.PreviousPosition = null;
+                    cell.WasCreated = false;
+                    cell.WasMerged = false;
+                }
+            }
+
+            return result;
+        }
+
+        public void Initialize()
+        {
+        }
+
+        public bool PerformMoveAndSpawn(Direction direction)
+        {
             if (direction == Direction.NONE) return false;
 
             if (PackAndMerge(direction))
