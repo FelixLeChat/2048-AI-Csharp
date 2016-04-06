@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 using _2018.AI.Enums;
 using _2018.AI.Model.Core;
+using _2018.AI.Scoring;
 using _2018.AI.Strategy.Core;
-using _2048.Model;
 
 namespace _2018.AI.Strategy
 {
@@ -18,7 +17,15 @@ namespace _2018.AI.Strategy
             Direction.Right
         };
 
-        private int MaxDepth = 8;
+        private readonly List<Direction> SkipMove = new List<Direction>()
+        {
+            Direction.NONE
+        };
+
+        // Don't recurse into node in prob is below this threshold
+        private const float ProbabilityThreshold = 0.001f;
+        private int MaxDepth = 3;
+        private MasterScore Scorer = new MasterScore();
 
         public Direction GetDirection(IBoard board)
         {
@@ -30,7 +37,7 @@ namespace _2018.AI.Strategy
             {
                 var copy = board.GetCopy();
                 var hadChanged = copy.PerformMove(direction);
-                var score = Expectimax(copy, MaxDepth);
+                var score = Expectimax(copy, MaxDepth, 1.0f, true);
 
                 if (hadChanged)
                 {
@@ -57,17 +64,19 @@ namespace _2018.AI.Strategy
         /// <param name="board"></param>
         /// <param name="depth"></param>
         /// <returns></returns>
-        public float Expectimax(IBoard board, int depth)
+        public float Expectimax(IBoard board, int depth, float probability,  bool skipMove = false)
         {
-            if (depth == 0)
+            if (depth == 0 || probability < ProbabilityThreshold)
             {
-               return board.GetScore();
+                return (float)Scorer.GetScore(board);
             }
 
             float bestScore = 0.0f;
 
+            var possibleDirection = skipMove ? SkipMove : PossibleDirection;
+
             // Try all possible move on the current state
-            foreach (var direction in PossibleDirection)
+            foreach (var direction in possibleDirection)
             {
                 var copy = board.GetCopy();
                 copy.PerformMove(direction);
@@ -76,10 +85,11 @@ namespace _2018.AI.Strategy
                 float score = 0;
                 foreach (var possibleEvent in ExpectimaxHelper.GetChanceEvents(board))
                 {
-                    ExpectimaxHelper.MakeChanceEvent(board, possibleEvent);
-                    float tempScore = Expectimax(board, depth - 1);
-                    ExpectimaxHelper.UnMakeChanceEvent(board, possibleEvent);
-                    score += ExpectimaxHelper.GetEventProbability(board, possibleEvent) * tempScore;
+                    ExpectimaxHelper.MakeChanceEvent(copy, possibleEvent);
+                    float eventProbability = ExpectimaxHelper.GetEventProbability(board, possibleEvent);
+                    float tempScore = Expectimax(copy, depth - 1, probability * eventProbability);
+                    ExpectimaxHelper.UnMakeChanceEvent(copy, possibleEvent);
+                    score += eventProbability * tempScore;
                 }
 
                 bestScore = Math.Max(score, bestScore);
