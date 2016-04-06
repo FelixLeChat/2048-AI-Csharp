@@ -175,7 +175,7 @@ namespace _2018.AI.Model.Optimize
                     return MoveRight(board);
                     break;
                 default:
-                    return 0;
+                    return board;
             }
         }
 

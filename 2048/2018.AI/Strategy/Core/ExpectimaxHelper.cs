@@ -44,7 +44,8 @@ namespace _2018.AI.Strategy.Core
         {
             var baseProbs = chanceEvent.Value == 2 ? 0.9f : 0.2f;
             var emptyCellCount = Heuristics.Heuristics.GetEmptyCellCount(board);
-            return (float) Math.Pow(baseProbs, emptyCellCount);
+            var probability =  (float) Math.Pow(baseProbs, emptyCellCount);
+            return probability;
         }
 
         /// <summary>
