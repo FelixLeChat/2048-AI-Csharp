@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _2018.AI.Enums;
-using _2018.AI.Model;
-using _2018.AI.Model.Core;
-using _2018.AI.Scoring;
-using _2048.Model;
+using _2048.AI.Enums;
+using _2048.AI.Model;
+using _2048.AI.Model.Core;
+using _2048.AI.Scoring;
 
-using static _2018.AI.Heuristics.Heuristics;
-
-namespace _2018.AI.Strategy
+namespace _2048.AI.Strategy
 {
     public class IterativeDeepening : IStrategy
     {
@@ -42,7 +39,7 @@ namespace _2018.AI.Strategy
             var bestMove = Direction.NONE;
 
             // try a 2 and 4 in each cell
-            var cells = GetEmptyCellPositions(board);
+            var cells = Heuristics.Heuristics.GetEmptyCellPositions(board);
             var scores = new Dictionary<int, List<Tuple<Position, double>>>()
             {
                 {2, new List<Tuple<Position, double>>()},
@@ -60,7 +57,7 @@ namespace _2018.AI.Strategy
 
                     // score of each cell for 3 or 4 value of new brick
                     scores[value.Key].Add(new Tuple<Position, double>(i,
-                        GetSmoothness(newCells) + GetIslandCount(newCells)));
+                        Heuristics.Heuristics.GetSmoothness(newCells) + Heuristics.Heuristics.GetIslandCount(newCells)));
                 }
             }
 
@@ -128,7 +125,7 @@ namespace _2018.AI.Strategy
 
                 if (!newGrid.PerformMove(dir)) continue;
                 positions++;
-                if (IsWon(newGrid))
+                if (Heuristics.Heuristics.IsWon(newGrid))
                 {
                     return new Result() { Move = dir, Score = bestScore, Position = positions, Cutoff = cutoffs };
                 }

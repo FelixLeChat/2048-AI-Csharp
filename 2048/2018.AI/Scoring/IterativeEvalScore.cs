@@ -1,9 +1,7 @@
-﻿using System;
-using _2018.AI.Model;
-using _2018.AI.Model.Core;
-using static _2018.AI.Heuristics.Heuristics;
+﻿using _2048.AI.Model;
+using _2048.AI.Model.Core;
 
-namespace _2018.AI.Scoring
+namespace _2048.AI.Scoring
 {
     public class IterativeEvalScore :IScore
     {
@@ -19,13 +17,13 @@ namespace _2018.AI.Scoring
 
         private static double Eval(IBoard cells)
         {
-            var emptyCells = GetEmptyCellCount(cells);
+            var emptyCells = Heuristics.Heuristics.GetEmptyCellCount(cells);
 
             var result = 0.0;
-            result += GetSmoothness(cells)*SmoothWeight;
-            result += Monotonicity2(cells)*Mono2Weight;
+            result += Heuristics.Heuristics.GetSmoothness(cells)*SmoothWeight;
+            result += Heuristics.Heuristics.Monotonicity2(cells)*Mono2Weight;
             result += emptyCells*EmptyWeight;
-            result += GetMaxValue(cells) * MaxWeight;
+            result += Heuristics.Heuristics.GetMaxValue(cells) * MaxWeight;
             return result;
         }
     }

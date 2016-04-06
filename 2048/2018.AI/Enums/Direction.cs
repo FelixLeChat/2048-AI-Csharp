@@ -1,4 +1,4 @@
-﻿namespace _2018.AI.Enums
+﻿namespace _2048.AI.Enums
 {
     public enum Direction
     {

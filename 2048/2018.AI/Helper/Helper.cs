@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using _2018.AI.Model.Optimize;
+using _2048.AI.Model.Optimize;
 using _2048.Model;
 
-namespace _2018.AI.Helper
+namespace _2048.AI.Helper
 {
     public class Helper
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using _2018.AI.Enums;
-using _2018.AI.Model.Core;
-using _2018.AI.Model.Optimize;
+using _2048.AI.Enums;
+using _2048.AI.Model.Core;
+using _2048.AI.Model.Optimize;
 
 namespace _2048.Test
 {

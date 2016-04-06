@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using _2018.AI.Enums;
-using _2018.AI.Model.Core;
-using _2018.AI.Scoring;
-using _2018.AI.Strategy.Core;
+using _2048.AI.Enums;
+using _2048.AI.Model.Core;
+using _2048.AI.Scoring;
+using _2048.AI.Strategy.Core;
 
-namespace _2018.AI.Strategy
+namespace _2048.AI.Strategy
 {
     public class ExpectimaxStrategy : IStrategy
     {

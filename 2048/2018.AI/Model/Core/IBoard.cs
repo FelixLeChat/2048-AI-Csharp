@@ -1,6 +1,6 @@
-﻿using _2018.AI.Enums;
+﻿using _2048.AI.Enums;
 
-namespace _2018.AI.Model.Core
+namespace _2048.AI.Model.Core
 {
     public interface IBoard
     {

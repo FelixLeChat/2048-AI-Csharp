@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using _2018.AI.Model.Core;
+using _2048.AI.Model.Core;
 
-namespace _2018.AI.Strategy.Core
+namespace _2048.AI.Strategy.Core
 {
     public static class ExpectimaxHelper
     {

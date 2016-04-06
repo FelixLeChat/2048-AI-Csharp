@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Text;
-using _2018.AI.Enums;
+using _2048.AI.Enums;
 using Board = System.UInt64;
 using Row = System.UInt16;
 
 
-namespace _2018.AI.Model.Optimize
+namespace _2048.AI.Model.Optimize
 {
     /// <summary>
     /// Inspired from https://github.com/nneonneo/2048-ai

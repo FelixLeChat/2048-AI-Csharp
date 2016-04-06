@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _2018.AI.Enums;
-using _2018.AI.Helper;
-using _2018.AI.Model.Core;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
+using _2048.AI.Model.Core;
 
 namespace _2048.Model
 {

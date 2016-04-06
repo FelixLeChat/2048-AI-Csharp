@@ -1,6 +1,6 @@
-﻿using _2018.AI.Model.Core;
-using _2018.AI.Model.Optimize;
-using _2018.AI.Strategy;
+﻿using _2048.AI.Model.Core;
+using _2048.AI.Model.Optimize;
+using _2048.AI.Strategy;
 
 namespace _2048.Console
 {
@@ -22,11 +22,15 @@ namespace _2048.Console
                     case "random":
                         CurrentStrategy = new RandomStrategy();
                         break;
+                        // Iterative Deepening
                     case "id":
                         CurrentStrategy = new IterativeDeepening();
                         break;
                 }
             }
+
+
+
 
         }
     }

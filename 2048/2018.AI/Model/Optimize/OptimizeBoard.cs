@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using _2018.AI.Enums;
-using _2018.AI.Model.Core;
+using _2048.AI.Enums;
+using _2048.AI.Model.Core;
 using Board = System.UInt64;
 
-namespace _2018.AI.Model.Optimize
+namespace _2048.AI.Model.Optimize
 {
     public struct OptimizeBoard : IBoard
     {
