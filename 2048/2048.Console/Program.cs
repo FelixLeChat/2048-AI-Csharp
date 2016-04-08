@@ -10,16 +10,10 @@ namespace _2048.Console
 {
     class Program
     {
-        private static IBoard CurrentBoard { get; set; } = new OptimizeBoard();
-        private static IStrategy CurrentStrategy { get; set; } = new IterativeDeepening();
         private static bool Restart { get; set; } = true;
-
 
         static void Main(string[] args)
         {
-            // Initialise game settings
-            //Initialize(args);
-
             System.Console.WriteLine("************************************************************");
             System.Console.WriteLine("*      Bienvenue dans le jeu de 2048 version console       *");
             System.Console.WriteLine("************************************************************" + Environment.NewLine);
@@ -36,6 +30,7 @@ namespace _2048.Console
             var done = false;
             var notMovedCount = 0;
             IBoard board = new OptimizeBoard();
+            IStrategy strategy = new ExpectimaxStrategy();
             board.Initialize();
             BoardHelper.InitializeBoard(board);
 
@@ -43,7 +38,7 @@ namespace _2048.Console
 
             while (!done)
             {
-                var direction = CurrentStrategy.GetDirection(board);
+                var direction = strategy.GetDirection(board);
 
                 // Move
                 if (board.PerformMove(direction))
@@ -68,40 +63,6 @@ namespace _2048.Console
             var time = GameTimer.ElapsedMilliseconds;
             
             System.Console.WriteLine("MaxTile = {0}, Score = {1}, Time = {2} ", maxTile, score, time);
-        }
-
-
-        private static void Initialize(string[] args)
-        {
-            if (args.Length == 1)
-            {
-                switch (args[0].ToLower())
-                {
-                    case "dfs":
-                        CurrentStrategy = new DeptFirstStrategy();
-                        break;
-                    case "random":
-                        CurrentStrategy = new RandomStrategy();
-                        break;
-                    // Iterative Deepening
-                    case "id":
-                        CurrentStrategy = new IterativeDeepening();
-                        break;
-                }
-            }
-
-            if (args.Length == 2)
-            {
-                switch (args[0].ToLower())
-                {
-                    case "restart":
-                        Restart = true;
-                        break;
-                    default:
-                        Restart = false;
-                        break;
-                }
-            }
         }
     }
 }
