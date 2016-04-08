@@ -4,6 +4,7 @@ using System.Linq;
 using _2048.AI.Enums;
 using _2048.AI.Helper;
 using _2048.AI.Model.Core;
+using _2048.AI.Model.Optimize;
 using _2048.AI.Scoring;
 
 namespace _2048.Model
@@ -105,21 +106,6 @@ namespace _2048.Model
         public IBoard GetCopy()
         {
             return this.Copy();
-            /*
-            var newBoard = new GameModel(RowCount, ColumnCount)
-            {
-                Score = Score
-            };
-
-            for (var x = 0; x < GetSize(); x++)
-            {
-                for (var y = 0; y < GetSize(); y++)
-                {
-                    newBoard.SetValue(x,y,GetValue(x,y));
-                }
-            }
-
-            return newBoard;*/
         }
 
         public IBoard GetCopy(ulong board)
@@ -129,12 +115,18 @@ namespace _2048.Model
 
         public ulong GetBitArrayRepresentation()
         {
-            throw new NotImplementedException();
+            var optBoard = new OptimizeBoard();
+            foreach (var cell in Cells.SelectMany(col => col))
+            {
+                optBoard.SetValue(cell.X, cell.Y, cell.Value);
+            }
+
+            return optBoard.Board;
         }
 
         public int CountEmpty()
         {
-            throw new NotImplementedException();
+            return Cells.SelectMany(col => col).Count(cell => cell.Value == 0);
         }
 
         #region Algo Functions

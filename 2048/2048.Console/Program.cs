@@ -5,7 +5,6 @@ using _2048.AI.Heuristics;
 using _2048.AI.Model.Core;
 using _2048.AI.Model.Optimize;
 using _2048.AI.Strategy;
-using _2048.Model;
 
 namespace _2048.Console
 {
