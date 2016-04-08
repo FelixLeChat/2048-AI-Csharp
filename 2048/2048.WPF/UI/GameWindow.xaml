@@ -159,7 +159,7 @@
         </ScrollViewer >
 
 
-        <ScrollViewer Name="TrainingScroll" VerticalAlignment="Top" HorizontalAlignment="Right" Width="500" LayoutUpdated="ScoreScroll_LayoutUpdated">
+        <ScrollViewer Name="TrainingScroll" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="300,0,0,0" LayoutUpdated="ScoreScroll_LayoutUpdated">
             <StackPanel >
                 <ListBox Name="ListTrainingScore" HorizontalAlignment="Stretch">
                     <ListBox.ItemTemplate>
@@ -171,64 +171,118 @@
                                 HorizontalAlignment="Stretch">
 
                                 <StackPanel>
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Label Content="Max Score :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <Label Content="Max Score :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=MaxScore}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                        <Label Content="Average Score :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
-                                             Text="{Binding Path=AverageScore}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                    </StackPanel>
+                                        </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Label Content="Max Tile :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="Average Score :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Path=AverageScore}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <Label Content="Max Tile :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=MaxTile}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                        <Label Content="Min Tile :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="Min Tile :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=MinTile}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
 
                                     <Rectangle Fill="Gray" Height="2"/>
                                     
                                     <!-- Heuristic Values -->
 
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Label Content="Lost Penalty :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <Label Content="Lost Penalty :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=LostPenalty}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                        <Label Content="Fill Weight :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="Fill Weight :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=FillWeigth}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                    </StackPanel>
-                                    
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Label Content="Monotonicity Power :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <Label Content="Monotonicity Power :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=MonoticityPower}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                        <Label Content="Monotonicity Weight :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="Monotonicity Weight :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=MonoticityWeight}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
 
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Label Content="Sum Power :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <Label Content="Sum Power :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=SumPower}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                        <Label Content="Sum Weight :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="Sum Weight :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=SumWeight}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
 
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Label Content="Merge Weight :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <Label Content="Merge Weight :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Path=MergeWeigth}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                        <Label Content="Empty Weight :" VerticalAlignment="Center" Margin="2"/>
-                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
-                                             Text="{Binding Path=EmptyWeigth}" TextWrapping="Wrap" Margin="2" Padding="5"/>
-                                    </StackPanel>
+                                        </StackPanel>
 
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Label Content="Empty Weight :" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Path=EmptyWeigth}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
