@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Newtonsoft.Json;
 using _2048.AI.Enums;
+using _2048.AI.Helper;
 using _2048.AI.Heuristics;
+using _2048.AI.Learning;
 using _2048.AI.Learning.Core;
 using _2048.AI.Model.Core;
 using _2048.AI.Model.Optimize;
 using _2048.AI.Strategy;
-using _2048.AI.Model.Stats;
-
+using _2048.WPF.Model;
+using StatModel = _2048.AI.Model.Stats.StatModel;
 
 
 namespace _2048.WPF.Game
@@ -23,17 +27,28 @@ namespace _2048.WPF.Game
         {
         }
 
+        public ObservableCollection<TrainingModel> TrainingList { get; set; } = new ObservableCollection<TrainingModel>();
+        public TrainingStats TrainingStats { get; set; } = new TrainingStats();
+
 
         private const int GameIterationInPopulation = 100;
         private const int PopulationInNextGeneration = 5;
 
         private List<PopulationNode> _population = new List<PopulationNode>();
-        private readonly ILearner _learner;
+        private readonly ILearner _learner = new HomebrewLearner();
 
         public void StartTraining(CancellationTokenSource cancelToken, IStrategy strategy)
         {
             // load previous generations
-            _population = LoadGenerations() ?? new List<PopulationNode>();
+            _population = LoadGenerations();
+            // TODO : Add check for more than 2 ?
+            if(_population == null)
+                _population = new List<PopulationNode>();
+
+            TrainingStats.TotalChilds = _population.Count;
+            TrainingStats.CurrentGeneration = 1;
+
+            TrainingStats.IterationToDo = GameIterationInPopulation;
 
             Task.Factory.StartNew(() =>
             {
@@ -46,13 +61,16 @@ namespace _2048.WPF.Game
                     foreach (var heuristicFactor in generation)
                     {
                         var iteration = 0;
-                        var generationStat = new StatModel();
+                        var totalScore = 0;
+                        TrainingStats.IterationDone = iteration;
+                        var generationStat = new StatModel() {MinTile = 2024};
 
                         // Play X games
                         while (iteration < GameIterationInPopulation && !cancelToken.IsCancellationRequested)
                         {
                             // Initialize the board with the Heuristic Factors of the current generation
                             IBoard board = new OptimizeBoard();
+                            BoardHelper.InitializeBoard(board);
                             board.Initialize(heuristicFactor);
 
                             // Play Game
@@ -60,28 +78,75 @@ namespace _2048.WPF.Game
                             while (gameState == State.NotFinished && !cancelToken.IsCancellationRequested)
                             {
                                 var direction = strategy.GetDirection(board);
-                                board.PerformMove(direction);
+                                var goodMove = board.PerformMove(direction);
+
+                                if(goodMove)
+                                    // Spawn random values
+                                    BoardHelper.AddRandomCell(board);
 
                                 gameState = CheckForWin(board);
                             }
 
                             // game finished, update stats
                             var score = board.GetScore();
+                            totalScore += score;
                             if (score > generationStat.MaxScore)
                                 generationStat.MaxScore = score;
 
+                            var maxTile = Heuristics.GetMaxValue(board);
+                            if (maxTile > generationStat.MaxTile)
+                                generationStat.MaxTile = maxTile;
+
+                            if (maxTile < generationStat.MinTile)
+                                generationStat.MinTile = maxTile;
+
                             iteration++;
+                            TrainingStats.IterationDone = iteration;
                         }
 
-                        // Add info to next generation (Stats)
-                        _population.Add(new PopulationNode()
+
+                        if (!cancelToken.IsCancellationRequested)
                         {
-                            Heuristic = heuristicFactor,
-                            Stat = generationStat
-                        });
+                            // Add info to next generation (Stats)
+                            _population.Add(new PopulationNode()
+                            {
+                                Heuristic = heuristicFactor,
+                                Stat = generationStat
+                            });
+                            TrainingStats.TotalChilds = _population.Count;
+
+
+
+                            // Visual update
+                            Application.Current.Dispatcher.Invoke(
+                                () =>
+                                {
+                                    TrainingList.Add(new TrainingModel()
+                                    {
+                                        AverageScore = totalScore/GameIterationInPopulation,
+                                        MaxScore = generationStat.MaxScore,
+                                        MaxTile = generationStat.MaxTile,
+                                        MinTile = generationStat.MinTile,
+
+                                        LostPenalty = heuristicFactor.LostPenalty,
+                                        MonoticityPower = heuristicFactor.MonoticityPower,
+                                        MonoticityWeight = heuristicFactor.MonoticityWeight,
+                                        EmptyWeigth = heuristicFactor.EmptyWeigth,
+                                        FillWeigth = heuristicFactor.FillWeigth,
+                                        MergeWeigth = heuristicFactor.MergeWeigth,
+                                        SumPower = heuristicFactor.SumPower,
+                                        SumWeight = heuristicFactor.SumWeight
+                                    
+                                    });
+                                });
+
+                            // Save Data
+                            SaveGenerations();
+                        } 
                     }
 
                     //New generation all tested with stats
+                    TrainingStats.CurrentGeneration++;
                 }
             }, cancelToken.Token).ContinueWith(task =>
             {

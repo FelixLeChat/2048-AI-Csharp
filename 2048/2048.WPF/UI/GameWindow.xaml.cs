@@ -37,7 +37,9 @@ namespace _2048.WPF.UI
 
             //Data Bindings
             ListGameScore.ItemsSource = _gameManager.ScoreList;
-            DataContext = _gameManager.Stats;
+            ListTrainingScore.ItemsSource = TrainingManager.Instance.TrainingList;
+            TopScorePanel.DataContext = _gameManager.Stats;
+            TopTrainingPanel.DataContext = TrainingManager.Instance.TrainingStats;
 
             // Visual VS Training
             if (_gameManager.IsTraining)
@@ -45,6 +47,11 @@ namespace _2048.WPF.UI
                 TopScorePanel.Visibility = Visibility.Collapsed;
                 ScoreScroll.Visibility = Visibility.Collapsed;
                 ContentGrid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                TrainingScroll.Visibility = Visibility.Collapsed;
+                TopTrainingPanel.Visibility = Visibility.Collapsed;
             }
         }
 
