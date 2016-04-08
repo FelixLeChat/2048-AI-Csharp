@@ -15,7 +15,8 @@ namespace _2048.AI.Learning
     /// </summary>
     public class HomebrewLearner : ILearner
     {
-        IBastardMaker Maker = new ReinforcementMaker();
+        public IBastardMaker BastardMaker { get; set; } = new RandomWalkMaker();
+
         private const int SelectionCount = 2;
 
         public List<HeuristicFactor> GetNewGeneration(List<PopulationNode> previousGeneration, int populationSize)
@@ -46,12 +47,10 @@ namespace _2048.AI.Learning
             var heuristics = new List<HeuristicFactor>();
             while (populationSize-- > 0)
             {
-                heuristics.Add(Maker.MakeBastard(previousGeneration));
+                heuristics.Add(BastardMaker.MakeBastard(previousGeneration));
             }
             return heuristics;
         }
-
-
 
     }
 }
