@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using _2048.AI.Model.Core;
 using _2048.AI.Model.Optimize;
 using _2048.AI.Strategy;
 using _2048.WPF.Model;
+using Type = _2048.AI.Enums.Type;
 
 namespace _2048.WPF.Game
 {

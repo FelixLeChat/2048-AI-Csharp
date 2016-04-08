@@ -1,35 +1,32 @@
-﻿using _2048.AI.Model;
-using _2048.AI.Model.Core;
+﻿using System;
+using _2018.AI.Model;
+using _2018.AI.Model.Core;
+using static _2018.AI.Heuristics.Heuristics;
 
-namespace _2048.AI.Scoring
+namespace _2018.AI.Scoring
 {
-    public class IterativeEvalScore :IScore, IOptimizedScore
+    public class IterativeEvalScore :IScore
     {
         public double Score(TreeNode node)
         {
             return Eval(node.Board);
         }
 
-        private const double SmoothWeight = 0.7;
+        private const double SmoothWeight = 1.0;
         private const double Mono2Weight = 1.5;
         private const double EmptyWeight = 2.0;
         private const double MaxWeight = 1.0;
 
         private static double Eval(IBoard cells)
         {
-            var emptyCells = Heuristics.Heuristics.GetEmptyCellCount(cells);
+            var emptyCells = GetEmptyCellCount(cells);
 
             var result = 0.0;
-            result += Heuristics.Heuristics.GetSmoothness(cells)*SmoothWeight;
-            result += Heuristics.Heuristics.Monotonicity2(cells)*Mono2Weight;
+            result += GetSmoothness(cells)*SmoothWeight;
+            result += Monotonicity2(cells)*Mono2Weight;
             result += emptyCells*EmptyWeight;
-            result += Heuristics.Heuristics.GetMaxValue(cells) * MaxWeight;
+            result += GetMaxValue(cells) * MaxWeight;
             return result;
-        }
-
-        public double GetScore(IBoard board)
-        {
-            return Eval(board);
         }
     }
 }
