@@ -53,7 +53,9 @@ namespace _2018.AI.Model.Optimize
 
         public void SetValue(int x, int y, int value)
         {
-            InsertValue(x, y, (short) Math.Log(value, 2));
+            var result = 0;
+            while ((value >>= 1) > 0) result++;
+            InsertValue(x, y, (short) result);
         }
 
         public void InsertValue(int x, int y, short value)
