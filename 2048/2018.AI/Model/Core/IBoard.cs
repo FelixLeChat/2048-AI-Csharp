@@ -1,5 +1,5 @@
 ﻿using _2048.AI.Enums;
-
+using _2048.AI.Heuristics;
 using Board = System.UInt64;
 
 namespace _2048.AI.Model.Core
@@ -7,7 +7,7 @@ namespace _2048.AI.Model.Core
     public interface IBoard
     {
         bool PerformMove(Direction direction);
-        void Initialize();
+        void Initialize(HeuristicFactor factors = null);
 
         double GetHeuristicEvaluation();
 

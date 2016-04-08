@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using _2048.AI.Enums;
-using _2048.AI.Helper;
 using _2048.AI.Heuristics;
-using _2048.AI.Learning;
 using _2048.AI.Learning.Core;
 using _2048.AI.Model.Core;
 using _2048.AI.Model.Optimize;
 using _2048.AI.Strategy;
-using _2048.WPF.Model;
+using _2048.AI.Model.Stats;
+
+
 
 namespace _2048.WPF.Game
 {
@@ -65,6 +64,13 @@ namespace _2048.WPF.Game
 
                             iteration++;
                         }
+
+                        // Add info to next generation
+                        _population.Add(new PopulationNode()
+                        {
+                            Heuristic = heuristicFactor,
+                            Stat = generationStat
+                        });
                     }
                 }
             }, cancelToken.Token).ContinueWith(task =>

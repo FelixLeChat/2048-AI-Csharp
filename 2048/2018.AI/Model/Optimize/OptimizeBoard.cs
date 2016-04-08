@@ -27,10 +27,12 @@ namespace _2048.AI.Model.Optimize
             return hadChange;
         }
 
-        public void Initialize()
+        public void Initialize(HeuristicFactor factors = null)
         {
+            if (factors == null)
+                factors = HeuristicFactor.GetSomeHeuristic();
             OptimizeBoardHelper.InitLookupTable();
-            OptimizeScorer.InitLookupTable(HeuristicFactor.GetSomeHeuristic());
+            OptimizeScorer.InitLookupTable(factors);
         }
 
         public double GetHeuristicEvaluation()
