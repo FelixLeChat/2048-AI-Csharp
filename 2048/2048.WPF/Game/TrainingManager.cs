@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using _2048.AI.Enums;
 using _2048.AI.Heuristics;
 using _2048.AI.Learning.Core;
@@ -25,12 +27,14 @@ namespace _2048.WPF.Game
         private const int GameIterationInPopulation = 100;
         private const int PopulationInNextGeneration = 5;
 
-        private readonly List<PopulationNode> _population = new List<PopulationNode>();
+        private List<PopulationNode> _population = new List<PopulationNode>();
         private readonly ILearner _learner;
-
 
         public void StartTraining(CancellationTokenSource cancelToken, IStrategy strategy)
         {
+            // load previous generations
+            _population = LoadGenerations() ?? new List<PopulationNode>();
+
             Task.Factory.StartNew(() =>
             {
                 // Simulate infinite generations
@@ -61,7 +65,7 @@ namespace _2048.WPF.Game
                                 gameState = CheckForWin(board);
                             }
 
-                            // game finished
+                            // game finished, update stats
                             var score = board.GetScore();
                             if (score > generationStat.MaxScore)
                                 generationStat.MaxScore = score;
@@ -69,17 +73,19 @@ namespace _2048.WPF.Game
                             iteration++;
                         }
 
-                        // Add info to next generation
+                        // Add info to next generation (Stats)
                         _population.Add(new PopulationNode()
                         {
                             Heuristic = heuristicFactor,
                             Stat = generationStat
                         });
                     }
+
+                    //New generation all tested with stats
                 }
             }, cancelToken.Token).ContinueWith(task =>
             {
-                
+                SaveGenerations();
             });
         }
 
@@ -111,6 +117,21 @@ namespace _2048.WPF.Game
             }
             
             return state;
+        }
+
+        private const string SaveFileName = "SavedGenerations.txt";
+        private void SaveGenerations()
+        {
+            var generationString = JsonConvert.SerializeObject(_population);
+            File.WriteAllText(SaveFileName, generationString);
+        }
+
+        private List<PopulationNode> LoadGenerations()
+        {
+            if (!File.Exists(SaveFileName)) return null;
+
+            var content = File.ReadAllText(SaveFileName);
+            return JsonConvert.DeserializeObject<List<PopulationNode>>(content);
         }
 
     }
