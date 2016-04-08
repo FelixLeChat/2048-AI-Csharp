@@ -1,7 +1,7 @@
 ﻿using System;
-using _2018.AI.Model.Core;
+using _2048.AI.Model.Core;
 
-namespace _2018.AI.Model
+namespace _2048.AI.Model
 {
     [Serializable]
     public class TreeNode

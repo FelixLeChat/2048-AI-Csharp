@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using _2018.AI.Helper.ArrayExtensions;
+using _2048.AI.Helper.ArrayExtensions;
 
-namespace _2018.AI.Helper
+namespace _2048.AI.Helper
 {
     public static class CloneObject
     {

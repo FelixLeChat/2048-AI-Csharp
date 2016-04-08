@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using _2018.AI.Enums;
-using _2018.AI.Helper;
-using _2018.AI.Model.Core;
-using _2018.AI.Model.Optimize;
-using _2018.AI.Strategy;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
+using _2048.AI.Model.Core;
+using _2048.AI.Model.Optimize;
+using _2048.AI.Strategy;
 using _2048.WPF.Model;
 
 namespace _2048.WPF.Game
@@ -114,7 +114,7 @@ namespace _2048.WPF.Game
                                     GameGrid.HandleMove(direction);
                                 else
                                 {
-                                    GameGrid.GameModel.PerformMove(direction);
+                                    GameGrid.GameModel.PerformMoveAndSpawn(direction);
                                     GameGrid.MoveInProgress = false;
                                     GameGrid.ResetCells();
                                 }

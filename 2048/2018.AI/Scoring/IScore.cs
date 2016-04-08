@@ -1,6 +1,6 @@
-﻿using _2018.AI.Model;
+﻿using _2048.AI.Model;
 
-namespace _2018.AI.Scoring
+namespace _2048.AI.Scoring
 {
     public interface IScore
     {

@@ -1,6 +1,6 @@
-﻿using _2018.AI.Model.Core;
+﻿using _2048.AI.Model.Core;
 
-namespace _2018.AI.Scoring
+namespace _2048.AI.Scoring
 {
     public interface IOptimizedScore
     {

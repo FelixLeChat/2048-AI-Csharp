@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using _2018.AI.Model.Optimize;
+using _2048.AI.Model.Optimize;
 using _2048.Model;
 
-namespace _2018.AI.Helper
+namespace _2048.AI.Helper
 {
     public class Helper
     {
@@ -32,10 +32,11 @@ namespace _2018.AI.Helper
         public static OptimizeBoard Translate(GameModel board)
         {
             var newBoard = new OptimizeBoard();
+
             var size = board.GetSize();
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
-                for (int j = 0; j < size; j++)
+                for (var j = 0; j < size; j++)
                 {
                     newBoard.SetValue(i,j, board.GetValue(i,j));
                 }

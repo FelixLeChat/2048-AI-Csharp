@@ -7,8 +7,8 @@
     <ProjectGuid>{769C1F27-F137-408D-868A-79C9C5313DB1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_2018.AI</RootNamespace>
-    <AssemblyName>2018.AI</AssemblyName>
+    <RootNamespace>_2048.AI</RootNamespace>
+    <AssemblyName>2048.AI</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -53,6 +53,7 @@
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\State.cs" />
     <Compile Include="Enums\Type.cs" />
+    <Compile Include="Helper\BoardHelper.cs" />
     <Compile Include="Helper\CloneObject.cs" />
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Heuristics\Heuristics.cs" />

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _2018.AI.Enums;
-using _2018.AI.Helper;
-using _2018.AI.Model.Core;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
+using _2048.AI.Model.Core;
+using _2048.AI.Scoring;
 
 namespace _2048.Model
 {
@@ -16,6 +17,7 @@ namespace _2048.Model
         public int ColumnCount { get; }
 
         public Cell[][] Cells { get; set; }
+        private IOptimizedScore Scoring { get; set; } = new IterativeEvalScore();
 
         public IEnumerable<Cell> CellsIterator()
         {
@@ -37,6 +39,32 @@ namespace _2048.Model
         }
 
         public bool PerformMove(Direction direction)
+        {
+            var result = PackAndMerge(direction);
+
+            foreach (var col in Cells)
+            {
+                foreach (var cell in col)
+                {
+                    cell.PreviousPosition = null;
+                    cell.WasCreated = false;
+                    cell.WasMerged = false;
+                }
+            }
+
+            return result;
+        }
+
+        public void Initialize()
+        {
+        }
+
+        public double GetHeuristicEvaluation()
+        {
+            return Scoring.GetScore(this);
+        }
+
+        public bool PerformMoveAndSpawn(Direction direction)
         {
             if (direction == Direction.NONE) return false;
 

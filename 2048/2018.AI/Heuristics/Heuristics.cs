@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using _2018.AI.Model;
-using _2018.AI.Model.Core;
+using _2048.AI.Model;
+using _2048.AI.Model.Core;
 
-namespace _2018.AI.Heuristics
+namespace _2048.AI.Heuristics
 {
     public class Heuristics
     {

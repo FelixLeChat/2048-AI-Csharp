@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using _2018.AI.Enums;
+using _2048.AI.Enums;
 
 namespace _2048.WPF.Model
 {

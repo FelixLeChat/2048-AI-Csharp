@@ -1,9 +1,7 @@
-﻿using _2018.AI.Model;
-using _2018.AI.Model.Core;
+﻿using _2048.AI.Model;
+using _2048.AI.Model.Core;
 
-using static _2018.AI.Heuristics.Heuristics;
-
-namespace _2018.AI.Scoring
+namespace _2048.AI.Scoring
 {
     public class MasterScore : IOptimizedScore, IScore
     {
@@ -27,20 +25,20 @@ namespace _2018.AI.Scoring
             for (var i = 0; i < board.GetSize(); i++)
             {
                 // Heuristic for sum of cells
-                score += SumWeight* ToBase2Exp(GetLineScore(board, i));
+                score += SumWeight* Heuristics.Heuristics.ToBase2Exp(Heuristics.Heuristics.GetLineScore(board, i));
 
                 // Heuristic for empty cells count
-                score += EmptyWeight*CountEmptyCells(board, i);
+                score += EmptyWeight*Heuristics.Heuristics.CountEmptyCells(board, i);
 
                 // Heuristic for Monotonicity
-                score += MonotonicityWeight*GetMonotonicity(board, i, MonotonicityPower);
+                score += MonotonicityWeight*Heuristics.Heuristics.GetMonotonicity(board, i, MonotonicityPower);
 
                 // Heuristic for cell Merge count
-                score += MergesWeight*GetMergeCount(board, i);
+                score += MergesWeight*Heuristics.Heuristics.GetMergeCount(board, i);
             }
 
             // Heuritic for smoothness
-            score += GetSmoothness(board)*SmoothnessWeight;
+            score += Heuristics.Heuristics.GetSmoothness(board)*SmoothnessWeight;
 
             return score;
         }

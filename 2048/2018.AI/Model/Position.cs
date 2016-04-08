@@ -1,4 +1,4 @@
-﻿namespace _2018.AI.Model
+﻿namespace _2048.AI.Model
 {
     public class Position
     {
