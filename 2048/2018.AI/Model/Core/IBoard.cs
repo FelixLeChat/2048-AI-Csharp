@@ -1,5 +1,7 @@
 ﻿using _2048.AI.Enums;
 
+using Board = System.UInt64;
+
 namespace _2048.AI.Model.Core
 {
     public interface IBoard
@@ -16,5 +18,8 @@ namespace _2048.AI.Model.Core
         int GetSize();
 
         IBoard GetCopy();
+        IBoard GetCopy(Board board);
+        Board GetBitArrayRepresentation();
+        int CountEmpty();
     }
 }

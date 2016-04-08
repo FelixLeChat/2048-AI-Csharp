@@ -122,6 +122,21 @@ namespace _2048.Model
             return newBoard;*/
         }
 
+        public IBoard GetCopy(ulong board)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong GetBitArrayRepresentation()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CountEmpty()
+        {
+            throw new NotImplementedException();
+        }
+
         #region Algo Functions
         /// <summary>
         /// Passed move changed something on the grid

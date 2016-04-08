@@ -67,9 +67,11 @@ namespace _2048.WPF.Game
             _gameTimer = new Stopwatch();
 
             BoardType = settings.BoardType;
+            // Small hack
             if (BoardType == BoardType.Optimized)
             {
-                OptimizeBoardHelper.InitLookupTable();
+                var temp = new OptimizeBoard();
+                temp.Initialize();
             }
         }
 

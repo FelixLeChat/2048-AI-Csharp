@@ -50,6 +50,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="HeuristicVisualization.cs" />
     <Compile Include="OptimizeBoardTest.cs" />
   </ItemGroup>
   <ItemGroup>

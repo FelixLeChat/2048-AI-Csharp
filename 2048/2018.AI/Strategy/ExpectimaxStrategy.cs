@@ -5,6 +5,8 @@ using _2048.AI.Model.Core;
 using _2048.AI.Scoring;
 using _2048.AI.Strategy.Core;
 
+using Board = System.UInt64;
+
 namespace _2048.AI.Strategy
 {
     public class ExpectimaxStrategy : IStrategy
@@ -12,20 +14,15 @@ namespace _2048.AI.Strategy
         private readonly List<Direction> PossibleDirection = new List<Direction>()
         {
             Direction.Up,
-            Direction.Down, 
+            Direction.Down,
             Direction.Left,
             Direction.Right
         };
 
-        private readonly List<Direction> SkipMove = new List<Direction>()
-        {
-            Direction.NONE
-        };
 
         // Don't recurse into node in prob is below this threshold
         private const float ProbabilityThreshold = 0.001f;
-        private int MaxDepth = 3;
-        private MasterScore Scorer = new MasterScore();
+        private int MaxDepth = 6;
 
         public Direction GetDirection(IBoard board)
         {
@@ -37,12 +34,13 @@ namespace _2048.AI.Strategy
             {
                 var copy = board.GetCopy();
                 var hadChanged = copy.PerformMove(direction);
-                var score = Expectimax(copy, MaxDepth, 1.0f, true);
-
+                
                 if (hadChanged)
                 {
+                    var score = ScoreTopLevelMoveNode(copy, MaxDepth);
+
                     // Prevent getting stuck
-                    if (bestScore == 0)
+                    if (bestScore < 0.01f)
                     {
                         bestDirection = direction;
                     }
@@ -59,43 +57,117 @@ namespace _2048.AI.Strategy
         }
 
         /// <summary>
-        /// Get the expected score from the current board
+        /// Will start the Expectimax search from the first Node
         /// </summary>
         /// <param name="board"></param>
         /// <param name="depth"></param>
         /// <returns></returns>
-        public float Expectimax(IBoard board, int depth, float probability,  bool skipMove = false)
+        private float ScoreTopLevelMoveNode(IBoard board, int depth)
         {
-            if (depth == 0 || probability < ProbabilityThreshold)
-            {
-                return (float)Scorer.GetScore(board);
-            }
+            var result = ScoreExpectationNode(board, depth - 1, 1.0f);
+            return result;
+        }
 
+        ///// <summary>
+        ///// Get the expected score from the current board
+        ///// </summary>
+        ///// <param name="board"></param>
+        ///// <param name="depth"></param>
+        ///// <returns></returns>
+        //public float Expectimax(IBoard board, int depth, float probability, bool skipMove = false)
+        //{
+        //    if (depth == 0 || probability < ProbabilityThreshold)
+        //    {
+        //        return (float)board.GetHeuristicEvaluation();
+        //    }
+
+        //    float bestScore = 0.0f;
+
+        //    var possibleDirection = skipMove ? SkipMove : PossibleDirection;
+
+        //    // Try all possible move on the current state
+        //    foreach (var direction in possibleDirection)
+        //    {
+        //        var copy = board.GetCopy();
+        //        copy.PerformMove(direction);
+
+        //        // Calculate the score of the moved board (expectation*score)
+        //        float score = 0;
+        //        foreach (var possibleEvent in ExpectimaxHelper.GetChanceEvents(board))
+        //        {
+        //            ExpectimaxHelper.MakeChanceEvent(copy, possibleEvent);
+        //            float eventProbability = ExpectimaxHelper.GetEventProbability(board, possibleEvent);
+        //            float tempScore = Expectimax(copy, depth - 1, probability * eventProbability);
+        //            ExpectimaxHelper.UnMakeChanceEvent(copy, possibleEvent);
+        //            score += eventProbability * tempScore;
+        //        }
+
+        //        bestScore = Math.Max(score, bestScore);
+        //    }
+
+        //    return bestScore;
+        //}
+
+        /// <summary>
+        /// Represent a Node where we simulate a move, we will return the best score 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="depth"></param>
+        /// <param name="probability"></param>
+        /// <returns></returns>
+        private float ScoreMoveNode(IBoard board, int depth, float probability)
+        {
             float bestScore = 0.0f;
 
-            var possibleDirection = skipMove ? SkipMove : PossibleDirection;
-
-            // Try all possible move on the current state
-            foreach (var direction in possibleDirection)
+            foreach (var direction in PossibleDirection)
             {
                 var copy = board.GetCopy();
                 copy.PerformMove(direction);
 
-                // Calculate the score of the moved board (expectation*score)
-                float score = 0;
-                foreach (var possibleEvent in ExpectimaxHelper.GetChanceEvents(board))
-                {
-                    ExpectimaxHelper.MakeChanceEvent(copy, possibleEvent);
-                    float eventProbability = ExpectimaxHelper.GetEventProbability(board, possibleEvent);
-                    float tempScore = Expectimax(copy, depth - 1, probability * eventProbability);
-                    ExpectimaxHelper.UnMakeChanceEvent(copy, possibleEvent);
-                    score += eventProbability * tempScore;
-                }
+                var score = ScoreExpectationNode(copy, depth - 1, probability);
+                bestScore = Math.Max(bestScore, score);
+            }
+            return bestScore;
+        }
 
-                bestScore = Math.Max(score, bestScore);
+        /// <summary>
+        /// Will try all possible result from the previous move (put 2 and 4 tiles), will return the expected score (average)
+        /// </summary>
+        /// <param name="currentBoard"></param>
+        /// <param name="depth"></param>
+        /// <param name="probability"></param>
+        /// <returns></returns>
+        private float ScoreExpectationNode(IBoard currentBoard, int depth, float probability)
+        {
+            if (depth <= 0 || probability < ProbabilityThreshold)
+            {
+                return (float)currentBoard.GetHeuristicEvaluation();
             }
 
-            return bestScore;
+            int emptyCount = currentBoard.CountEmpty();
+            probability /= probability;
+
+
+            // Will put 2 and 4 on all empty case
+            float score = 0;
+            Board board = currentBoard.GetBitArrayRepresentation();
+            Board temp = board;
+            Board tile2 = 1;
+
+            while (tile2 > 0)
+            {
+                if ((temp & 0xf) == 0)
+                {
+                    score += ScoreMoveNode(currentBoard.GetCopy(board | tile2) , depth - 1, probability * 0.9f) * 0.9f;
+                    score += ScoreMoveNode(currentBoard.GetCopy(board | (tile2 << 1)), depth - 1, probability * 0.1f) * 0.1f;
+                }
+                temp >>= 4;
+                tile2 <<= 4;
+            }
+
+            score = score/emptyCount;
+
+            return score;
         }
 
     }

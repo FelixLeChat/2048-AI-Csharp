@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using _2048.AI.Enums;
+using _2048.AI.Helper;
 using Board = System.UInt64;
 using Row = System.UInt16;
 
@@ -13,40 +14,10 @@ namespace _2048.AI.Model.Optimize
 
     public static class OptimizeBoardHelper
     {
+        private static bool IsInitialize { get; set; } = false;
+
         private const Board ROW_MASK = 0xFFFF;
         private const Board COL_MASK = 0x000F000F000F000F;
-
-
-        #region Bit Operation Helper
-        private static Board ConvertToColumn(Row row)
-        {
-            Board tmp = row;
-            return (tmp | (tmp << 12) | (tmp << 24) | (tmp << 36)) & COL_MASK;
-        }
-
-        private static Row ReverseRow(Row row)
-        {
-            return (ushort)((row >> 12) | ((row >> 4) & 0x00F0) | ((row << 4) & 0x0F00) | (row << 12));
-        }
-
-        // Transpose rows/columns in a board:
-        //   0123       048c
-        //   4567  -->  159d
-        //   89ab       26ae
-        //   cdef       37bf
-        private static Board Transpose(Board board)
-        {
-            Board a1 = board & 0xF0F00F0FF0F00F0F;
-            Board a2 = board & 0x0000F0F00000F0F0;
-            Board a3 = board & 0x0F0F00000F0F0000;
-            Board a = a1 | (a2 << 12) | (a3 >> 12);
-            Board b1 = a & 0xFF00FF0000FF00FF;
-            Board b2 = a & 0x00FF00FF00000000;
-            Board b3 = a & 0x00000000FF00FF00;
-            return b1 | (b2 >> 24) | (b3 << 24);
-        }
-
-        #endregion
 
         // Pre-calculate all possible result of move for row
         // A row is 16 bits: so 65536 possibility
@@ -58,8 +29,14 @@ namespace _2048.AI.Model.Optimize
 
         static readonly float[] _scoreTable = new float[65536];
 
+
         public static void InitLookupTable()
         {
+            if (IsInitialize)
+            {
+                return;
+            }
+
             for (int row = 0; row < 65536; ++row)
             {
                 // Transform the uint of row into [nible1, nible2, nible3, nible 4]
@@ -74,8 +51,9 @@ namespace _2048.AI.Model.Optimize
                 CalculateRowScore(row, line);
 
                 CalculateRowTransformation((Row)row, ref line);
-
             }
+
+            IsInitialize = true;
         }
 
         //// Calculate the score of this row
@@ -136,13 +114,13 @@ namespace _2048.AI.Model.Optimize
             }
 
             var result = LineArrayToRow(line);
-            var reverseResult = ReverseRow(result);
-            var reverseRow = ReverseRow(row);
+            var reverseResult = BitArrayHelper.ReverseRow(result);
+            var reverseRow = BitArrayHelper.ReverseRow(row);
 
             _rowLeftTable[row] = (ushort)(row ^ result);
             _rowRightTable[reverseRow] = (ushort)(reverseRow ^ reverseResult);
-            _colUpTable[row] = ConvertToColumn(row) ^ ConvertToColumn(result);
-            _colDownTable[reverseRow] = ConvertToColumn(reverseRow) ^ ConvertToColumn(reverseResult);
+            _colUpTable[row] = BitArrayHelper.ConvertToColumn(row) ^ BitArrayHelper.ConvertToColumn(result);
+            _colDownTable[reverseRow] = BitArrayHelper.ConvertToColumn(reverseRow) ^ BitArrayHelper.ConvertToColumn(reverseResult);
 
 
         }
@@ -182,7 +160,7 @@ namespace _2048.AI.Model.Optimize
         private static Board MoveUp(Board board)
         {
             Board result = board;
-            Board transposed = Transpose(board);
+            Board transposed = BitArrayHelper.Transpose(board);
             result ^= _colUpTable[transposed >> 0 & ROW_MASK] << 0;
             result ^= _colUpTable[transposed >> 16 & ROW_MASK] << 4;
             result ^= _colUpTable[transposed >> 32 & ROW_MASK] << 8;
@@ -192,7 +170,7 @@ namespace _2048.AI.Model.Optimize
         private static Board MoveDown(Board board)
         {
             Board result = board;
-            Board transposed = Transpose(board);
+            Board transposed = BitArrayHelper.Transpose(board);
             result ^= _colDownTable[transposed >> 0 & ROW_MASK] << 0;
             result ^= _colDownTable[transposed >> 16 & ROW_MASK] << 4;
             result ^= _colDownTable[transposed >> 32 & ROW_MASK] << 8;

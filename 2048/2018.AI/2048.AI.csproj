@@ -53,9 +53,11 @@
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\State.cs" />
     <Compile Include="Enums\Type.cs" />
+    <Compile Include="Helper\BitArrayHelper.cs" />
     <Compile Include="Helper\BoardHelper.cs" />
     <Compile Include="Helper\CloneObject.cs" />
     <Compile Include="Helper\Helper.cs" />
+    <Compile Include="Heuristics\HeuristicFactor.cs" />
     <Compile Include="Heuristics\Heuristics.cs" />
     <Compile Include="Model\Core\IBoard.cs" />
     <Compile Include="Model\Optimize\OptimizeBoard.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Scoring\IScore.cs" />
     <Compile Include="Scoring\IterativeEvalScore.cs" />
     <Compile Include="Scoring\MasterScore.cs" />
+    <Compile Include="Scoring\OptimizeScorer.cs" />
     <Compile Include="Strategy\Core\ExpectimaxHelper.cs" />
     <Compile Include="Strategy\DeptFirstStrategy.cs" />
     <Compile Include="Strategy\ExpectimaxStrategy.cs" />
