@@ -25,7 +25,7 @@ namespace _2048.WPF.Game
         private const int GameIterationInPopulation = 100;
         private const int PopulationInNextGeneration = 5;
 
-        private List<PopulationNode> _population = new List<PopulationNode>();
+        private readonly List<PopulationNode> _population = new List<PopulationNode>();
         private readonly ILearner _learner;
 
 
@@ -47,8 +47,9 @@ namespace _2048.WPF.Game
                         // Play X games
                         while (iteration < GameIterationInPopulation && !cancelToken.IsCancellationRequested)
                         {
+                            // Initialize the board with the Heuristic Factors of the current generation
                             IBoard board = new OptimizeBoard();
-                            board.Initialize();
+                            board.Initialize(heuristicFactor);
 
                             // Play Game
                             var gameState = State.NotFinished;
@@ -61,6 +62,9 @@ namespace _2048.WPF.Game
                             }
 
                             // game finished
+                            var score = board.GetScore();
+                            if (score > generationStat.MaxScore)
+                                generationStat.MaxScore = score;
 
                             iteration++;
                         }

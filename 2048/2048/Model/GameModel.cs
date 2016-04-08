@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _2048.AI.Enums;
 using _2048.AI.Helper;
+using _2048.AI.Heuristics;
 using _2048.AI.Model.Core;
 using _2048.AI.Model.Optimize;
 using _2048.AI.Scoring;
@@ -57,7 +58,7 @@ namespace _2048.Model
             return result;
         }
 
-        public void Initialize()
+        public void Initialize(HeuristicFactor factors = null)
         {
         }
 

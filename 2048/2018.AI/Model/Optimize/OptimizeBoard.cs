@@ -31,6 +31,7 @@ namespace _2048.AI.Model.Optimize
         {
             if (factors == null)
                 factors = HeuristicFactor.GetSomeHeuristic();
+
             OptimizeBoardHelper.InitLookupTable();
             OptimizeScorer.InitLookupTable(factors);
         }
