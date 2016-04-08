@@ -23,12 +23,13 @@ namespace _2048.WPF.Game
 
         public ObservableCollection<ScoreModel> ScoreList { get; set; } = new ObservableCollection<ScoreModel>();
         public StatModel Stats { get; set; } = new StatModel();
-        private CancellationTokenSource _cancelToken;
+        private CancellationTokenSource _cancelToken = new CancellationTokenSource();
         private Stopwatch _moveTimer;
         private Stopwatch _gameTimer;
         public IStrategy Strategy { get; set; }
         public bool Animate { get; set; }
         public bool Restart { get; set; }
+        public bool IsTraining { get; set; }
 
         private BoardType BoardType { get; set; }
 
@@ -49,6 +50,8 @@ namespace _2048.WPF.Game
                     Strategy = new ExpectimaxStrategy();
                     break;
             }
+
+            IsTraining = settings.GameMode == Mode.Training;
 
             GameGrid = new GameGrid();
             ScoreList = new ObservableCollection<ScoreModel>();
@@ -78,7 +81,13 @@ namespace _2048.WPF.Game
                 return;
 
             // Token for thread cancelation
+            if (_cancelToken != null)
+            {
+                _cancelToken.Cancel();
+                _cancelToken.Dispose();
+            }
             _cancelToken = new CancellationTokenSource();
+
             Task<State>.Factory.StartNew(() =>
             {
                 var gameState = State.NotFinished;
@@ -196,6 +205,11 @@ namespace _2048.WPF.Game
             });
         }
 
+        public void StartTraining()
+        {
+            TrainingManager.Instance.StartTraining(_cancelToken);
+        }
+
         private bool ForceStop { get; set; }
         public void StopGame(bool force = false)
         {
@@ -204,6 +218,8 @@ namespace _2048.WPF.Game
                 _cancelToken.Cancel();
                 _cancelToken.Dispose();
                 ForceStop = force;
+
+                _cancelToken = null;
             }
             catch { }
         }

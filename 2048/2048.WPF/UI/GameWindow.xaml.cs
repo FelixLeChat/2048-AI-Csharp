@@ -13,6 +13,7 @@ namespace _2048.WPF.UI
         private const int MaxGridSize = 600;
         private readonly GameManager _gameManager;
         public static GameWindow Instance;
+        private static bool _isTraining;
 
         public GameWindow(GameSettings settings)
         {
@@ -37,6 +38,14 @@ namespace _2048.WPF.UI
             //Data Bindings
             ListGameScore.ItemsSource = _gameManager.ScoreList;
             DataContext = _gameManager.Stats;
+
+            // Visual VS Training
+            if (_gameManager.IsTraining)
+            {
+                TopScorePanel.Visibility = Visibility.Collapsed;
+                ScoreScroll.Visibility = Visibility.Collapsed;
+                ContentGrid.Visibility = Visibility.Collapsed;
+            }
         }
 
         #region Manual Entry
@@ -83,7 +92,12 @@ namespace _2048.WPF.UI
             StartButton.IsEnabled = false;
 
             // Start Game
-            _gameManager.StartGame();
+            if (!_gameManager.IsTraining)
+                _gameManager.StartGame();
+            else
+            {
+                _gameManager.StartTraining();
+            }
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)

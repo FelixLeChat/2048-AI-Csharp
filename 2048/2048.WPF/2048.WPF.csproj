@@ -56,6 +56,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Game\TrainingManager.cs" />
     <Compile Include="Model\GameSettings.cs" />
     <Compile Include="Converter\RadioButtonCheckedConverter.cs" />
     <Compile Include="Model\StatModel.cs" />
