@@ -12,9 +12,9 @@ namespace _2018.AI.Scoring
             return Eval(node.Board);
         }
 
-        private const double SmoothWeight = 0.1;
-        private const double Mono2Weight = 1.0;
-        private const double EmptyWeight = 2.7;
+        private const double SmoothWeight = 1.0;
+        private const double Mono2Weight = 1.5;
+        private const double EmptyWeight = 2.0;
         private const double MaxWeight = 1.0;
 
         private static double Eval(IBoard cells)
