@@ -1,5 +1,4 @@
-﻿using _2048.WPF.Converter;
-using _2048.WPF.Game;
+﻿using _2048.WPF.Game;
 using _2048.WPF.Model;
 
 namespace _2048.WPF.UI

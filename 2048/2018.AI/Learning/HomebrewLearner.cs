@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using _2048.AI.Learning.Core;
-using System.Linq;
 using _2048.AI.Heuristics;
 
 namespace _2048.AI.Learning

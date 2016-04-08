@@ -22,27 +22,15 @@
                     </GroupBox.Header>
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                            <RadioButton GroupName="GameType" Content="Expectimax" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:Type.Expectimax}}"/>
+                            <RadioButton GroupName="GameType" Content="It Deep" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:Type.IterativeDeepening}}"/>
                             <RadioButton GroupName="GameType" Content="Manual" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
                         IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:Type.Manual}}"/>
-                            <RadioButton GroupName="GameType" Content="Random" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Type.Random}}"/>
-                            <RadioButton GroupName="GameType" Content="Master Algo" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Type.MasterAlgo}}"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
-                            <RadioButton GroupName="GameType" Content="DFS" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Type.DepthFirst}}"/>
-                            <RadioButton GroupName="GameType" Content="It Deep" FontSize="12" FontWeight="Normal" Margin="10,0,10,0"
-                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Type.IterativeDeepening}}"/>
-                            <RadioButton GroupName="GameType" Content="Expectimax" FontSize="12" FontWeight="Normal" Margin="10,0,10,0"
-                        IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:Type.Expectimax}}"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -53,17 +41,32 @@
                         Board Type
                     </GroupBox.Header>
                     <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
-                        <RadioButton GroupName="BoardType" Content="Regular" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
-                        IsChecked="{Binding BoardType, Converter={StaticResource RadioButtonCheckedConverter}, 
-                            ConverterParameter={x:Static enum:BoardType.Regular}}"/>
                         <RadioButton GroupName="BoardType" Content="Optimized" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
                         IsChecked="{Binding BoardType, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:BoardType.Optimized}}"/>
                     </StackPanel>
                 </GroupBox>
 
+                <GroupBox  Margin="10,5,10,0" FontSize="16" FontWeight="Bold"
+                  Background="LightGray">
+                    <GroupBox.Header>
+                        Type
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
+                        <RadioButton GroupName="Type" Content="Stats" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:Mode.Stats}}"/>
+                        <RadioButton GroupName="Type" Content="Ttraining" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:Mode.Training}}"/>
+                    </StackPanel>
+                </GroupBox>
+
                 <GroupBox  Margin="10,10,10,0" FontSize="16" FontWeight="Bold"
                   Background="LightGray">
+                    <GroupBox.Header>
+                        Stat Config
+                    </GroupBox.Header>
                     <StackPanel Orientation="Horizontal" Margin="5,0,5,0">
                         <CheckBox Name="IsPrivate" IsChecked="{Binding IsAnimated}" Content="Animate" Margin="20,10,0,5" Padding="5,-4,0,0"/>
                         <CheckBox Name="IsRestart" IsChecked="{Binding IsRestart}" Content="Restart" Margin="20,10,0,5" Padding="5,-4,0,0"/>

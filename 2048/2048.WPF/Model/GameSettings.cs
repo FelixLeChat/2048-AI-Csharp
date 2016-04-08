@@ -9,7 +9,7 @@ namespace _2048.WPF.Model
         /// <summary>
         /// Mode of the online game
         /// </summary>
-        /*private Mode _gameMode;
+        private Mode _gameMode;
         public Mode GameMode
         {
             get { return _gameMode; }
@@ -22,7 +22,7 @@ namespace _2048.WPF.Model
                 }
             }
 
-        }*/
+        }
 
         /// <summary>
         /// Type of the online game

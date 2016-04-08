@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,15 +41,6 @@ namespace _2048.WPF.Game
             {
                 case Type.Manual:
                     Strategy = null;
-                    break;
-                case Type.Random:
-                    Strategy = new RandomStrategy();
-                    break;
-                case Type.MasterAlgo:
-                    Strategy = new MasterAlgo();
-                    break;
-                case Type.DepthFirst:
-                    Strategy = new DeptFirstStrategy();
                     break;
                 case Type.IterativeDeepening:
                     Strategy =new IterativeDeepening();

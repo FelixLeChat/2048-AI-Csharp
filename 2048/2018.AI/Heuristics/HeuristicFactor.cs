@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace _2048.AI.Heuristics
+﻿namespace _2048.AI.Heuristics
 {
     /// <summary>
     /// The lower is the evaluation of heuristic the better!!!

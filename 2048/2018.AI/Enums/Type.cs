@@ -2,11 +2,8 @@
 {
     public enum Type
     {
-        Manual,
-        Random,
-        MasterAlgo,
-        DepthFirst,
+        Expectimax,
         IterativeDeepening,
-        Expectimax
+        Manual
     }
 }
