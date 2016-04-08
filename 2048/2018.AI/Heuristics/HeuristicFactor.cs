@@ -34,6 +34,7 @@ namespace _2048.AI.Heuristics
             return false;
         }
 
+
         public static HeuristicFactor GetSomeHeuristic()
         {
             // Best factor according to the github
@@ -53,12 +54,12 @@ namespace _2048.AI.Heuristics
             //return new HeuristicFactor()
             //{
             //    LostPenalty = 0.0f,
-            //    MonoticityPower = 0.0f,
-            //    MonoticityWeight = 0.0f,
+            //    MonoticityPower = 4.0f,
+            //    MonoticityWeight = -60.0f,
             //    SumPower = 0.0f,
             //    SumWeight = 0.0f,
             //    MergeWeigth = 0.0f,
-            //    EmptyWeigth = 10000.0f,
+            //    EmptyWeigth = 0.0f,
             //    FillWeigth = 0.0f
             //};
         }
