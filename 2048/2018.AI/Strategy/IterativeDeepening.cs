@@ -4,13 +4,11 @@ using System.Linq;
 using _2048.AI.Enums;
 using _2048.AI.Model;
 using _2048.AI.Model.Core;
-using _2048.AI.Scoring;
 
 namespace _2048.AI.Strategy
 {
     public class IterativeDeepening : IStrategy
     {
-        private static IScore Scoring { get; } = new IterativeEvalScore();
         private readonly Random _random = new Random();
         private static readonly List<Direction> PassDirection = new List<Direction>();
 
@@ -19,7 +17,23 @@ namespace _2048.AI.Strategy
             if (PassDirection.Count > 5)
                 PassDirection.Remove(PassDirection[0]);
 
-            var direction = Search(board, 0, - 10000, 10000, 0, 0).Move;
+            // Check for only one direction to go
+            // Try move to see if they do something
+            var dict = new Dictionary<Direction, bool>();
+            var values = Enum.GetValues(typeof(Direction)).Cast<Direction>();
+            foreach (var value in values)
+            {
+                var copy = board.GetCopy();
+                dict.Add(value, copy.PerformMove(value));
+            }
+
+            // Move in the direction if there is only one direction to go
+            var onlyDirection = dict.Where(x => x.Value).ToList();
+            if (onlyDirection.Count() == 1)
+                return onlyDirection.First().Key;
+
+
+            var direction = Search(board, 0, - 100, 100, 0, 0).Move;
 
             if (PassDirection.Distinct().Count() == 1)
             {
@@ -64,7 +78,7 @@ namespace _2048.AI.Strategy
             // now just pick out the most annoying moves
             double[] maxScore = {-10000000.0};
             foreach (
-                var tuple in from score in scores from tuple in score.Value where tuple.Item2 > maxScore[0] select tuple)
+                var tuple in from score in scores from tuple in score.Value where tuple.Item2 >= maxScore[0] select tuple)
             {
                 maxScore[0] = tuple.Item2;
             }
@@ -72,7 +86,7 @@ namespace _2048.AI.Strategy
 
             var candidates = (from score in scores
                 from tupple in score.Value
-                where Math.Abs(Math.Ceiling(tupple.Item2) - Math.Ceiling(maxScore[0])) < 0.001
+                where Math.Abs(Math.Ceiling(tupple.Item2) - Math.Ceiling(maxScore[0])) < 0.1
                 select
                     new Tuple<Position, int>(new Position() {X = tupple.Item1.X, Y = tupple.Item1.Y}, score.Key))
                 .ToList();
@@ -133,7 +147,7 @@ namespace _2048.AI.Strategy
                 Result result;
                 if (depth == 0)
                 {
-                    result = new Result() { Move = dir, Score = Scoring.Score(new TreeNode() {Board = newGrid}), Position = positions, Cutoff = cutoffs };
+                    result = new Result() { Move = dir, Score = board.GetHeuristicEvaluation(), Position = positions, Cutoff = cutoffs };
                 }
                 else {
                     result = Search2(board,depth - 1, bestScore, beta, positions, cutoffs);

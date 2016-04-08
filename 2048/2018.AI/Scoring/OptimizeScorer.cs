@@ -1,12 +1,8 @@
 ﻿using System;
-using System.IO.IsolatedStorage;
-using System.Runtime.InteropServices;
-using Microsoft.Win32;
 using _2048.AI.Helper;
 using _2048.AI.Heuristics;
+using _2048.AI.Model;
 using _2048.AI.Model.Core;
-
-
 using Board = System.UInt64;
 using Row = System.UInt16;
 
@@ -22,27 +18,27 @@ namespace _2048.AI.Scoring
     }
 
 
-    public class OptimizeScorer 
+    public class OptimizeScorer : IOptimizedScore, IScore
     {
-        private static HeuristicFactor Factor;
-        static readonly float[] _heuristicTable = new float[65536];
+        private static HeuristicFactor _factor;
+        static readonly float[] HeuristicTable = new float[65536];
 
         public static float EvaluateHeuristic(Board board)
         {
-            return _heuristicTable[(board >> 0) & BitArrayHelper.ROW_MASK] +
-                   _heuristicTable[(board >> 16) & BitArrayHelper.ROW_MASK] +
-                   _heuristicTable[(board >> 32) & BitArrayHelper.ROW_MASK] +
-                   _heuristicTable[(board >> 48) & BitArrayHelper.ROW_MASK];
+            return HeuristicTable[(board >> 0) & BitArrayHelper.ROW_MASK] +
+                   HeuristicTable[(board >> 16) & BitArrayHelper.ROW_MASK] +
+                   HeuristicTable[(board >> 32) & BitArrayHelper.ROW_MASK] +
+                   HeuristicTable[(board >> 48) & BitArrayHelper.ROW_MASK];
         }
 
         public static void InitLookupTable(HeuristicFactor factor)
         {
-            if(factor != null && factor.Equals(Factor))
+            if(factor != null && factor.Equals(_factor))
             {
                 return;
             }
 
-            Factor = factor;
+            _factor = factor;
 
             for (int row = 0; row < 65536; ++row)
             {
@@ -63,12 +59,12 @@ namespace _2048.AI.Scoring
         private static void CalculateRowScore(int row, int[] line)
         {
             var info = GetRowInfo(line);
-            _heuristicTable[row] = Factor.LostPenalty +
-                                   Factor.EmptyWeigth * info.EmptyCount +
-                                   Factor.MergeWeigth * info.MergableCount +
-                                   Factor.MonoticityWeight * info.Monoticity +
-                                   Factor.SumWeight * info.Sum + 
-                                   Factor.FillWeigth * info.FillCount;
+            HeuristicTable[row] = _factor.LostPenalty +
+                                   _factor.EmptyWeigth * info.EmptyCount +
+                                   _factor.MergeWeigth * info.MergableCount +
+                                   _factor.MonoticityWeight * info.Monoticity +
+                                   _factor.SumWeight * info.Sum + 
+                                   _factor.FillWeigth * info.FillCount;
         }
 
         private static RowInfo GetRowInfo(int[] line)
@@ -84,7 +80,7 @@ namespace _2048.AI.Scoring
             for (int i = 0; i < 4; ++i)
             {
                 int rank = line[i];
-                info.Sum += (float) Math.Pow(rank, Factor.SumPower);
+                info.Sum += (float) Math.Pow(rank, _factor.SumPower);
                 if (rank == 0)
                 {
                     info.EmptyCount ++;
@@ -120,21 +116,32 @@ namespace _2048.AI.Scoring
             double monoticityLeft = 0;
             double monoticityRight = 0;
 
-            for (int i = 1; i < 4; ++i)
+            for (var i = 1; i < 4; ++i)
             {
                 if (line[i - 1] > line[i])
                 {
-                    monoticityLeft += Math.Pow(line[i - 1], Factor.MonoticityPower) -
-                                      Math.Pow(line[i], Factor.MonoticityPower);
+                    monoticityLeft += Math.Pow(line[i - 1], _factor.MonoticityPower) -
+                                      Math.Pow(line[i], _factor.MonoticityPower);
                 }
                 else
                 {
-                    monoticityRight += Math.Pow(line[i], Factor.MonoticityPower) -
-                                     Math.Pow(line[i - 1], Factor.MonoticityPower);
+                    monoticityRight += Math.Pow(line[i], _factor.MonoticityPower) -
+                                     Math.Pow(line[i - 1], _factor.MonoticityPower);
                 }
             }
 
             return (float)Math.Min(monoticityLeft, monoticityRight);
+        }
+
+        public double GetScore(IBoard board)
+        {
+            var optRepresentation = board.GetBitArrayRepresentation();
+            return EvaluateHeuristic(optRepresentation);
+        }
+
+        public double Score(TreeNode node)
+        {
+            return GetScore(node.Board);
         }
     }
 }

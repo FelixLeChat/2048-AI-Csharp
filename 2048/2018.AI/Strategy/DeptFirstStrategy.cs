@@ -4,7 +4,6 @@ using System.Linq;
 using _2048.AI.Enums;
 using _2048.AI.Model;
 using _2048.AI.Model.Core;
-using _2048.AI.Scoring;
 
 namespace _2048.AI.Strategy
 {
@@ -12,7 +11,7 @@ namespace _2048.AI.Strategy
     {
         public Direction GetDirection(IBoard board)
         {
-            var dfs = new DepthFirstSearch(board, new MasterScore());
+            var dfs = new DepthFirstSearch(board);
             return dfs.Search();
         }
     }
@@ -22,12 +21,10 @@ namespace _2048.AI.Strategy
         private readonly Random _random = new Random();
         private readonly Stack<TreeNode> _searchStack;
         private readonly TreeNode _root;
-        private readonly IScore _score;
 
-        public DepthFirstSearch(IBoard board, IScore score)
+        public DepthFirstSearch(IBoard board)
         {
             _root = GetNode(board,0);
-            _score = score;
             _searchStack = new Stack<TreeNode>();
         }
 
@@ -46,6 +43,19 @@ namespace _2048.AI.Strategy
                 {Direction.Right, GetBestScore(_root.Right)},
                 {Direction.Down, GetBestScore(_root.Down)}
             };
+
+            // Try move to see if they do something
+            var dict = new Dictionary<Direction, bool>();
+            var values = Enum.GetValues(typeof(Direction)).Cast<Direction>();
+            foreach (var value in values)
+            {
+                var copy = _root.Board.GetCopy();
+                dict.Add(value, copy.PerformMove(value));
+            }
+
+            // Move in the direction if there is only one direction to go
+            if (dict.Select(x => x.Value).Count() == 1)
+                return dict.First(x => x.Value).Key;
 
             // All same score
             if (score.Values.Distinct().Count() == 1 || PassDirection.Distinct().Count() == 1)
@@ -75,7 +85,7 @@ namespace _2048.AI.Strategy
                 var current = _searchStack.Pop();
 
                 // Call scoring algo
-                current.Score = _score.Score(current);
+                current.Score = current.Board.GetHeuristicEvaluation();
 
                 if (current.Score > score)
                     score = current.Score;

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using _2048.AI.Enums;
 using _2048.AI.Model.Core;
-using _2048.AI.Scoring;
-using _2048.AI.Strategy.Core;
-
 using Board = System.UInt64;
 
 namespace _2048.AI.Strategy
@@ -144,7 +141,7 @@ namespace _2048.AI.Strategy
                 return (float)currentBoard.GetHeuristicEvaluation();
             }
 
-            int emptyCount = currentBoard.CountEmpty();
+            var emptyCount = currentBoard.CountEmpty();
             probability /= probability;
 
 
