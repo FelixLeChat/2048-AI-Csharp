@@ -63,6 +63,9 @@
     <Compile Include="Heuristics\HeuristicFactor.cs" />
     <Compile Include="Heuristics\Heuristics.cs" />
     <Compile Include="Learning\HomebrewLearner.cs" />
+    <Compile Include="Learning\GeneticMaker.cs" />
+    <Compile Include="Learning\RandomWalkMaker.cs" />
+    <Compile Include="Learning\ReinforcementMaker.cs" />
     <Compile Include="Model\Core\IBoard.cs" />
     <Compile Include="Model\Optimize\OptimizeBoard.cs" />
     <Compile Include="Model\Optimize\OptimizeBoardHelper.cs" />

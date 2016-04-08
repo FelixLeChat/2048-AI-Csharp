@@ -1,10 +1,18 @@
-﻿namespace _2048.AI.Heuristics
+﻿using System;
+
+namespace _2048.AI.Heuristics
 {
     /// <summary>
     /// The lower is the evaluation of heuristic the better!!!
     /// </summary>
     public class HeuristicFactor 
     {
+        private static readonly Random _rand = new Random();
+        private const int WeightLimit = 1000;
+        private const int PowerLimit = 10;
+        public  static float WeigthIncrementLimit { get; set; } = 50;
+        public static float PowerIncrementLimit { get; set; } = 3;
+
         public float LostPenalty { get; set; }
         public float MonoticityPower { get; set; }
         public float MonoticityWeight { get; set; }
@@ -32,6 +40,26 @@
             return false;
         }
 
+
+        public static HeuristicFactor GetRandomHeuristic()
+        {
+            return new HeuristicFactor()
+            {
+                LostPenalty = RandomHelper(WeightLimit),
+                MonoticityPower = RandomHelper(PowerLimit),
+                MonoticityWeight = RandomHelper(WeightLimit),
+                SumPower = RandomHelper(PowerLimit),
+                SumWeight = RandomHelper(WeightLimit),
+                MergeWeigth = RandomHelper(WeightLimit),
+                EmptyWeigth = RandomHelper(WeightLimit),
+                FillWeigth = RandomHelper(WeightLimit)
+            };
+        }
+
+        private static float RandomHelper(int limit)
+        {
+            return (float) ((_rand.NextDouble() - 0.5f) * 2*limit);
+        }
 
         public static HeuristicFactor GetSomeHeuristic()
         {

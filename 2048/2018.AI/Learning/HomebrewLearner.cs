@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using _2048.AI.Learning.Core;
 using _2048.AI.Heuristics;
 
@@ -11,67 +13,45 @@ namespace _2048.AI.Learning
     ///     * Random Walk with best
     ///     * Learning from past
     /// </summary>
-    public class HomebrewLearner
+    public class HomebrewLearner : ILearner
     {
-        private readonly Random _rand = new Random();
+        IBastardMaker Maker = new ReinforcementMaker();
         private const int SelectionCount = 2;
-        private const int PopulationCount = 5;
-        private const int MutateProbability = 10;
 
-        //public List<PopulationNode> GetNewGeneration(List<PopulationNode> previousGeneration)
-        //{
-        //    previousGeneration.Sort();
-        //    var bestNode = previousGeneration.Take(SelectionCount);
-        //}
-
-        //private List<PopulationNode> MakeChildrenWithLove(List<PopulationNode> previousGeneration)
-        //{
-        //    int childToSpawn = PopulationCount - previousGeneration.Count;
-        //    previousGeneration.Add(Merge(previousGeneration));
-        //}
-
-        private PopulationNode Merge(List<PopulationNode> parentsInOrgy)
+        public List<HeuristicFactor> GetNewGeneration(List<PopulationNode> previousGeneration, int populationSize)
         {
-            
-            int count = parentsInOrgy.Count;
-
-            var heuristic = new HeuristicFactor()
+            // If no previous generation: generate a random one
+            if (previousGeneration == null || !previousGeneration.Any())
             {
-                LostPenalty = parentsInOrgy[_rand.Next(0, count)].Heuristic.LostPenalty,
-                MonoticityPower = parentsInOrgy[_rand.Next(0, count)].Heuristic.MonoticityPower,
-                MonoticityWeight = parentsInOrgy[_rand.Next(0, count)].Heuristic.MonoticityWeight,
-                SumPower = parentsInOrgy[_rand.Next(0, count)].Heuristic.SumPower,
-                SumWeight = parentsInOrgy[_rand.Next(0, count)].Heuristic.SumWeight,
-                MergeWeigth = parentsInOrgy[_rand.Next(0, count)].Heuristic.MergeWeigth,
-                EmptyWeigth = parentsInOrgy[_rand.Next(0, count)].Heuristic.EmptyWeigth,
-                FillWeigth = parentsInOrgy[_rand.Next(0, count)].Heuristic.FillWeigth,
-            };
-
-            return new PopulationNode()
+                var newGeneration = new List<HeuristicFactor>();
+                for (int i = 0; i < populationSize; ++i)
+                {
+                    newGeneration.Add(HeuristicFactor.GetRandomHeuristic());
+                }
+                return newGeneration;
+            }
+            else
             {
-                Heuristic = heuristic
-            };
+                previousGeneration.Sort();
+                var bestNode = previousGeneration.Take(SelectionCount).ToList();
+
+                var newGeneration = MakeChildrenWithLove(bestNode, populationSize);
+
+                return newGeneration;
+            }
         }
 
-        //private PopulationNode MakeBastard(PopulationNode nodeToMutate)
-        //{
-        //    var heuristic = new HeuristicFactor()
-        //    {
-        //        LostPenalty =_rand.Next(0, 100) < MutateProbability ? nodeToMutate.Heuristic.LostPenalty +  : nodeToMutate.Heuristic.LostPenalty,
-        //        MonoticityPower = nodeToMutate.Heuristic.MonoticityPower,
-        //        MonoticityWeight = nodeToMutate.Heuristic.MonoticityWeight,
-        //        SumPower = nodeToMutate.Heuristic.SumPower,
-        //        SumWeight = nodeToMutate.Heuristic.SumWeight,
-        //        MergeWeigth = nodeToMutate.Heuristic.MergeWeigth,
-        //        EmptyWeigth = nodeToMutate.Heuristic.EmptyWeigth,
-        //        FillWeigth = nodeToMutate.Heuristic.FillWeigth,
-        //    };
+        private List<HeuristicFactor> MakeChildrenWithLove(List<PopulationNode> previousGeneration, int populationSize)
+        {
+            var heuristics = new List<HeuristicFactor>();
+            while (populationSize-- > 0)
+            {
+                heuristics.Add(Maker.MakeBastard(previousGeneration));
+            }
+            return heuristics;
+        }
 
-        //    return new PopulationNode()
-        //    {
-        //        Heuristic = heuristic
-        //    };
-        //}
+
 
     }
 }
