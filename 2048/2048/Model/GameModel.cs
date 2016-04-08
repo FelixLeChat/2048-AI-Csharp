@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _2018.AI.Enums;
-using _2018.AI.Helper;
-using _2018.AI.Model.Core;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
+using _2048.AI.Model.Core;
+using _2048.AI.Model.Optimize;
+using _2048.AI.Scoring;
 
 namespace _2048.Model
 {
@@ -16,6 +18,7 @@ namespace _2048.Model
         public int ColumnCount { get; }
 
         public Cell[][] Cells { get; set; }
+        private IOptimizedScore Scoring { get; set; } = new IterativeEvalScore();
 
         public IEnumerable<Cell> CellsIterator()
         {
@@ -37,6 +40,32 @@ namespace _2048.Model
         }
 
         public bool PerformMove(Direction direction)
+        {
+            var result = PackAndMerge(direction);
+
+            foreach (var col in Cells)
+            {
+                foreach (var cell in col)
+                {
+                    cell.PreviousPosition = null;
+                    cell.WasCreated = false;
+                    cell.WasMerged = false;
+                }
+            }
+
+            return result;
+        }
+
+        public void Initialize()
+        {
+        }
+
+        public double GetHeuristicEvaluation()
+        {
+            return Scoring.GetScore(this);
+        }
+
+        public bool PerformMoveAndSpawn(Direction direction)
         {
             if (direction == Direction.NONE) return false;
 
@@ -77,21 +106,27 @@ namespace _2048.Model
         public IBoard GetCopy()
         {
             return this.Copy();
-            /*
-            var newBoard = new GameModel(RowCount, ColumnCount)
-            {
-                Score = Score
-            };
+        }
 
-            for (var x = 0; x < GetSize(); x++)
+        public IBoard GetCopy(ulong board)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong GetBitArrayRepresentation()
+        {
+            var optBoard = new OptimizeBoard();
+            foreach (var cell in Cells.SelectMany(col => col))
             {
-                for (var y = 0; y < GetSize(); y++)
-                {
-                    newBoard.SetValue(x,y,GetValue(x,y));
-                }
+                optBoard.SetValue(cell.X, cell.Y, cell.Value);
             }
 
-            return newBoard;*/
+            return optBoard.Board;
+        }
+
+        public int CountEmpty()
+        {
+            return Cells.SelectMany(col => col).Count(cell => cell.Value == 0);
         }
 
         #region Algo Functions

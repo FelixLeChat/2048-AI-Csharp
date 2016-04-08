@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using _2018.AI.Enums;
+using _2048.AI.Enums;
 using _2048.WPF.Game;
 using _2048.WPF.Model;
-using Type = _2018.AI.Enums.Type;
+using Type = _2048.AI.Enums.Type;
 
 namespace _2048.WPF.UI
 {

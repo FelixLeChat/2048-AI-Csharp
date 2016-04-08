@@ -1,14 +1,16 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using _2018.AI.Enums;
-using _2018.AI.Helper;
-using _2018.AI.Model.Core;
-using _2018.AI.Model.Optimize;
-using _2018.AI.Strategy;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
+using _2048.AI.Model.Core;
+using _2048.AI.Model.Optimize;
+using _2048.AI.Strategy;
 using _2048.WPF.Model;
+using Type = _2048.AI.Enums.Type;
 
 namespace _2048.WPF.Game
 {
@@ -67,9 +69,11 @@ namespace _2048.WPF.Game
             _gameTimer = new Stopwatch();
 
             BoardType = settings.BoardType;
+            // Small hack
             if (BoardType == BoardType.Optimized)
             {
-                OptimizeBoardHelper.InitLookupTable();
+                var temp = new OptimizeBoard();
+                temp.Initialize();
             }
         }
 
@@ -114,7 +118,7 @@ namespace _2048.WPF.Game
                                     GameGrid.HandleMove(direction);
                                 else
                                 {
-                                    GameGrid.GameModel.PerformMove(direction);
+                                    GameGrid.GameModel.PerformMoveAndSpawn(direction);
                                     GameGrid.MoveInProgress = false;
                                     GameGrid.ResetCells();
                                 }

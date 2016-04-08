@@ -1,9 +1,8 @@
 ﻿using System;
-using _2018.AI.Enums;
-using _2018.AI.Model.Core;
-using _2048.Model;
+using _2048.AI.Enums;
+using _2048.AI.Model.Core;
 
-namespace _2018.AI.Strategy
+namespace _2048.AI.Strategy
 {
     public class RandomStrategy : IStrategy
     {

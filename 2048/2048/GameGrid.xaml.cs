@@ -3,8 +3,8 @@ using _2048.Model;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using _2018.AI.Enums;
-using _2018.AI.Helper;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
 
 namespace _2048
 {
@@ -220,7 +220,7 @@ namespace _2048
 
             MoveInProgress = true;
 
-            if (GameModel.PerformMove(direction))
+            if (GameModel.PerformMoveAndSpawn(direction))
             {
                 UpdateUi();
             }

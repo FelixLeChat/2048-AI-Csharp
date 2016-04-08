@@ -135,9 +135,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\2018.AI\2018.AI.csproj">
+    <ProjectReference Include="..\2018.AI\2048.AI.csproj">
       <Project>{769c1f27-f137-408d-868a-79c9c5313db1}</Project>
-      <Name>2018.AI</Name>
+      <Name>2048.AI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

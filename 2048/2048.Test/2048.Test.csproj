@@ -50,12 +50,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="HeuristicVisualization.cs" />
     <Compile Include="OptimizeBoardTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\2018.AI\2018.AI.csproj">
+    <ProjectReference Include="..\2018.AI\2048.AI.csproj">
       <Project>{769c1f27-f137-408d-868a-79c9c5313db1}</Project>
-      <Name>2018.AI</Name>
+      <Name>2048.AI</Name>
     </ProjectReference>
     <ProjectReference Include="..\2048.WPF\2048.WPF.csproj">
       <Project>{6fe96390-1c33-4a5a-8899-b151b0609fc2}</Project>

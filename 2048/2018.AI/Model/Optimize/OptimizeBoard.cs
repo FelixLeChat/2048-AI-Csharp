@@ -1,14 +1,17 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using _2018.AI.Enums;
-using _2018.AI.Model.Core;
+using _2048.AI.Enums;
+using _2048.AI.Helper;
+using _2048.AI.Heuristics;
+using _2048.AI.Model.Core;
+using _2048.AI.Scoring;
 using Board = System.UInt64;
 
-namespace _2018.AI.Model.Optimize
+namespace _2048.AI.Model.Optimize
 {
     public struct OptimizeBoard : IBoard
     {
         public Board Board { get; set; }
+        private IOptimizedScore Scoring { get; set; }
 
         /// <summary>
         /// Perform move and return if it had changed something
@@ -21,6 +24,17 @@ namespace _2018.AI.Model.Optimize
             var hadChange = result != Board;
             Board = result;
             return hadChange;
+        }
+
+        public void Initialize()
+        {
+            OptimizeBoardHelper.InitLookupTable();
+            OptimizeScorer.InitLookupTable(HeuristicFactor.GetSomeHeuristic());
+        }
+
+        public double GetHeuristicEvaluation()
+        {
+            return OptimizeScorer.EvaluateHeuristic(Board) + OptimizeScorer.EvaluateHeuristic(BitArrayHelper.Transpose(Board));
         }
 
         public int GetScore()
@@ -40,6 +54,23 @@ namespace _2018.AI.Model.Optimize
             return copy;
         }
 
+        public IBoard GetCopy(Board board)
+        {
+            OptimizeBoard copy = new OptimizeBoard();
+            copy.Board = board;
+            return copy;
+        }
+
+        public ulong GetBitArrayRepresentation()
+        {
+            return Board;
+        }
+
+        public int CountEmpty()
+        {
+            return BitArrayHelper.CountEmpty(Board);
+        }
+
         public int GetValue(int x, int y)
         {
             if (x < 0 || x >= GetSize() || y < 0 || y >= GetSize())
@@ -51,11 +82,25 @@ namespace _2018.AI.Model.Optimize
 
         }
 
+        /// <summary>
+        /// Insert x^2 tile value
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="value"></param>
         public void SetValue(int x, int y, int value)
         {
-            InsertValue(x, y, (short) Math.Log(value, 2));
+            var result = 0;
+            while ((value >>= 1) > 0) result++;
+            InsertValue(x, y, (short) result);
         }
 
+        /// <summary>
+        /// Insert a tile value
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="value"></param>
         public void InsertValue(int x, int y, short value)
         {
             if (x < 0 || x >= GetSize() || y < 0 || y >= GetSize())
