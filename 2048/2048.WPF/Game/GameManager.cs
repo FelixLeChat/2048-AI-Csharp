@@ -206,8 +206,16 @@ namespace _2048.WPF.Game
         }
 
         public void StartTraining()
-        {
-            TrainingManager.Instance.StartTraining(_cancelToken);
+        {            
+            // Token for thread cancelation
+            if (_cancelToken != null)
+            {
+                _cancelToken.Cancel();
+                _cancelToken.Dispose();
+            }
+            _cancelToken = new CancellationTokenSource();
+
+            TrainingManager.Instance.StartTraining(_cancelToken, Strategy);
         }
 
         private bool ForceStop { get; set; }

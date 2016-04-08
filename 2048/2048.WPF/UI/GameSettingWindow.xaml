@@ -56,7 +56,7 @@
                         <RadioButton GroupName="Type" Content="Stats" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
                         IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:Mode.Stats}}"/>
-                        <RadioButton GroupName="Type" Content="Ttraining" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        <RadioButton GroupName="Type" Content="Training" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
                         IsChecked="{Binding GameMode, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:Mode.Training}}"/>
                     </StackPanel>

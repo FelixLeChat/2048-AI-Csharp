@@ -52,6 +52,17 @@ namespace _2048.AI.Heuristics
             }
             return total;
         }
+        public static int CountEmptyCells(IBoard board)
+        {
+            var total = 0;
+
+            // foreach line
+            for (var i = 0; i < board.GetSize(); i++)
+            {
+                total += CountEmptyCells(board, i);
+            }
+            return total;
+        }
 
         /// <summary>
         /// Get the indication of the relative monotonicity of the given line

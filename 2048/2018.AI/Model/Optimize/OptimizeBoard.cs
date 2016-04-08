@@ -5,6 +5,7 @@ using _2048.AI.Heuristics;
 using _2048.AI.Model.Core;
 using _2048.AI.Scoring;
 using Board = System.UInt64;
+using Type = _2048.AI.Enums.Type;
 
 namespace _2048.AI.Model.Optimize
 {

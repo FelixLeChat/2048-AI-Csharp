@@ -6,6 +6,7 @@ using _2048.AI.Helper;
 using _2048.AI.Model.Core;
 using _2048.AI.Model.Optimize;
 using _2048.AI.Scoring;
+using Type = _2048.AI.Enums.Type;
 
 namespace _2048.Model
 {
