@@ -31,6 +31,12 @@ namespace _2048
             Color.FromArgb(255, 89, 118, 255),
             Color.FromArgb(255, 205, 96, 255),
             Color.FromArgb(255, 255, 78, 59),
+            Color.FromArgb(255,0,0,0),
+            Color.FromArgb(255,0,0,0),
+            Color.FromArgb(255,0,0,0),
+            Color.FromArgb(255,0,0,0),
+            Color.FromArgb(255,0,0,0),
+            Color.FromArgb(255,0,0,0)
         };
 
         private readonly Color[] _foreColors =
@@ -46,6 +52,12 @@ namespace _2048
             Color.FromArgb(255, 255, 255, 255),
             Color.FromArgb(255, 255, 255, 255),
             Color.FromArgb(255, 255, 255, 255),
+            Color.FromArgb(255, 255, 255, 255),
+            Color.FromArgb(255, 255, 255, 255),
+            Color.FromArgb(255, 255, 255, 255),
+            Color.FromArgb(255, 255, 255, 255),
+            Color.FromArgb(255, 255, 255, 255),
+            Color.FromArgb(255, 255, 255, 255)
         };
 
         private int _value;

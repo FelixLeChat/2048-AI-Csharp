@@ -82,7 +82,11 @@
                         <CheckBox Name="LoadPreviousGeneration" IsChecked="{Binding LoadPreviousGen}" Content="Load Previous Generations" Margin="5,10,0,5" Padding="5,-4,0,0"/>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="First Generation Count :"/>
-                            <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding FirstGenCountString}" MinWidth="40"/>
+                            <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding FirstGenCountString}" MinWidth="50" HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Generation Child Count :"/>
+                            <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding GenGameCountString}" MinWidth="50" HorizontalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

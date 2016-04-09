@@ -35,6 +35,8 @@ namespace _2048.WPF.Game
 
             FirstGenCount = settings.FirstGenCount;
             LoadPreviousGen = settings.LoadPreviousGen;
+            GameIterationInPopulation = settings.GenGameCount;
+            TrainingStats.IterationToDo = GameIterationInPopulation;
         }
 
         public void Reset()
@@ -51,7 +53,7 @@ namespace _2048.WPF.Game
 
         private List<PopulationNode> PreviousPopulation { get; set; } = new List<PopulationNode>(); 
 
-        private const int GameIterationInPopulation = 100;
+        private int GameIterationInPopulation { get; set; } = 100;
         private const int PopulationInNextGeneration = 5;
 
         private List<PopulationNode> _population = new List<PopulationNode>();

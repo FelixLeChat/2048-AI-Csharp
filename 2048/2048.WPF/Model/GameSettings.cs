@@ -128,6 +128,9 @@ namespace _2048.WPF.Model
         public int FirstGenCount { get; set; } = 5;
         public string FirstGenCountString { get; set; } = "5";
 
+        public int GenGameCount { get; set; } = 100;
+        public string GenGameCountString { get; set; } = "100";
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

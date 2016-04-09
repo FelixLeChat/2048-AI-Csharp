@@ -22,12 +22,17 @@ namespace _2048.WPF.UI
             {
                 GameSettings.FirstGenCount = value;
 
-                //Init Game Manager
-                GameManager.Instance.Init(GameSettings);
+                if (int.TryParse(GameSettings.GenGameCountString,out value))
+                {
+                    GameSettings.GenGameCount = value;
 
-                var gameWindow = new GameWindow(GameSettings);
-                gameWindow.Show();
-                Close();
+                    //Init Game Manager
+                    GameManager.Instance.Init(GameSettings);
+
+                    var gameWindow = new GameWindow(GameSettings);
+                    gameWindow.Show();
+                    Close();
+                }
             }
         }
 
