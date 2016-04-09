@@ -82,9 +82,9 @@
     <Compile Include="Strategy\Core\ExpectimaxHelper.cs" />
     <Compile Include="Strategy\DeptFirstStrategy.cs" />
     <Compile Include="Strategy\ExpectimaxStrategy.cs" />
+    <Compile Include="Strategy\IStateSearch.cs" />
     <Compile Include="Strategy\IStrategy.cs" />
     <Compile Include="Strategy\IterativeDeepening.cs" />
-    <Compile Include="Strategy\MasterAlgo.cs" />
     <Compile Include="Strategy\RandomStrategy.cs" />
   </ItemGroup>
   <ItemGroup />
