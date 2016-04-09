@@ -18,8 +18,8 @@ namespace _2048.AI.Strategy
 
 
         // Don't recurse into node in prob is below this threshold
-        private const float ProbabilityThreshold = 0.001f;
-        private int MaxDepth = 3;
+        private const float ProbabilityThreshold = 0.0001f;
+        private int MaxDepth = 4;
 
         public Direction GetDirection(IBoard board)
         {
@@ -119,10 +119,14 @@ namespace _2048.AI.Strategy
             foreach (var direction in PossibleDirection)
             {
                 var copy = board.GetCopy();
-                copy.PerformMove(direction);
+                var hadChanged = copy.PerformMove(direction);
 
-                var score = ScoreExpectationNode(copy, depth - 1, probability);
-                bestScore = Math.Max(bestScore, score);
+                // No score if no changed: maybe it is a lost
+                if (hadChanged)
+                {
+                    var score = ScoreExpectationNode(copy, depth - 1, probability);
+                    bestScore = Math.Max(bestScore, score);
+                }
             }
             return bestScore;
         }
