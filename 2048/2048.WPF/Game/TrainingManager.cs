@@ -43,13 +43,13 @@ namespace _2048.WPF.Game
             TrainingStats = new TrainingStats();
             _population = new List<PopulationNode>();
 
-            _previousPopulation = LoadGenerations() ?? new List<PopulationNode>();
+            PreviousPopulation = LoadGenerations() ?? new List<PopulationNode>();
         }
 
         public ObservableCollection<TrainingModel> TrainingList { get; set; } = new ObservableCollection<TrainingModel>();
         public TrainingStats TrainingStats { get; set; } = new TrainingStats();
 
-        private List<PopulationNode> _previousPopulation { get; set; } = new List<PopulationNode>(); 
+        private List<PopulationNode> PreviousPopulation { get; set; } = new List<PopulationNode>(); 
 
         private const int GameIterationInPopulation = 100;
         private const int PopulationInNextGeneration = 5;
@@ -61,7 +61,7 @@ namespace _2048.WPF.Game
         {
             // load previous generations
             if (LoadPreviousGen)
-                _population = _previousPopulation;
+                _population = PreviousPopulation;
 
             // TODO : Add check for more than 2 ?
             if (_population == null)
@@ -215,7 +215,7 @@ namespace _2048.WPF.Game
         private void SaveGenerations()
         {
             var totalGen = _population;
-            totalGen.AddRange(_previousPopulation ?? new List<PopulationNode>());
+            //totalGen.AddRange(_previousPopulation ?? new List<PopulationNode>());
 
             var generationString = JsonConvert.SerializeObject(totalGen);
             File.WriteAllText(SaveFileName, generationString);
