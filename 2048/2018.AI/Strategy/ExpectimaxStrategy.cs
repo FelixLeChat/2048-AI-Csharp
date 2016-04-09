@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using _2048.AI.Enums;
 using _2048.AI.Model.Core;
 using Board = System.UInt64;
 
 namespace _2048.AI.Strategy
 {
-    public class ExpectimaxStrategy : IStrategy
+    public class ExpectimaxStrategy : IStrategy, IStateSearch
     {
         private readonly List<Direction> PossibleDirection = new List<Direction>()
         {
@@ -19,7 +20,7 @@ namespace _2048.AI.Strategy
 
         // Don't recurse into node in prob is below this threshold
         private const float ProbabilityThreshold = 0.0001f;
-        private int MaxDepth = 4;
+        public int MaxDepth { get; set; } = 4;
 
         public Direction GetDirection(IBoard board)
         {
