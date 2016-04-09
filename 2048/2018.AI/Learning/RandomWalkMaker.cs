@@ -8,7 +8,7 @@ namespace _2048.AI.Learning
     public class RandomWalkMaker : IBastardMaker
     {
         private static readonly Random _rand = new Random();
-        private const float MutateProbability = 0.1f;
+        private const float MutateProbability = 0.5f;
 
         public HeuristicFactor MakeBastard(List<PopulationNode> previousGeneration)
         {

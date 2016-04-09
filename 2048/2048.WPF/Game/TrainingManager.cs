@@ -30,8 +30,9 @@ namespace _2048.WPF.Game
         public ObservableCollection<TrainingModel> TrainingList { get; set; } = new ObservableCollection<TrainingModel>();
         public TrainingStats TrainingStats { get; set; } = new TrainingStats();
 
-
-        private const int GameIterationInPopulation = 100;
+        bool firstTime = true;
+        private const int InitialPopulation = 100;
+        private const int GameIterationInPopulation = 10;
         private const int PopulationInNextGeneration = 5;
 
         private List<PopulationNode> _population = new List<PopulationNode>();
@@ -40,9 +41,9 @@ namespace _2048.WPF.Game
         public void StartTraining(CancellationTokenSource cancelToken, IStrategy strategy)
         {
             // load previous generations
-            _population = LoadGenerations();
+            //_population = LoadGenerations();
             // TODO : Add check for more than 2 ?
-            if(_population == null)
+            if (_population == null)
                 _population = new List<PopulationNode>();
 
             TrainingStats.TotalChilds = _population.Count;
@@ -55,7 +56,18 @@ namespace _2048.WPF.Game
                 // Simulate infinite generations
                 while (!cancelToken.IsCancellationRequested)
                 {
-                    var generation = _learner.GetNewGeneration(_population, PopulationInNextGeneration);
+                    List<HeuristicFactor> generation = null;
+                    if (firstTime)
+                    {
+                        generation = _learner.GetNewGeneration(null, InitialPopulation);
+                        firstTime = false;
+                    }
+                    else
+                    {
+                        generation = _learner.GetNewGeneration(_population, PopulationInNextGeneration);
+                    }
+
+                    
 
                     // Simulate all new element in generation
                     foreach (var heuristicFactor in generation)
