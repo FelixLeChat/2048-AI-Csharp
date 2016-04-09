@@ -235,7 +235,10 @@ namespace _2048
         public State CheckForWin()
         {
             var state = State.NotFinished;
-            
+
+            if (Score >= 2048)
+                state = State.Won;
+
             // Check for full tileset
             if (Helper.IsFullTileSet(GameModel.Cells))
             {

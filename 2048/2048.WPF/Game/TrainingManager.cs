@@ -102,7 +102,7 @@ namespace _2048.WPF.Game
 
                             // Play Game
                             var gameState = State.NotFinished;
-                            while (gameState == State.NotFinished && !cancelToken.IsCancellationRequested)
+                            while (gameState != State.Lost && !cancelToken.IsCancellationRequested)
                             {
                                 var direction = strategy.GetDirection(board);
                                 var goodMove = board.PerformMove(direction);
@@ -188,7 +188,7 @@ namespace _2048.WPF.Game
             var state = State.NotFinished;
 
             if(Heuristics.IsWon(board))
-                return State.Won;
+                state = State.Won;
 
 
             // Check for full tileset
@@ -207,7 +207,6 @@ namespace _2048.WPF.Game
 
                 _passScore = score;
             }
-            
             return state;
         }
 
@@ -215,7 +214,6 @@ namespace _2048.WPF.Game
         private void SaveGenerations()
         {
             var totalGen = _population;
-            //totalGen.AddRange(_previousPopulation ?? new List<PopulationNode>());
 
             var generationString = JsonConvert.SerializeObject(totalGen);
             File.WriteAllText(SaveFileName, generationString);

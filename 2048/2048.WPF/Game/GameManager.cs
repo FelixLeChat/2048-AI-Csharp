@@ -130,7 +130,7 @@ namespace _2048.WPF.Game
                                 
                                 // Check for win or loose
                                 gameState = GameGrid.CheckForWin();
-                                if (gameState != State.NotFinished)
+                                if (gameState == State.Lost)
                                 {
                                     // Won or lost
                                     _cancelToken.Cancel();
@@ -187,7 +187,7 @@ namespace _2048.WPF.Game
 
                         // Gamecount
                         Stats.TotalGamePlayed++;
-                        if (task.Result == State.Won) Stats.TotalWins++;
+                        if (newScore.MaxTile >= 2048) Stats.TotalWins++;
                         else Stats.TotalLosses++;
 
                         // Time
