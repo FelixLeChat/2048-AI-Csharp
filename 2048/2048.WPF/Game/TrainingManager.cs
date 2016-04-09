@@ -27,9 +27,29 @@ namespace _2048.WPF.Game
         {
         }
 
+        private int FirstGenCount { get; set; }
+        private bool LoadPreviousGen { get; set; }
+        public void Init(GameSettings settings)
+        {
+            Reset();
+
+            FirstGenCount = settings.FirstGenCount;
+            LoadPreviousGen = settings.LoadPreviousGen;
+        }
+
+        public void Reset()
+        {
+            TrainingList = new ObservableCollection<TrainingModel>();
+            TrainingStats = new TrainingStats();
+            _population = new List<PopulationNode>();
+
+            _previousPopulation = LoadGenerations() ?? new List<PopulationNode>();
+        }
+
         public ObservableCollection<TrainingModel> TrainingList { get; set; } = new ObservableCollection<TrainingModel>();
         public TrainingStats TrainingStats { get; set; } = new TrainingStats();
 
+        private List<PopulationNode> _previousPopulation { get; set; } = new List<PopulationNode>(); 
 
         private const int GameIterationInPopulation = 100;
         private const int PopulationInNextGeneration = 5;
@@ -40,9 +60,11 @@ namespace _2048.WPF.Game
         public void StartTraining(CancellationTokenSource cancelToken, IStrategy strategy)
         {
             // load previous generations
-            _population = LoadGenerations();
+            if (LoadPreviousGen)
+                _population = _previousPopulation;
+
             // TODO : Add check for more than 2 ?
-            if(_population == null)
+            if (_population == null)
                 _population = new List<PopulationNode>();
 
             TrainingStats.TotalChilds = _population.Count;
@@ -55,7 +77,12 @@ namespace _2048.WPF.Game
                 // Simulate infinite generations
                 while (!cancelToken.IsCancellationRequested)
                 {
-                    var generation = _learner.GetNewGeneration(_population, PopulationInNextGeneration);
+                    // Initialize generation
+                    List<HeuristicFactor> generation;
+                    if(TrainingStats.CurrentGeneration == 1 && FirstGenCount > 0)
+                        generation = _learner.GetNewGeneration(_population, FirstGenCount);
+                    else
+                        generation = _learner.GetNewGeneration(_population, PopulationInNextGeneration);
 
                     // Simulate all new element in generation
                     foreach (var heuristicFactor in generation)
@@ -187,7 +214,10 @@ namespace _2048.WPF.Game
         private const string SaveFileName = "SavedGenerations.txt";
         private void SaveGenerations()
         {
-            var generationString = JsonConvert.SerializeObject(_population);
+            var totalGen = _population;
+            totalGen.AddRange(_previousPopulation ?? new List<PopulationNode>());
+
+            var generationString = JsonConvert.SerializeObject(totalGen);
             File.WriteAllText(SaveFileName, generationString);
         }
 

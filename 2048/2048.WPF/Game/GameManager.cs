@@ -68,11 +68,14 @@ namespace _2048.WPF.Game
                 var temp = new OptimizeBoard();
                 temp.Initialize();
             }
+
+            TrainingManager.Instance.Init(settings);
         }
 
         public void RestartGrid()
         {
             GameGrid = new GameGrid();
+            TrainingManager.Instance.Reset();
         }
 
         public void StartGame()
