@@ -111,6 +111,23 @@ namespace _2048.WPF.Model
             }
         }
 
+        private bool _loadPreviousGen = true;
+        public bool LoadPreviousGen
+        {
+            get { return _loadPreviousGen; }
+            set
+            {
+                if (_loadPreviousGen != value)
+                {
+                    _loadPreviousGen = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int FirstGenCount { get; set; } = 5;
+        public string FirstGenCountString { get; set; } = "5";
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

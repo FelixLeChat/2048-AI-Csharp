@@ -6,7 +6,7 @@
         xmlns:converter="clr-namespace:_2048.WPF.Converter"
         xmlns:enum="clr-namespace:_2048.AI.Enums;assembly=2048.AI"
         mc:Ignorable="d"
-        Title="Main Menu" Height="400" Width="400">
+        Title="Main Menu" Height="600" Width="450">
     <Window.Resources>
         <converter:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
     </Window.Resources>
@@ -72,7 +72,21 @@
                         <CheckBox Name="IsRestart" IsChecked="{Binding IsRestart}" Content="Restart" Margin="20,10,0,5" Padding="5,-4,0,0"/>
                     </StackPanel>
                 </GroupBox>
-                
+
+                <GroupBox  Margin="10,10,10,0" FontSize="16" FontWeight="Bold"
+                  Background="LightGray">
+                    <GroupBox.Header>
+                        Training Config
+                    </GroupBox.Header>
+                    <StackPanel Margin="0,0,5,0">
+                        <CheckBox Name="LoadPreviousGeneration" IsChecked="{Binding LoadPreviousGen}" Content="Load Previous Generations" Margin="5,10,0,5" Padding="5,-4,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="First Generation Count :"/>
+                            <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding FirstGenCountString}" MinWidth="40"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
                 <GroupBox  Margin="10,5,10,10" FontSize="16" FontWeight="Bold"
                   Background="LightGray">
                     <GroupBox.Header>

@@ -1,4 +1,7 @@
-﻿using _2048.WPF.Game;
+﻿using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using System.Windows.Input;
+using _2048.WPF.Game;
 using _2048.WPF.Model;
 
 namespace _2048.WPF.UI
@@ -14,12 +17,29 @@ namespace _2048.WPF.UI
 
         private void StartButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            //Init Game Manager
-            GameManager.Instance.Init(GameSettings);
+            var value = 0;
+            if (int.TryParse(GameSettings.FirstGenCountString, out value))
+            {
+                GameSettings.FirstGenCount = value;
 
-            var gameWindow = new GameWindow(GameSettings);
-            gameWindow.Show();
-            Close();
+                //Init Game Manager
+                GameManager.Instance.Init(GameSettings);
+
+                var gameWindow = new GameWindow(GameSettings);
+                gameWindow.Show();
+                Close();
+            }
+        }
+
+        private void UIElement_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // handled = true : do not put text
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+        private static bool IsTextAllowed(string text)
+        {
+            var regex = new Regex("[^0-9.-]+");
+            return !regex.IsMatch(text);
         }
     }
 }
