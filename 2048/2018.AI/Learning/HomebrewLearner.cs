@@ -33,8 +33,11 @@ namespace _2048.AI.Learning
             }
             else
             {
-                previousGeneration.Sort();
-                var bestNode = previousGeneration.Take(SelectionCount).ToList();
+
+                //previousGeneration.Sort();
+                //previousGeneration.Reverse();
+                //var bestNode = previousGeneration.Take(SelectionCount).ToList();
+                var bestNode = previousGeneration.OrderByDescending(x => x.Stat.MaxTile).ThenByDescending(x => x.Stat.MinTile).Take(SelectionCount).ToList();
 
                 var newGeneration = MakeChildrenWithLove(bestNode, populationSize);
 
