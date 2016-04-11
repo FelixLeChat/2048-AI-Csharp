@@ -50,6 +50,7 @@
     </Compile>
     <Compile Include="Enums\BoardType.cs" />
     <Compile Include="Enums\Direction.cs" />
+    <Compile Include="Enums\LearningType.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\State.cs" />
     <Compile Include="Enums\Type.cs" />

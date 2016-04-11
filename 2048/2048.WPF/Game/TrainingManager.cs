@@ -37,6 +37,19 @@ namespace _2048.WPF.Game
             LoadPreviousGen = settings.LoadPreviousGen;
             GameIterationInPopulation = settings.GenGameCount;
             TrainingStats.IterationToDo = GameIterationInPopulation;
+
+            switch (settings.LearningType)
+            {
+                case LearningType.Genetic:
+                    _learner.SetMakerType(new GeneticMaker());
+                    break;
+                case LearningType.Random:
+                    _learner.SetMakerType(new RandomWalkMaker());
+                    break;
+                case LearningType.Reinforcement:
+                    _learner.SetMakerType(new ReinforcementMaker());
+                    break;
+            }
         }
 
         public void Reset()

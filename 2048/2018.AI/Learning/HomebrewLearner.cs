@@ -17,6 +17,12 @@ namespace _2048.AI.Learning
     {
         public IBastardMaker BastardMaker { get; set; } = new RandomWalkMaker();
 
+        public HomebrewLearner() { }
+        public HomebrewLearner(IBastardMaker maker)
+        {
+            BastardMaker = maker;
+        }
+
         private const int SelectionCount = 2;
 
         public List<HeuristicFactor> GetNewGeneration(List<PopulationNode> previousGeneration, int populationSize)
@@ -43,6 +49,11 @@ namespace _2048.AI.Learning
 
                 return newGeneration;
             }
+        }
+
+        public void SetMakerType(IBastardMaker maker)
+        {
+            BastardMaker = maker;
         }
 
         private List<HeuristicFactor> MakeChildrenWithLove(List<PopulationNode> previousGeneration, int populationSize)

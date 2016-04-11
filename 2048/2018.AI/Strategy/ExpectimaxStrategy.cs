@@ -20,7 +20,7 @@ namespace _2048.AI.Strategy
 
         // Don't recurse into node in prob is below this threshold
         private const float ProbabilityThreshold = 0.0001f;
-        public int MaxDepth { get; set; } = 4;
+        public int MaxDepth { get; set; } = 5;
 
         public Direction GetDirection(IBoard board)
         {

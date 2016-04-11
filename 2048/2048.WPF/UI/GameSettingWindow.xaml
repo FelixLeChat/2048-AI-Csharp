@@ -78,6 +78,7 @@
                     <GroupBox.Header>
                         Training Config
                     </GroupBox.Header>
+                    
                     <StackPanel Margin="0,0,5,0">
                         <CheckBox Name="LoadPreviousGeneration" IsChecked="{Binding LoadPreviousGen}" Content="Load Previous Generations" Margin="5,10,0,5" Padding="5,-4,0,0"/>
                         <StackPanel Orientation="Horizontal">
@@ -87,6 +88,20 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Generation Child Count :"/>
                             <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding GenGameCountString}" MinWidth="50" HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        
+                        <Label Content="Learning Type :"/>
+                        <StackPanel Orientation="Horizontal" Margin="5,10,5,0">
+                            <RadioButton GroupName="LearningType" Content="Genetic" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding LearningType, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:LearningType.Genetic}}"/>
+                            <RadioButton GroupName="LearningType" Content="Random" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding LearningType, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:LearningType.Random}}"/>
+                            <RadioButton GroupName="LearningType" Content="Reinforcement" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"
+                        IsChecked="{Binding LearningType, Converter={StaticResource RadioButtonCheckedConverter}, 
+                            ConverterParameter={x:Static enum:LearningType.Reinforcement}}"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>

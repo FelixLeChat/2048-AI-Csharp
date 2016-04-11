@@ -9,5 +9,7 @@ namespace _2048.AI.Learning.Core
     public interface ILearner
     {
         List<HeuristicFactor> GetNewGeneration(List<PopulationNode> previousGeneration, int populationSize);
+
+        void SetMakerType(IBastardMaker maker);
     }
 }

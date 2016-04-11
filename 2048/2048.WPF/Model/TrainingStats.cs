@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using _2048.AI.Enums;
 using _2048.WPF.Annotations;
 
 namespace _2048.WPF.Model

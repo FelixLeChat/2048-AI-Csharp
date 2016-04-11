@@ -98,7 +98,7 @@ namespace _2048.WPF.Game
                 // Stats
                 _gameTimer.Restart();
 
-                while (!_cancelToken.IsCancellationRequested)
+                while (_cancelToken != null && !_cancelToken.IsCancellationRequested)
                 {
                     // If no animation to do
                     if (!GameGrid.MoveInProgress)
@@ -182,6 +182,18 @@ namespace _2048.WPF.Game
                                 break;
                             case 1024:
                                 Stats.Get1024++;
+                                break;
+                            case 2048:
+                                Stats.Get2048++;
+                                break;
+                            case 4096:
+                                Stats.Get4096++;
+                                break;
+                            case 8192:
+                                Stats.Get8192++;
+                                break;
+                            case 16384:
+                                Stats.Get16384++;
                                 break;
                         }
 

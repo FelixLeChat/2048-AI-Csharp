@@ -131,6 +131,8 @@ namespace _2048.WPF.Model
         public int GenGameCount { get; set; } = 100;
         public string GenGameCountString { get; set; } = "100";
 
+        public LearningType LearningType { get; set; } = LearningType.Genetic;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

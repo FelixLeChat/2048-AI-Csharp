@@ -195,6 +195,62 @@ namespace _2048.WPF.Model
             }
         }
 
+        private int _get2048;
+        public int Get2048
+        {
+            get { return _get2048; }
+            set
+            {
+                if (_get2048 != value)
+                {
+                    _get2048 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get4096;
+        public int Get4096
+        {
+            get { return _get4096; }
+            set
+            {
+                if (_get4096 != value)
+                {
+                    _get4096 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get8192;
+        public int Get8192
+        {
+            get { return _get8192; }
+            set
+            {
+                if (_get8192 != value)
+                {
+                    _get8192 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _get16384;
+        public int Get16384
+        {
+            get { return _get16384; }
+            set
+            {
+                if (_get16384 != value)
+                {
+                    _get16384 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

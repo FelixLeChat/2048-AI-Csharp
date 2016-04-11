@@ -1,7 +1,7 @@
 ﻿<Window x:Class="_2048.WPF.UI.GameWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="GameWindow" Height="500" Width="950">
+        Title="GameWindow" Height="591" Width="950">
     <Grid Background="#faf8ef">
         <Grid Background="#faf8ef" Name="ContentGrid">
         </Grid>
@@ -90,7 +90,28 @@
                         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
                                              Text="{Binding Get1024}" TextWrapping="Wrap" Margin="2" Padding="5"/>
                     </StackPanel>
-                </StackPanel>
+
+                        <Rectangle Fill="Gray" Height="2"/>
+
+                        <StackPanel Orientation="Horizontal" >
+                            <Label Content="2048 :" VerticalAlignment="Center" Margin="2"/>
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get2048}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+
+                            <Label Content="4096 :" VerticalAlignment="Center" Margin="2"/>
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get4096}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <Label Content="8192 :" VerticalAlignment="Center" Margin="2"/>
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get8192}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+
+                            <Label Content="16384 :" VerticalAlignment="Center" Margin="2"/>
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="false"
+                                             Text="{Binding Get16384}" TextWrapping="Wrap" Margin="2" Padding="5"/>
+                        </StackPanel>
+                    </StackPanel>
             </Border>
             </StackPanel>
 
