@@ -12,5 +12,9 @@ namespace _2048.AI.Strategy
             // creates a number between 1 and 12
             return (Direction)_random.Next((int)Direction.Up, (int)Direction.Right+1);
         }
+
+        public void SetSearchDepth(int depth)
+        {
+        }
     }
 }

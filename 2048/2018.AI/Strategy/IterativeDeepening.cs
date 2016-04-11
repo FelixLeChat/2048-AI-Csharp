@@ -45,6 +45,12 @@ namespace _2048.AI.Strategy
             return direction;
         }
 
+        private int Depth { get; set; }
+        public void SetSearchDepth(int depth)
+        {
+            Depth = depth;
+        }
+
         private static readonly Random Random = new Random();
         private static Result Search(IBoard board, int depth, double alpha, double beta, int positions,int cutoffs)
         {

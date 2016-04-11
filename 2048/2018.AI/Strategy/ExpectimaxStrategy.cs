@@ -54,6 +54,11 @@ namespace _2048.AI.Strategy
             return bestDirection;
         }
 
+        public void SetSearchDepth(int depth)
+        {
+            MaxDepth = depth;
+        }
+
         /// <summary>
         /// Will start the Expectimax search from the first Node
         /// </summary>

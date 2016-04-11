@@ -128,6 +128,9 @@ namespace _2048.WPF.Model
         public int FirstGenCount { get; set; } = 5;
         public string FirstGenCountString { get; set; } = "5";
 
+        public int Depth { get; set; } = 4;
+        public string DepthString { get; set; } = "4";
+
         public int GenGameCount { get; set; } = 100;
         public string GenGameCountString { get; set; } = "100";
 
