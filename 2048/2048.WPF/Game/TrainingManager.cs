@@ -149,6 +149,8 @@ namespace _2048.WPF.Game
 
                         if (!cancelToken.IsCancellationRequested)
                         {
+
+                            generationStat.AverageScore = totalScore/GameIterationInPopulation;
                             // Add info to next generation (Stats)
                             _population.Add(new PopulationNode()
                             {
@@ -165,7 +167,7 @@ namespace _2048.WPF.Game
                                 {
                                     TrainingList.Add(new TrainingModel()
                                     {
-                                        AverageScore = totalScore/GameIterationInPopulation,
+                                        AverageScore = generationStat.AverageScore,
                                         MaxScore = generationStat.MaxScore,
                                         MaxTile = generationStat.MaxTile,
                                         MinTile = generationStat.MinTile,
