@@ -125,11 +125,11 @@ namespace _2048.WPF.Model
             }
         }
 
-        public int FirstGenCount { get; set; } = 5;
-        public string FirstGenCountString { get; set; } = "5";
+        public int FirstGenCount { get; set; } = 100;
+        public string FirstGenCountString { get; set; } = "100";
 
-        public int GenGameCount { get; set; } = 100;
-        public string GenGameCountString { get; set; } = "100";
+        public int GenGameCount { get; set; } = 10;
+        public string GenGameCountString { get; set; } = "10";
 
         public LearningType LearningType { get; set; } = LearningType.Genetic;
 

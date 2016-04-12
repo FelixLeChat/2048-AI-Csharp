@@ -17,7 +17,7 @@ namespace _2048.AI.Model.Stats
         public int CompareTo(object obj)
         {
             var otherStat = obj as StatModel;
-            return otherStat != null ? MaxScore.CompareTo(otherStat.MaxScore) : 0;
+            return otherStat != null ? AverageScore.CompareTo(otherStat.AverageScore) : 0;
         }
     }
 }

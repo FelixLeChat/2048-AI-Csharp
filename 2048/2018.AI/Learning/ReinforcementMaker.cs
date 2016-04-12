@@ -9,7 +9,8 @@ namespace _2048.AI.Learning
     public class ReinforcementMaker : IBastardMaker
     {
         private static readonly Random _rand = new Random();
-        private float LearningSpeed { get; set; } = 0.4f;
+        private float LearningSpeed { get; set; } = 0.7f;
+        private const float MutateProbability = 0.1f;
 
         public HeuristicFactor MakeBastard(List<PopulationNode> previousGeneration)
         {
@@ -28,7 +29,16 @@ namespace _2048.AI.Learning
             } while (firstNode == secondNode);
 
 
-            return LearnFromChild(firstNode, secondNode);
+            var reinforceHeuristic = LearnFromChild(firstNode, secondNode);
+
+            if (_rand.NextDouble() < MutateProbability)
+            {
+                return RandomWalkMaker.RandomInverter(reinforceHeuristic, MutateProbability);
+            }
+            else
+            {
+                return reinforceHeuristic;
+            }
         }
 
         private HeuristicFactor LearnFromChild(PopulationNode first, PopulationNode second)
@@ -51,21 +61,23 @@ namespace _2048.AI.Learning
             return heuristic;
         }
 
-        // Take the first value, and upgrade it base on the second value and score
+  
+
+        // From the best value (one with better score) we go away from the bad one
         private float GetNewValue(StatModel firstScore, float firstValue, StatModel secondScore, float secondValue)
         {
             bool isFirstBetter = firstScore.CompareTo(secondScore) > 0;
 
-            var newValue = firstValue;
+            float newValue = 0;
             if (isFirstBetter)
             {
                 // Move from second toward first value
-                newValue += LearningSpeed * (firstValue - secondValue);
+                newValue = firstValue + LearningSpeed * (firstValue - secondValue);
             }
             else
             {
                 // Move from first value toward second value
-                newValue += LearningSpeed * (secondValue - firstValue);
+                newValue = secondValue + LearningSpeed * (secondValue - firstValue);
             }
             return newValue;
         }

@@ -14,9 +14,28 @@ namespace _2048.AI.Heuristics
         public static float PowerIncrementLimit { get; set; } = 3;
 
         public float LostPenalty { get; set; }
-        public float MonoticityPower { get; set; }
+
+        private float _monoticityPower;
+        public float MonoticityPower {
+            get { return _monoticityPower; }
+            set
+            {
+                _monoticityPower = Math.Min(value, PowerLimit);
+                _monoticityPower = Math.Max(_monoticityPower, -PowerLimit);
+            }
+        }
         public float MonoticityWeight { get; set; }
-        public float SumPower { get; set; }
+
+        private float _sumPower;
+        public float SumPower
+        {
+            get { return _sumPower; }
+            set
+            {
+                _sumPower = Math.Min(value, PowerLimit);
+                _sumPower = Math.Max(_sumPower, -PowerLimit);
+            }
+        }
         public float SumWeight { get; set; }
         public float MergeWeigth { get; set; }
         public float EmptyWeigth { get; set; }

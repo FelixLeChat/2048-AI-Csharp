@@ -23,7 +23,7 @@ namespace _2048.AI.Learning
             BastardMaker = maker;
         }
 
-        private const int SelectionCount = 2;
+        private const int SelectionCount = 5;
 
         public List<HeuristicFactor> GetNewGeneration(List<PopulationNode> previousGeneration, int populationSize)
         {
@@ -43,7 +43,8 @@ namespace _2048.AI.Learning
                 //previousGeneration.Sort();
                 //previousGeneration.Reverse();
                 //var bestNode = previousGeneration.Take(SelectionCount).ToList();
-                var bestNode = previousGeneration.OrderByDescending(x => x.Stat.MaxTile).ThenByDescending(x => x.Stat.MinTile).Take(SelectionCount).ToList();
+                var nodeToTake = Math.Min(SelectionCount, previousGeneration.Count);
+                var bestNode = previousGeneration.OrderByDescending(x => x.Stat.MaxTile).ThenByDescending(x => x.Stat.MinTile).Take(nodeToTake).ToList();
 
                 var newGeneration = MakeChildrenWithLove(bestNode, populationSize);
 
