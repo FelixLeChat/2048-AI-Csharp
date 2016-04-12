@@ -51,6 +51,8 @@ namespace _2048.WPF.Game
                     break;
             }
 
+            Strategy?.SetSearchDepth(settings.Depth);
+
             IsTraining = settings.GameMode == Mode.Training;
 
             GameGrid = new GameGrid();

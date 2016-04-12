@@ -32,6 +32,11 @@
                         IsChecked="{Binding GameType, Converter={StaticResource RadioButtonCheckedConverter}, 
                             ConverterParameter={x:Static enum:Type.Manual}}"/>
                         </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Depth :"/>
+                            <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding DepthString}" MinWidth="50" HorizontalContentAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
 
@@ -90,7 +95,7 @@
                             <TextBox PreviewTextInput="UIElement_OnPreviewTextInput" Text="{Binding GenGameCountString}" MinWidth="50" HorizontalContentAlignment="Center"/>
                         </StackPanel>
 
-                        
+
                         <Label Content="Learning Type :"/>
                         <StackPanel Orientation="Horizontal" Margin="5,10,5,0">
                             <RadioButton GroupName="LearningType" Content="Genetic" FontSize="12" FontWeight="Normal" Margin="0,0,10,0"

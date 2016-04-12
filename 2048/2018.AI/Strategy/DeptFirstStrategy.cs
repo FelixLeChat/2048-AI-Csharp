@@ -14,6 +14,12 @@ namespace _2048.AI.Strategy
             var dfs = new DepthFirstSearch(board);
             return dfs.Search();
         }
+
+        private int Depth { get; set; }
+        public void SetSearchDepth(int depth)
+        {
+            Depth = depth;
+        }
     }
 
     public class DepthFirstSearch
