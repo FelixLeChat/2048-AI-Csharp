@@ -10,7 +10,8 @@ namespace _2048.AI.Learning
     {
         private static readonly Random _rand = new Random();
         private float LearningSpeed { get; set; } = 0.7f;
-        private const float MutateProbability = 0.1f;
+        private const float InverseProbability = 0.1f;
+        private const float RandomWalkProbability = 0.3f;
 
         public HeuristicFactor MakeBastard(List<PopulationNode> previousGeneration)
         {
@@ -31,9 +32,14 @@ namespace _2048.AI.Learning
 
             var reinforceHeuristic = LearnFromChild(firstNode, secondNode);
 
-            if (_rand.NextDouble() < MutateProbability)
+            if (_rand.NextDouble() < InverseProbability)
             {
-                return RandomWalkMaker.RandomInverter(reinforceHeuristic, MutateProbability);
+                return RandomWalkMaker.RandomInverter(reinforceHeuristic, InverseProbability);
+            }
+            else if (_rand.NextDouble() < RandomWalkProbability)
+            {
+                return RandomWalkMaker.RandomWalk(reinforceHeuristic, RandomWalkProbability,
+                    HeuristicFactor.WeigthIncrementLimit/2, HeuristicFactor.PowerIncrementLimit/2);
             }
             else
             {

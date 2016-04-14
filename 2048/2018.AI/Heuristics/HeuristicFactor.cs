@@ -92,8 +92,20 @@ namespace _2048.AI.Heuristics
                 SumWeight = -11.0f,
                 MergeWeigth = 700.0f,
                 EmptyWeigth = 270.0f,
-                FillWeigth = 270.0f
+                FillWeigth = 0.0f
             };
+
+            //return new HeuristicFactor()
+            //{
+            //    LostPenalty = 823.0f,
+            //    MonoticityPower = 7.8f,
+            //    MonoticityWeight = -5635.0f,
+            //    SumPower = 10f,
+            //    SumWeight = 455.0f,
+            //    MergeWeigth = 2193.0f,
+            //    EmptyWeigth = -210.0f,
+            //    FillWeigth = 2026.0f
+            //};
 
             // Try maximize the number of empty tiles
             //return new HeuristicFactor()
